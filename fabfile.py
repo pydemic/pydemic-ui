@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 
 from fabric import task
 from patchwork import info, packages
@@ -44,6 +45,19 @@ def git_pull(ctx):
 
 
 @task
+def download(ctx, file, name=None):
+    """
+    Download file from server.
+    """
+    data = ctx.get(file)
+    if name is None:
+        name = Path(file).name
+
+    with open(name, 'bw') as fd:
+        fd.write(data)
+
+
+@task
 def update(ctx):
     """
     Update server
@@ -52,15 +66,3 @@ def update(ctx):
     ctx.sudo("cd app && docker-compose build")
     ctx.sudo("cd app && docker-compose down")
     ctx.sudo("cd app && docker-compose up")
-
-
-@task
-def run(ctx, cmd):
-    """
-    Execute arbitrary command on remote server
-    """
-    res = ctx.run(cmd, pty=True)
-    if res.stdout:
-        print(res.stdout)
-    if res.stderr:
-        print(res.stderr, file=sys.stderr)

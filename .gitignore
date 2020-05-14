@@ -13,3 +13,7 @@ cache
 # gettext
 *.mo
 htmlcov/
+
+.deploy.json
+.fabfile.yml
+.fabric.yml

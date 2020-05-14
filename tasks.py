@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 
@@ -38,5 +39,26 @@ def test(ctx):
 
 
 @task
-def docker_build(ctx, tag=None):
+def build(ctx, tag=None):
     ctx.run("sudo docker-compose build")
+
+
+@task
+def deploy(ctx, user=None, server=None, opts=None):
+    ctx.run("git push")
+
+    try:
+        with open(".deploy.json") as fd:
+            data = json.load(fd)
+    except FileNotFoundError:
+        data = {}
+
+    user = user or data.get("user", os.environ.get("USER", "user"))
+    server = server or data.get("server", "localhost")
+    opts = opts or data.get("opts") or ""
+    ctx.run(f"fab -eH {user}@{server} {opts} update")
+
+
+@task
+def publish(ctx):
+    ctx.run("flit publish")
