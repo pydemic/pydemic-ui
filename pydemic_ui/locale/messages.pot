@@ -1,0 +1,525 @@
+# Translations template for PROJECT.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-05-14 04:06-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: pydemic_ui/runner.py:124
+msgid "Intervention starts prior to simulation"
+msgstr ""
+
+#: pydemic_ui/apps/calc.py:37
+msgid "Natural"
+msgstr ""
+
+#: pydemic_ui/apps/calc.py:38
+msgid "Lack of hospital beds"
+msgstr ""
+
+#: pydemic_ui/apps/calc.py:39
+msgid "Lack of ICUs"
+msgstr ""
+
+#: pydemic_ui/apps/calc.py:89
+msgid "Hospital pressure calculator"
+msgstr ""
+
+#: pydemic_ui/apps/calc.py:146
+msgid "Enable debug"
+msgstr ""
+
+#: pydemic_ui/apps/calc.py:147
+msgid "Running in debug mode!"
+msgstr ""
+
+#: pydemic_ui/apps/calc.py:151
+msgid "Debug section!"
+msgstr ""
+
+#: pydemic_ui/apps/calc.py:171
+msgid "Debug information"
+msgstr ""
+
+#: pydemic_ui/apps/calc.py:173
+msgid "Generic parameters"
+msgstr ""
+
+#: pydemic_ui/apps/calc.py:176 pydemic_ui/ui/input_epidemiological.py:39
+msgid "Epidemiological parameters"
+msgstr ""
+
+#: pydemic_ui/apps/calc.py:179 pydemic_ui/ui/input_epidemiological.py:54
+msgid "Clinical parameters"
+msgstr ""
+
+#: pydemic_ui/apps/calc.py:182
+msgid "Output"
+msgstr ""
+
+#: pydemic_ui/apps/calc.py:191
+msgid "Distribution of deaths"
+msgstr ""
+
+#: pydemic_ui/apps/projections.py:13 pydemic_ui/ui/input_region.py:78
+msgid "Region"
+msgstr ""
+
+#: pydemic_ui/apps/projections.py:14
+msgid "Downloading epidemic curve"
+msgstr ""
+
+#: pydemic_ui/apps/projections.py:25
+msgid "Use deaths"
+msgstr ""
+
+#: pydemic_ui/ui/generic_components.py:16
+msgid "COVID-19"
+msgstr ""
+
+#: pydemic_ui/ui/generic_components.py:16
+msgid "Epidemic Calculator"
+msgstr ""
+
+#: pydemic_ui/ui/generic_components.py:44
+msgid "https://www.paho.org/hq/index.php?lang=en"
+msgstr ""
+
+#: pydemic_ui/ui/generic_components.py:47
+msgid "PAHO"
+msgstr ""
+
+#: pydemic_ui/ui/generic_components.py:56
+msgid "Support: {institutions}"
+msgstr ""
+
+#: pydemic_ui/ui/input_epidemiological.py:14
+msgid "Epidemiology"
+msgstr ""
+
+#: pydemic_ui/ui/input_epidemiological.py:28
+msgid "Standard"
+msgstr ""
+
+#: pydemic_ui/ui/input_epidemiological.py:28
+msgid "Advanced"
+msgstr ""
+
+#: pydemic_ui/ui/input_epidemiological.py:30
+#: pydemic_ui/ui/input_simulation.py:126
+msgid "Scenario"
+msgstr ""
+
+#: pydemic_ui/ui/input_epidemiological.py:40
+msgid "Basic reproduction number (R0)"
+msgstr ""
+
+#: pydemic_ui/ui/input_epidemiological.py:43
+msgid "Virus incubation period"
+msgstr ""
+
+#: pydemic_ui/ui/input_epidemiological.py:46
+msgid "Infectious period"
+msgstr ""
+
+#: pydemic_ui/ui/input_epidemiological.py:49
+msgid "Fraction of symptomatic cases"
+msgstr ""
+
+#: pydemic_ui/ui/input_epidemiological.py:56
+msgid "Fraction of hospitalized cases"
+msgstr ""
+
+#: pydemic_ui/ui/input_epidemiological.py:60
+msgid "Need for ICU in hospitalized cases"
+msgstr ""
+
+#: pydemic_ui/ui/input_epidemiological.py:65
+msgid "Hospitalization period (days)"
+msgstr ""
+
+#: pydemic_ui/ui/input_epidemiological.py:68
+msgid "Hospitalization period for ICU patients (days)"
+msgstr ""
+
+#: pydemic_ui/ui/input_region.py:13
+msgid "Brazil"
+msgstr ""
+
+#: pydemic_ui/ui/input_region.py:27 pydemic_ui/ui/input_region.py:30
+#: pydemic_ui/ui/input_region.py:50 pydemic_ui/ui/input_region.py:72
+msgid "Location"
+msgstr ""
+
+#: pydemic_ui/ui/input_region.py:79
+msgid "State"
+msgstr ""
+
+#: pydemic_ui/ui/input_region.py:82
+msgid "Meso Region"
+msgstr ""
+
+#: pydemic_ui/ui/input_region.py:83
+msgid "Micro-Region"
+msgstr ""
+
+#: pydemic_ui/ui/input_region.py:84
+msgid "City"
+msgstr ""
+
+#: pydemic_ui/ui/input_region.py:87
+msgid "Healthcare Region"
+msgstr ""
+
+#: pydemic_ui/ui/input_region.py:100
+msgid "IBGE subdivisions"
+msgstr ""
+
+#: pydemic_ui/ui/input_region.py:100
+msgid "SUS healthcare region"
+msgstr ""
+
+#: pydemic_ui/ui/input_region.py:101
+msgid "Select"
+msgstr ""
+
+#: pydemic_ui/ui/input_region.py:109
+msgid "List of cities"
+msgstr ""
+
+#: pydemic_ui/ui/input_region.py:125
+msgid "{name} (everything)"
+msgstr ""
+
+#: pydemic_ui/ui/input_region.py:128
+msgid "name"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:17
+msgid ""
+"\n"
+"This intervention simulates a situation in which everyone reduces\n"
+"the average number of encounters throughout the day. Small reductions "
+"(~15%) are\n"
+"possible through small behavioral changes. Larger reductions require "
+"implementation\n"
+"of many non-pharmacological measures.\n"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:23
+msgid ""
+"\n"
+"The Brazilian occupancy rate is traditionally above "
+"{occupancyglobal}{pc}. At {occupancy}{pc} occupancy,\n"
+"your location has <strong>{n}</strong> available beds.\n"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:29
+msgid "Simulation options"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:46
+msgid "Duration (weeks)"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:47
+msgid "Simulation date"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:50
+msgid "Cases"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:51
+msgid "Average new confirmed COVID-19 cases per day"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:55
+msgid "Notification rate (%)"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:64
+msgid "Hospital capacity"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:82
+msgid "Total capacity"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:88
+msgid "Occupancy rate"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:110
+msgid "ICU beds"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:111
+msgid "Clinical beds"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:115
+msgid "Intervention"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:125
+msgid "None"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:125
+msgid "Social distancing"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:135
+msgid "Duration of intervention"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:136
+#, python-format
+msgid "Social isolation (0% represents no isolation)"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:137
+msgid "Intervention starts at day {} of simulation"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:139
+msgid "First intervention"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:142
+msgid "Days before enacting"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:154
+msgid "Add more stages"
+msgstr ""
+
+#: pydemic_ui/ui/input_simulation.py:159
+msgid "Intervention {n}"
+msgstr ""
+
+#: pydemic_ui/ui/output_charts.py:22
+msgid "Hospital demand"
+msgstr ""
+
+#: pydemic_ui/ui/output_charts.py:25 pydemic_ui/ui/output_components.py:77
+msgid "Deaths"
+msgstr ""
+
+#: pydemic_ui/ui/output_charts.py:26
+msgid "Required hospital beds"
+msgstr ""
+
+#: pydemic_ui/ui/output_charts.py:27
+msgid "Required ICU beds"
+msgstr ""
+
+#: pydemic_ui/ui/output_charts.py:42
+msgid "Available hospital beds"
+msgstr ""
+
+#: pydemic_ui/ui/output_charts.py:49
+msgid "Regular"
+msgstr ""
+
+#: pydemic_ui/ui/output_charts.py:49
+msgid "ICU"
+msgstr ""
+
+#: pydemic_ui/ui/output_charts.py:61
+msgid "Anticipated age distribution of COVID deaths"
+msgstr ""
+
+#: pydemic_ui/ui/output_charts.py:77
+msgid "**Total cases**"
+msgstr ""
+
+#: pydemic_ui/ui/output_charts.py:80
+msgid "**Mortality per 100k**"
+msgstr ""
+
+#: pydemic_ui/ui/output_charts.py:95
+msgid "Population"
+msgstr ""
+
+#: pydemic_ui/ui/output_charts.py:98 pydemic_ui/ui/output_components.py:182
+msgid "Total"
+msgstr ""
+
+#: pydemic_ui/ui/output_charts.py:99
+msgid "Age 60+"
+msgstr ""
+
+#: pydemic_ui/ui/output_charts.py:105
+msgid "Population pyramid"
+msgstr ""
+
+#: pydemic_ui/ui/output_charts.py:121
+msgid "Female"
+msgstr ""
+
+#: pydemic_ui/ui/output_charts.py:121
+msgid "Male"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:18
+msgid ""
+"\n"
+"The location does not have any ICU beds. At peak demand, it needs to "
+"reserve {n}\n"
+"beds from neighboring cities.\n"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:23
+msgid ""
+"\n"
+"The location will **run out of ICU beds at {date}**. At peak demand, it "
+"will need **{n}\n"
+"new ICUs**. This demand corresponds to **{surge} times** the number of "
+"beds dedicated\n"
+"to COVID-19 and {total} of the total number of ICU beds.\n"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:29
+msgid ""
+"\n"
+"The number of ICU beds is sufficient for the expected demand in this "
+"scenario.\n"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:33
+msgid ""
+"\n"
+"The table bellow show the recommended usage of PPE by healthcare workers\n"
+"during the period of simulation.\n"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:62
+msgid "No ICU beds!"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:66
+msgid "No hospital beds!"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:72
+msgid "Still coming..."
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:75
+msgid "Confirmed cases"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:76
+msgid "Confirmed deaths"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:78
+msgid "Hospitalizations"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:79
+msgid "Required extra ICU beds"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:80
+msgid "Required extra hospital beds"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:81
+msgid "No more ICU beds available by"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:82
+msgid "No more hospital beds available by"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:83
+msgid "Peak of cases"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:84
+msgid "Infected"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:100
+msgid "Healthcare system"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:104
+msgid "COVID/SARI ICUs"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:105
+msgid "COVID/SARI hospital beds"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:139
+msgid "Advanced epidemiological information"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:148
+msgid "Number of cases generated by a single case"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:149
+msgid "Mortality (deaths per 100k population)"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:150
+msgid "Letality ({pc} of deaths among the ill)"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:166
+msgid "Protection equipment"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:182
+msgid "Quantity"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:183
+msgid "Patients/day"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:190
+msgid "Cirurgical masks"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:191
+msgid "N95 mask"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:192
+msgid "Waterproof apron"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:193
+msgid "Non-sterile glove"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:194
+msgid "Faceshield"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:198
+msgid "Name"
+msgstr ""
+
+#: pydemic_ui/ui/output_components.py:212
+msgid "Not soon..."
+msgstr ""
+

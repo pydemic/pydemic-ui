@@ -1,0 +1,45 @@
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "pydemic_ui"
+dist-name = "pydemic-ui"
+author = "Fábio Macêdo Mendes"
+author-email = "fabiomacedomendes@gmail.com"
+home-page = "https://github.com/pydemic/pydemic-ui"
+classifiers = [
+    "Intended Audience :: Developers",
+	"Development Status :: 4 - Beta",
+	"License :: OSI Approved :: MIT License",
+	"Operating System :: OS Independent",
+	"Programming Language :: Python",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.6",
+	"Programming Language :: Python :: 3.7",
+	"Programming Language :: Python :: 3.8",
+	"Topic :: Software Development :: Libraries",
+]
+
+description-file = "README.rst"
+requires = [
+  "streamlit",
+  "babel",
+  "altair",
+  "sidekick",
+  "pydemic-models>=0.1.2",
+  "mundi>=0.2.2",
+  "mundi-demography",
+  "mundi-healthcare",
+]
+
+[tool.flit.metadata.requires-extra]
+dev = [
+  "black",
+  "twine",
+  "coverage~=5.0",
+  "pytest~=5.0",
+]
+
+[tool.black]
+line-length = 90

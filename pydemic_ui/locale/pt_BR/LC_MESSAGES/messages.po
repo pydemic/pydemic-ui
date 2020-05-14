@@ -1,0 +1,1033 @@
+# Portuguese (Brazil) translations for PROJECT.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-05-14 04:06-0300\n"
+"PO-Revision-Date: 2020-05-14 04:06-0300\n"
+"Last-Translator: Fábio Mendes <fabiomacedomendes@gmail.com>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: pydemic_ui/runner.py:124
+msgid "Intervention starts prior to simulation"
+msgstr "Intervenção inicia antes da simulação"
+
+#: pydemic_ui/apps/calc.py:37
+msgid "Natural"
+msgstr "Natural"
+
+#: pydemic_ui/apps/calc.py:38
+msgid "Lack of hospital beds"
+msgstr "Falta de leitos clínicos"
+
+#: pydemic_ui/apps/calc.py:39
+msgid "Lack of ICUs"
+msgstr "Falta de UTIs"
+
+#: pydemic_ui/apps/calc.py:89
+msgid "Hospital pressure calculator"
+msgstr "Calculadora de pressão hospitalar"
+
+#: pydemic_ui/apps/calc.py:146
+msgid "Enable debug"
+msgstr "Habilitar depuração"
+
+#: pydemic_ui/apps/calc.py:147
+msgid "Running in debug mode!"
+msgstr "Executando em modo de depuração!"
+
+#: pydemic_ui/apps/calc.py:151
+msgid "Debug section!"
+msgstr "Seção de depuração!"
+
+#: pydemic_ui/apps/calc.py:171
+msgid "Debug information"
+msgstr "Informação de depuração"
+
+#: pydemic_ui/apps/calc.py:173
+msgid "Generic parameters"
+msgstr "Parâmetros genéricos"
+
+#: pydemic_ui/apps/calc.py:176 pydemic_ui/ui/input_epidemiological.py:39
+msgid "Epidemiological parameters"
+msgstr "Parâmetros epidemiológicos"
+
+#: pydemic_ui/apps/calc.py:179 pydemic_ui/ui/input_epidemiological.py:54
+msgid "Clinical parameters"
+msgstr "Parâmetros clínicos"
+
+#: pydemic_ui/apps/calc.py:182
+msgid "Output"
+msgstr "Saída"
+
+#: pydemic_ui/apps/calc.py:191
+msgid "Distribution of deaths"
+msgstr "Distribuição de óbitos"
+
+#: pydemic_ui/apps/projections.py:13 pydemic_ui/ui/input_region.py:78
+msgid "Region"
+msgstr "Região"
+
+#: pydemic_ui/apps/projections.py:14
+msgid "Downloading epidemic curve"
+msgstr "Baixe a curva epidêmica"
+
+#: pydemic_ui/apps/projections.py:25
+msgid "Use deaths"
+msgstr "Usar óbitos"
+
+#: pydemic_ui/ui/generic_components.py:16
+msgid "COVID-19"
+msgstr "COVID-19"
+
+#: pydemic_ui/ui/generic_components.py:16
+msgid "Epidemic Calculator"
+msgstr "Calculadora Epidêmica"
+
+#: pydemic_ui/ui/generic_components.py:44
+msgid "https://www.paho.org/hq/index.php?lang=en"
+msgstr "https://www.paho.org/hq/index.php?lang=en"
+
+#: pydemic_ui/ui/generic_components.py:47
+msgid "PAHO"
+msgstr "OPAS"
+
+#: pydemic_ui/ui/generic_components.py:56
+msgid "Support: {institutions}"
+msgstr "Suporte: {institutions}"
+
+#: pydemic_ui/ui/input_epidemiological.py:14
+msgid "Epidemiology"
+msgstr "Epidemiologia"
+
+#: pydemic_ui/ui/input_epidemiological.py:28
+msgid "Standard"
+msgstr "Padrão"
+
+#: pydemic_ui/ui/input_epidemiological.py:28
+msgid "Advanced"
+msgstr "Avançado"
+
+#: pydemic_ui/ui/input_epidemiological.py:30
+#: pydemic_ui/ui/input_simulation.py:126
+msgid "Scenario"
+msgstr "Cenário"
+
+#: pydemic_ui/ui/input_epidemiological.py:40
+msgid "Basic reproduction number (R0)"
+msgstr "Número de reprodução básico"
+
+#: pydemic_ui/ui/input_epidemiological.py:43
+msgid "Virus incubation period"
+msgstr "Período de incubação do vírus"
+
+#: pydemic_ui/ui/input_epidemiological.py:46
+msgid "Infectious period"
+msgstr "Período infeccioso"
+
+#: pydemic_ui/ui/input_epidemiological.py:49
+msgid "Fraction of symptomatic cases"
+msgstr "Fração de casos sintomáticos"
+
+#: pydemic_ui/ui/input_epidemiological.py:56
+msgid "Fraction of hospitalized cases"
+msgstr "Fração de casos hospitalizados"
+
+#: pydemic_ui/ui/input_epidemiological.py:60
+msgid "Need for ICU in hospitalized cases"
+msgstr "Precisa de UTI nos casos hospitalizados"
+
+#: pydemic_ui/ui/input_epidemiological.py:65
+msgid "Hospitalization period (days)"
+msgstr "Período de hospitalização (dias)"
+
+#: pydemic_ui/ui/input_epidemiological.py:68
+msgid "Hospitalization period for ICU patients (days)"
+msgstr "Período de hospitalização (UTI)"
+
+#: pydemic_ui/ui/input_region.py:13
+msgid "Brazil"
+msgstr "Brasil"
+
+#: pydemic_ui/ui/input_region.py:27 pydemic_ui/ui/input_region.py:30
+#: pydemic_ui/ui/input_region.py:50 pydemic_ui/ui/input_region.py:72
+msgid "Location"
+msgstr "Localidade"
+
+#: pydemic_ui/ui/input_region.py:79
+msgid "State"
+msgstr "Estado"
+
+#: pydemic_ui/ui/input_region.py:82
+msgid "Meso Region"
+msgstr "Meso-região"
+
+#: pydemic_ui/ui/input_region.py:83
+msgid "Micro-Region"
+msgstr "Micro-região"
+
+#: pydemic_ui/ui/input_region.py:84
+msgid "City"
+msgstr "Cidade"
+
+#: pydemic_ui/ui/input_region.py:87
+msgid "Healthcare Region"
+msgstr "Região de saúde"
+
+#: pydemic_ui/ui/input_region.py:100
+msgid "IBGE subdivisions"
+msgstr "Sub-divisões IBGE"
+
+#: pydemic_ui/ui/input_region.py:100
+msgid "SUS healthcare region"
+msgstr "Região de saúde SUS"
+
+#: pydemic_ui/ui/input_region.py:101
+msgid "Select"
+msgstr "Selecione"
+
+#: pydemic_ui/ui/input_region.py:109
+msgid "List of cities"
+msgstr "Lista de cidades"
+
+#: pydemic_ui/ui/input_region.py:125
+msgid "{name} (everything)"
+msgstr "{name} (tudo)"
+
+#: pydemic_ui/ui/input_region.py:128
+msgid "name"
+msgstr "nome"
+
+#: pydemic_ui/ui/input_simulation.py:17
+msgid ""
+"\n"
+"This intervention simulates a situation in which everyone reduces\n"
+"the average number of encounters throughout the day. Small reductions "
+"(~15%) are\n"
+"possible through small behavioral changes. Larger reductions require "
+"implementation\n"
+"of many non-pharmacological measures.\n"
+msgstr ""
+"\n"
+"Esta intervenção simula uma situação em que todos reduzem o número médio "
+"de encontros ao \n"
+"longo do dia. Pequenas reduções (~15%) são possíveis por pequenas "
+"mudanças comportamentais. \n"
+"Reduções maiores exigem a implementação de várias medidas não "
+"farmacológicas.\n"
+
+#: pydemic_ui/ui/input_simulation.py:23
+msgid ""
+"\n"
+"The Brazilian occupancy rate is traditionally above "
+"{occupancyglobal}{pc}. At {occupancy}{pc} occupancy,\n"
+"your location has <strong>{n}</strong> available beds.\n"
+msgstr ""
+"\n"
+"A taxa de ocupação de leitos no Brasil é tradicionalmente acima de  "
+"{occupancyglobal}{pc}. Com {occupancy}{pc} de ocupação, \n"
+"sua localidae possuiria <strong>{n}</strong> leitos disponíveis.\n"
+
+#: pydemic_ui/ui/input_simulation.py:29
+msgid "Simulation options"
+msgstr "Opções da simulação"
+
+#: pydemic_ui/ui/input_simulation.py:46
+msgid "Duration (weeks)"
+msgstr "Duração (semanas)"
+
+#: pydemic_ui/ui/input_simulation.py:47
+msgid "Simulation date"
+msgstr "Início da simulação"
+
+#: pydemic_ui/ui/input_simulation.py:50
+msgid "Cases"
+msgstr "Casos"
+
+#: pydemic_ui/ui/input_simulation.py:51
+msgid "Average new confirmed COVID-19 cases per day"
+msgstr "Média de casos confirmados de COVID-19 por dia"
+
+#: pydemic_ui/ui/input_simulation.py:55
+msgid "Notification rate (%)"
+msgstr "Taxa de notificação (%)"
+
+#: pydemic_ui/ui/input_simulation.py:64
+msgid "Hospital capacity"
+msgstr "Capacidade hospitalar"
+
+#: pydemic_ui/ui/input_simulation.py:82
+msgid "Total capacity"
+msgstr "Capacidade total"
+
+#: pydemic_ui/ui/input_simulation.py:88
+msgid "Occupancy rate"
+msgstr "Taxa de ocupação"
+
+#: pydemic_ui/ui/input_simulation.py:110
+msgid "ICU beds"
+msgstr "Leitos UTI"
+
+#: pydemic_ui/ui/input_simulation.py:111
+msgid "Clinical beds"
+msgstr "Leitos clínicos"
+
+#: pydemic_ui/ui/input_simulation.py:115
+msgid "Intervention"
+msgstr "Intervenção"
+
+#: pydemic_ui/ui/input_simulation.py:125
+msgid "None"
+msgstr "Nenhum"
+
+#: pydemic_ui/ui/input_simulation.py:125
+msgid "Social distancing"
+msgstr "Redução de contato social"
+
+#: pydemic_ui/ui/input_simulation.py:135
+msgid "Duration of intervention"
+msgstr "Duração da intervenção"
+
+#: pydemic_ui/ui/input_simulation.py:136
+#, python-format
+msgid "Social isolation (0% represents no isolation)"
+msgstr "Isolamento social (0% representa nenhum isolamento)"
+
+#: pydemic_ui/ui/input_simulation.py:137
+msgid "Intervention starts at day {} of simulation"
+msgstr "Intervenção começa no dia {} da simulação"
+
+#: pydemic_ui/ui/input_simulation.py:139
+msgid "First intervention"
+msgstr "Primeira intervenção"
+
+#: pydemic_ui/ui/input_simulation.py:142
+msgid "Days before enacting"
+msgstr "Dias antes começar"
+
+#: pydemic_ui/ui/input_simulation.py:154
+msgid "Add more stages"
+msgstr "Acrescentar etapa"
+
+#: pydemic_ui/ui/input_simulation.py:159
+msgid "Intervention {n}"
+msgstr "Intervenção {n}"
+
+#: pydemic_ui/ui/output_charts.py:22
+msgid "Hospital demand"
+msgstr "Demanda hospitalar"
+
+#: pydemic_ui/ui/output_charts.py:25 pydemic_ui/ui/output_components.py:77
+msgid "Deaths"
+msgstr "Mortes"
+
+#: pydemic_ui/ui/output_charts.py:26
+msgid "Required hospital beds"
+msgstr "Leitos clínicos necessários"
+
+#: pydemic_ui/ui/output_charts.py:27
+msgid "Required ICU beds"
+msgstr "Leitos UTI necessários"
+
+#: pydemic_ui/ui/output_charts.py:42
+msgid "Available hospital beds"
+msgstr "Leitos clínicos disponíveis"
+
+#: pydemic_ui/ui/output_charts.py:49
+msgid "Regular"
+msgstr "Regular"
+
+#: pydemic_ui/ui/output_charts.py:49
+msgid "ICU"
+msgstr "UTI"
+
+#: pydemic_ui/ui/output_charts.py:61
+msgid "Anticipated age distribution of COVID deaths"
+msgstr "Distribuição prevista de mortes por COVID"
+
+#: pydemic_ui/ui/output_charts.py:77
+msgid "**Total cases**"
+msgstr "**Total de casos**"
+
+#: pydemic_ui/ui/output_charts.py:80
+msgid "**Mortality per 100k**"
+msgstr "**Mortalidade por 100.000**"
+
+#: pydemic_ui/ui/output_charts.py:95
+msgid "Population"
+msgstr "População"
+
+#: pydemic_ui/ui/output_charts.py:98 pydemic_ui/ui/output_components.py:182
+msgid "Total"
+msgstr "Total"
+
+#: pydemic_ui/ui/output_charts.py:99
+msgid "Age 60+"
+msgstr "Idade 60+"
+
+#: pydemic_ui/ui/output_charts.py:105
+msgid "Population pyramid"
+msgstr "Pirâmide populacional"
+
+#: pydemic_ui/ui/output_charts.py:121
+msgid "Female"
+msgstr "Mulher"
+
+#: pydemic_ui/ui/output_charts.py:121
+msgid "Male"
+msgstr "Homem"
+
+#: pydemic_ui/ui/output_components.py:18
+msgid ""
+"\n"
+"The location does not have any ICU beds. At peak demand, it needs to "
+"reserve {n}\n"
+"beds from neighboring cities.\n"
+msgstr ""
+"\n"
+"A localidade não possui leitos de UTI. No auge da demanda, é necessário "
+"reservar {n}\n"
+"leitos de cidades vizinhas.\n"
+
+#: pydemic_ui/ui/output_components.py:23
+msgid ""
+"\n"
+"The location will **run out of ICU beds at {date}**. At peak demand, it "
+"will need **{n}\n"
+"new ICUs**. This demand corresponds to **{surge} times** the number of "
+"beds dedicated\n"
+"to COVID-19 and {total} of the total number of ICU beds.\n"
+msgstr ""
+"\n"
+"A localidade **ficará sem UTIs COVID-19 em {date}**. No auge da demanda, "
+"serão necessárias {n} novas\n"
+"UTIs. Esta demanda corresponde a **{surge} vezes** o número de leitos de "
+"UTI dedicados ao COVID-19 e \n"
+"{total} vezes o número total de UTIs instaladas na região.\n"
+
+#: pydemic_ui/ui/output_components.py:29
+msgid ""
+"\n"
+"The number of ICU beds is sufficient for the expected demand in this "
+"scenario.\n"
+msgstr ""
+"\n"
+"O número de UTIs é suficiente para a expectativa de demanda do cenário.\n"
+
+#: pydemic_ui/ui/output_components.py:33
+msgid ""
+"\n"
+"The table bellow show the recommended usage of PPE by healthcare workers\n"
+"during the period of simulation.\n"
+msgstr ""
+"\n"
+"A tabela abaixo mostra o uso recomendado de EPIs por profissionais da "
+"saúde \n"
+"durante o período da simulação.\n"
+
+#: pydemic_ui/ui/output_components.py:62
+msgid "No ICU beds!"
+msgstr "Sem UTIs!"
+
+#: pydemic_ui/ui/output_components.py:66
+msgid "No hospital beds!"
+msgstr "Sem leitos!"
+
+#: pydemic_ui/ui/output_components.py:72
+msgid "Still coming..."
+msgstr "Ainda por vir..."
+
+#: pydemic_ui/ui/output_components.py:75
+msgid "Confirmed cases"
+msgstr "Casos confirmados"
+
+#: pydemic_ui/ui/output_components.py:76
+msgid "Confirmed deaths"
+msgstr "Óbitos confirmados"
+
+#: pydemic_ui/ui/output_components.py:78
+msgid "Hospitalizations"
+msgstr "Hospitalizações"
+
+#: pydemic_ui/ui/output_components.py:79
+msgid "Required extra ICU beds"
+msgstr "UTIs adicionais necessárias"
+
+#: pydemic_ui/ui/output_components.py:80
+msgid "Required extra hospital beds"
+msgstr "Leitos clínicos adicionais necessários"
+
+#: pydemic_ui/ui/output_components.py:81
+msgid "No more ICU beds available by"
+msgstr "UTIs lotam em"
+
+#: pydemic_ui/ui/output_components.py:82
+msgid "No more hospital beds available by"
+msgstr "O leitos clínicos lotam em"
+
+#: pydemic_ui/ui/output_components.py:83
+msgid "Peak of cases"
+msgstr "Pico de casos"
+
+#: pydemic_ui/ui/output_components.py:84
+msgid "Infected"
+msgstr "Infectados"
+
+#: pydemic_ui/ui/output_components.py:100
+msgid "Healthcare system"
+msgstr "Sistema de saúde"
+
+#: pydemic_ui/ui/output_components.py:104
+msgid "COVID/SARI ICUs"
+msgstr "UTIs COVID/SRAG"
+
+#: pydemic_ui/ui/output_components.py:105
+msgid "COVID/SARI hospital beds"
+msgstr "Leitos clínicos COVID/SRAG"
+
+#: pydemic_ui/ui/output_components.py:139
+msgid "Advanced epidemiological information"
+msgstr "Informações avançadas de epidemiologia"
+
+#: pydemic_ui/ui/output_components.py:148
+msgid "Number of cases generated by a single case"
+msgstr "Número de casos gerado por cada caso"
+
+#: pydemic_ui/ui/output_components.py:149
+msgid "Mortality (deaths per 100k population)"
+msgstr "Mortalidade (mortes por 100.000 hab)"
+
+#: pydemic_ui/ui/output_components.py:150
+msgid "Letality ({pc} of deaths among the ill)"
+msgstr "Letalidade ({pc} de mortes entre os doentes)"
+
+#: pydemic_ui/ui/output_components.py:166
+msgid "Protection equipment"
+msgstr "Equipamento de proteção"
+
+#: pydemic_ui/ui/output_components.py:182
+msgid "Quantity"
+msgstr "Quantidade"
+
+#: pydemic_ui/ui/output_components.py:183
+msgid "Patients/day"
+msgstr "Pacientes/dia"
+
+#: pydemic_ui/ui/output_components.py:190
+msgid "Cirurgical masks"
+msgstr "Máscaras cirúrgicas"
+
+#: pydemic_ui/ui/output_components.py:191
+msgid "N95 mask"
+msgstr "Máscara N95"
+
+#: pydemic_ui/ui/output_components.py:192
+msgid "Waterproof apron"
+msgstr "Avental impermeável"
+
+#: pydemic_ui/ui/output_components.py:193
+msgid "Non-sterile glove"
+msgstr "Luvas não estéreis"
+
+#: pydemic_ui/ui/output_components.py:194
+msgid "Faceshield"
+msgstr "Faceshield"
+
+#: pydemic_ui/ui/output_components.py:198
+msgid "Name"
+msgstr "Nome"
+
+#: pydemic_ui/ui/output_components.py:212
+msgid "Not soon..."
+msgstr "Não por agora..."
+
+#~ msgid "COVID-19 assistance pressure"
+#~ msgstr "Pressão assistencial devido à COVID-19"
+
+#~ msgid "OPAS - COVID-19"
+#~ msgstr "OPAS - COVID-19"
+
+#~ msgid "Never"
+#~ msgstr "Nunca"
+
+#~ msgid "Clinical beds exhaustion"
+#~ msgstr "Exaustão dos leitos clínicos"
+
+#~ msgid "ICU beds exhaustion"
+#~ msgstr "Exaustão de leitos de UTI"
+
+#~ msgid "Missing clinical beds on peak date"
+#~ msgstr "Leitos clínicos faltando do dia do pico"
+
+#~ msgid "Missing ICU beds on peak date"
+#~ msgstr "Leitos UTI faltando no dia do pico"
+
+#~ msgid "Contaminated"
+#~ msgstr "Contaminados"
+
+#~ msgid "Hospitalization chart"
+#~ msgstr "Quadros de internação"
+
+#~ msgid "Clinical hospitalizations"
+#~ msgstr "Internações clínicas"
+
+#~ msgid "ICU hospitalizations"
+#~ msgstr "Internações UTI"
+
+#~ msgid "Deaths/day"
+#~ msgstr "Óbitos/dia"
+
+#~ msgid "Available beds"
+#~ msgstr "Leitos disponíveis"
+
+#~ msgid "Available ICU beds"
+#~ msgstr "Leitos de UTI disponíveis"
+
+#~ msgid "Hospital beds overload"
+#~ msgstr "Sobrecarga de leitos clínicos"
+
+#~ msgid "ICU beds overflow"
+#~ msgstr "Sobrecarga de leitos UTI"
+
+#~ msgid "Missing hospital beds at peak"
+#~ msgstr "Leitos clínicos faltando no pico"
+
+#~ msgid "Days of simulation"
+#~ msgstr "Dias de simulação"
+
+#~ msgid "Occupied (%)"
+#~ msgstr "Ocupados (%)"
+
+#~ msgid "Contagion rate (R0)"
+#~ msgstr "Fator de contágio (R0)"
+
+#~ msgid "Average death rate"
+#~ msgstr "Taxa de mortalidade média"
+
+#~ msgid "Days after initial date to start intervention"
+#~ msgstr "Dias após datasets inicial para início de intervenção"
+
+#~ msgid "Decrease of contagion rate (R0) after intervention"
+#~ msgstr "Redução do fator de contágio (R0) após intervenção"
+
+#~ msgid ""
+#~ "\n"
+#~ "The region does not have any ICU"
+#~ " beds. At peak demand, it needs "
+#~ "to reserve {n} \n"
+#~ "beds from neighboring cities.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "A região não possui leitos de UTI."
+#~ " No auge da demanda, seria necessário"
+#~ " reservar {n}\n"
+#~ "leitos de cidades vizinhas.\n"
+#~ " \n"
+
+#~ msgid ""
+#~ "\n"
+#~ "The region will **run out of ICU"
+#~ " beds at {date}**. At peak demand,"
+#~ " it will need **{n} \n"
+#~ "new ICUs**. This demand corresponds to"
+#~ " **{surge} times** the number of beds"
+#~ " dedicated \n"
+#~ "to COVID19 and \n"
+#~ "{total} of the total number of ICU beds."
+#~ msgstr ""
+#~ "\n"
+#~ "A região **ficará sem UTIs COVID-19 "
+#~ "em {date}**. No auge da demanda, "
+#~ "serão necessárias {n} novas\n"
+#~ "UTIs. Esta demanda corresponde a "
+#~ "**{surge} vezes** o número de cams "
+#~ "dedicadas ao COVID-19 e \n"
+#~ "{total} vezes o número de UTIs instalado."
+
+#~ msgid "Kind support: {paho}, {unb}"
+#~ msgstr "Apoio: {paho}, {unb}"
+
+#~ msgid "Mortality (\\% of deaths in population)"
+#~ msgstr "Mortalidade (\\% de mortes na população)"
+
+#~ msgid "Letality (\\% of deaths among the ill)"
+#~ msgstr "Letalidade (\\% de mortes entre os doentes)"
+
+#~ msgid ""
+#~ "This intervention simulates the idealized "
+#~ "situation in which everyone reduces\n"
+#~ "the average number of encounters "
+#~ "throughout the day. Small reductions "
+#~ "(~15%) are\n"
+#~ "possible through small behavioral changes. "
+#~ "Larger reductions require shutting\n"
+#~ "down services or even the whole economy.\n"
+#~ msgstr ""
+#~ "Esta intervenção simula uma situação idealizada em que todos reduzem\n"
+#~ "o número médio de encontros ao "
+#~ "longo do dia. Pequenas reduções (~15%)"
+#~ " são\n"
+#~ "possíveis por pequenas mudanças "
+#~ "comportamentais. Reduções maiores exigem\n"
+#~ "desligar serviços ou mesmo fechar a economia.\n"
+
+#~ msgid "Duration (months)"
+#~ msgstr "Duração (meses)"
+
+#~ msgid "Required hospital beds"
+#~ msgstr "Leitos hospitalares necessários"
+
+#~ msgid "Required ICUs"
+#~ msgstr "Leitos UTI necessários"
+
+#~ msgid ""
+#~ "\n"
+#~ "The region will **run out of ICU"
+#~ " beds at {date}**. At peak demand,"
+#~ " it will need **{n}\n"
+#~ "new ICUs**. This demand corresponds to"
+#~ " **{surge} times** the number of beds"
+#~ " dedicated\n"
+#~ "to COVID19 and\n"
+#~ "{total} of the total number of ICU beds."
+#~ msgstr ""
+#~ "\n"
+#~ "A região **ficará sem UTIs COVID-19 "
+#~ "em {date}**. No auge da demanda, "
+#~ "serão necessárias {n} novas\n"
+#~ "UTIs. Esta demanda corresponde a "
+#~ "**{surge} vezes** o número de leitos "
+#~ "de UTI dedicados ao COVID-19 e \n"
+#~ "{total} vezes o número total de UTIs instaladas na região."
+
+#~ msgid ""
+#~ "The number of ICU beds is "
+#~ "sufficient for the expected demand in"
+#~ " this scenario."
+#~ msgstr "O número de UTIs é suficiente para a expectativa de demanda do cenário."
+
+#~ msgid ""
+#~ "\n"
+#~ "This scenario predicts that **{mortality}**"
+#~ " of the whole population will die "
+#~ "from\n"
+#~ "COVID-19. This number corresponds to "
+#~ "**{fatality}** of those that became ill."
+#~ "\n"
+#~ "The model also predicts that "
+#~ "**{infected}** of the population will "
+#~ "become\n"
+#~ "infected, but only **{symptomatic}** of "
+#~ "those will develop visible symptoms. "
+#~ "People who\n"
+#~ "do not exhibit symptoms are still able to infect others.\n"
+#~ "\n"
+#~ "**IMPORTANT:** Models are simplifications and"
+#~ " are highly dependent on good\n"
+#~ "parameters and good datasets. There are"
+#~ " many aspects of COVID epidemiology "
+#~ "that are\n"
+#~ "yet not very well understood and "
+#~ "scientists are still looking for more"
+#~ " accurate\n"
+#~ "values for many important parameters. "
+#~ "The choices made here are best "
+#~ "guesses\n"
+#~ "based on the current scientific "
+#~ "knowledge about the epidemic. Changing\n"
+#~ "parameters to absurd values will create"
+#~ " absurd predictions, so use with "
+#~ "care.\n"
+#~ "\n"
+#~ "The course of the epidemic also "
+#~ "depends crucially on how communities "
+#~ "react. This is\n"
+#~ "encoded in a very simplified way "
+#~ "in by the \"intervention options\" in"
+#~ " the simulator.\n"
+#~ "We do not try to anticipate "
+#~ "communities respond to the epidemic, but"
+#~ " rather it\n"
+#~ "must be entered as an explicit "
+#~ "input to the model. That is why"
+#~ " we say this calculator\n"
+#~ "computes scenarios rather than trying to predict the future.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Este cenário prevê que **{mortality}** "
+#~ "da população geral morreria num surto"
+#~ "\n"
+#~ "de COVID-19. Este número corresponde a"
+#~ " **{fatality}** de todos que ficaram "
+#~ "doentes.\n"
+#~ "O modelo também indica que "
+#~ "**{infected}** da população será infectada "
+#~ "pelo vírus, mas apenas \n"
+#~ "**{symptomatic}** destes desenvolverão sintomas "
+#~ "visíveis. Pessoas que não experimentarem "
+#~ "sintomas\n"
+#~ "continuam capazes de infectar outras.\n"
+#~ "\n"
+#~ "**IMPORTANTE:** Modelos são simplificações da"
+#~ " realidade e dependem fortemente de\n"
+#~ "bons valores para os parâmetros basedos"
+#~ " em dados. Ainda existem vários "
+#~ "aspectos epidemiológicos\n"
+#~ "da COVID-19 que permanecem em aberto "
+#~ "no debate científico e cientistas ainda"
+#~ " estão tentando determinar\n"
+#~ "valores mais precisos para vários "
+#~ "parâmetros importantes. As escolhas feitas "
+#~ "aqui são baseadas no\n"
+#~ "conhecimento científico atual sobre a "
+#~ "epidemia, mas ainda são bastante "
+#~ "incertas. No entanto, escolher valores\n"
+#~ "absurdos para os parâmetros certamente "
+#~ "criará previsões absurdas. Dito isso, "
+#~ "use a calculadora com cuidado!\n"
+#~ "\n"
+#~ "O desenrolar da epidemia também depende"
+#~ " crucialmente de como as comunidades "
+#~ "reagem. Isto é\n"
+#~ "codificado de maneira muito simplista "
+#~ "nos comandos de \"Opções de "
+#~ "Intervenção\" do simulador. Nós\n"
+#~ "não tentamos antecipar como estas "
+#~ "comunidades irão responder à epidemia, "
+#~ "mas apenas damos a opção\n"
+#~ "de traçar diferentes cenários de "
+#~ "resposta. Por isso, dizemos que esta "
+#~ "caluladora produz apenas cenários\n"
+#~ "e não previsões sobre o futuro.\n"
+
+#~ msgid "Kind support: {paho}, {lappis}, {nmt}, {fce}"
+#~ msgstr "Apoio: {paho}, {lappis}, {nmt}, {fce}"
+
+#~ msgid "https://lappis.rocks"
+#~ msgstr "https://lappis.rocks"
+
+#~ msgid "UnB/LAPPIS"
+#~ msgstr "UnB/LAPPIS"
+
+#~ msgid "http://medicinatropical.unb.br/"
+#~ msgstr "http://medicinatropical.unb.br/"
+
+#~ msgid "UnB/NMT"
+#~ msgstr "UnB/NMT"
+
+#~ msgid "http://fce.unb.br/"
+#~ msgstr "http://fce.unb.br/"
+
+#~ msgid "UnB/FCE"
+#~ msgstr "UnB/FCE"
+
+#~ msgid "COVID-19 hospitalization pressure"
+#~ msgstr "Pressão hospitalar por COVID-19"
+
+#~ msgid "Initial date"
+#~ msgstr "Data inicial"
+
+#~ msgid "Amount of detected cases"
+#~ msgstr "Número de casos detectados"
+
+#~ msgid ""
+#~ "Region has {n} beds, but only "
+#~ "{rate} are typically available in a "
+#~ "given time."
+#~ msgstr "Região possui {n} leitos, mas apenas {rate} estão historicamente vagos."
+
+#~ msgid "New infected people for each infection (R0)"
+#~ msgstr "Novas infecções para cada infectado (R0)"
+
+#~ msgid "No more ICUs by"
+#~ msgstr "As UTIs lotam em"
+
+#~ msgid "No more hospital beds by"
+#~ msgstr "O leitos clínicos lotam em"
+
+#~ msgid "ICU demand"
+#~ msgstr "Demanda por UTI"
+
+#~ msgid "60 or more"
+#~ msgstr "60 ou mais"
+
+#~ msgid "Age distribution of deaths"
+#~ msgstr "Distribuição etária dos óbitos"
+
+#~ msgid ""
+#~ "\n"
+#~ "The region does not have any ICU"
+#~ " beds. At peak demand, it needs "
+#~ "to reserve {n}\n"
+#~ "beds from neighboring cities.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "A região não possui leitos de UTI."
+#~ " No auge da demanda, é necessário "
+#~ "reservar {n}\n"
+#~ "leitos de cidades vizinhas.\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "The region will **run out of ICU"
+#~ " beds at {date}**. At peak demand,"
+#~ " it will need **{n}\n"
+#~ "new ICUs**. This demand corresponds to"
+#~ " **{surge} times** the number of beds"
+#~ " dedicated\n"
+#~ "to COVID19 and {total} of the total number of ICU beds.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "A região **ficará sem UTIs COVID-19 "
+#~ "em {date}**. No auge da demanda, "
+#~ "serão necessárias {n} novas\n"
+#~ "UTIs. Esta demanda corresponde a "
+#~ "**{surge} vezes** o número de leitos "
+#~ "de UTI dedicados ao COVID-19 e \n"
+#~ "{total} vezes o número total de UTIs instaladas na região.\n"
+
+#~ msgid "Require hospital beds"
+#~ msgstr ""
+
+#~ msgid "Mortality"
+#~ msgstr "Mortalidade"
+
+#~ msgid "Mortality ({pc} of deaths in population)"
+#~ msgstr "Mortalidade ({pc} de mortes na população)"
+
+#~ msgid "Custom"
+#~ msgstr "Personalizado"
+
+#~ msgid "Items/day"
+#~ msgstr "Itens/dia"
+
+#~ msgid "M"
+#~ msgstr "M"
+
+#~ msgid "B"
+#~ msgstr "B"
+
+#~ msgid "T"
+#~ msgstr "T"
+
+#~ msgid "infinity"
+#~ msgstr "inifinito"
+
+#~ msgid "Items/patient/day"
+#~ msgstr "Itens/pacientes/dia"
+
+#~ msgid "Brazil"
+#~ msgstr "Brasil"
+
+#~ msgid "susceptible"
+#~ msgstr "suscetíveis"
+
+#~ msgid "exposed"
+#~ msgstr "expostos"
+
+#~ msgid "infectious"
+#~ msgstr "infecciosos"
+
+#~ msgid "critical"
+#~ msgstr "críticos"
+
+#~ msgid "hospitalized"
+#~ msgstr "hospitalizados"
+
+#~ msgid "asymptomatic"
+#~ msgstr "assintomáticos"
+
+#~ msgid "recovered"
+#~ msgstr "recuperados"
+
+#~ msgid "fatalities"
+#~ msgstr "fatalidades"
+
+#~ msgid "COVID-19 Hospital Pressure"
+#~ msgstr "Pressão hospitalar por COVID-19"
+
+#~ msgid "Loading region..."
+#~ msgstr "Carregando região..."
+
+#~ msgid "Loading simulation parameters..."
+#~ msgstr "Carregando parâmetros de simulação..."
+
+#~ msgid "Performing simulation..."
+#~ msgstr "Executando a simulação..."
+
+#~ msgid "All"
+#~ msgstr "Tudo"
+
+#~ msgid "Number of detected cases"
+#~ msgstr "Número de casos detectados"
+
+#~ msgid ""
+#~ "Location has {n} beds, but only "
+#~ "{rate} are typically available in a "
+#~ "given day."
+#~ msgstr ""
+#~ "Localidade possui {n} leitos, mas apenas"
+#~ " {rate} estão historicamente vagos."
+
+#~ msgid "Beds dedicated exclusively to COVID-19"
+#~ msgstr "Leitos dedicados exclusivamente ao COVID-19"
+
+#~ msgid "Fast"
+#~ msgstr "Rápido"
+
+#~ msgid "Slow"
+#~ msgstr "Lento"
+
+#~ msgid "Newly infected people for each infection (R0)"
+#~ msgstr "Novas infecções para cada infectado (R0)"
+
+#~ msgid "Date of intervention"
+#~ msgstr "Data de intervenção"
+
+#~ msgid "Reduction in the number of contacts"
+#~ msgstr "Redução no número de contatos"
+
+#~ msgid "Total deaths"
+#~ msgstr "Total de óbitos"
+
+#~ msgid "Mortality per 100k"
+#~ msgstr "Mortalidade por 100.000 hab"
+
+#~ msgid "COVID ICUs"
+#~ msgstr "UTIs COVID-19"
+
+#~ msgid "COVID hospital beds"
+#~ msgstr "Leitos clínicos COVID-19"
+
+#~ msgid "ICUs"
+#~ msgstr "UTIs"
+
+#~ msgid "{n} (source: CNES)"
+#~ msgstr "{n} (fonte: CNES)"
+
+#~ msgid "Hospital beds"
+#~ msgstr "Leitos clínicos"
+
+#~ msgid ""
+#~ "\n"
+#~ "The Brazilian occupancy rate is "
+#~ "traditionally above {global\\_occupancy}%. At "
+#~ "{occupancy}\\% occupancy,\n"
+#~ "your location has <strong>{n}</strong> available beds.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "A taxa de ocupação de leitos no"
+#~ " Brasil é tradicionalmente acima de "
+#~ "{global\\_occupancy}%. Com {occupancy}\\% de "
+#~ "ocupação,\n"
+#~ "sua localidae possuiria <strong>{n}</strong> leitos disponíveis.\n"
+
