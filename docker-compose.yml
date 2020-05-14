@@ -1,0 +1,8 @@
+version: '3.7'
+
+services:
+  build:
+    image: pydemic/pydemic-ui:${TAG:-production}
+    build:
+      context: .
+      dockerfile: Dockerfile

@@ -6,9 +6,6 @@ notebooks/.ipynb_checkpoints/
 Untitled.ipynb
 cache
 
-# docker-compose
-docker-compose*
-
 # vscode
 .devcontainer*
 .vscode
