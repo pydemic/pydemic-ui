@@ -14,7 +14,7 @@ class Runner:
 
     @property
     def name(self):
-        return f'{self.func.__module__}.{self.func.__qualname__}'
+        return f"{self.func.__module__}.{self.func.__qualname__}"
 
     def __init__(self, func, *args, **kwargs):
         self.func = func
@@ -26,23 +26,23 @@ class Runner:
         return self.func(*self.args, **self.kwargs)(model, days)
 
     def __repr__(self):
-        return f'<Runner object for {self}>'
+        return f"<Runner object for {self}>"
 
     def __str__(self):
         args = [*map(repr, self.args)]
-        args.extend(f'{k}={v!r}' for k, v in self.kwargs.items())
-        args = ', '.join(args)
-        return f'{self.name}({args})'
+        args.extend(f"{k}={v!r}" for k, v in self.kwargs.items())
+        args = ", ".join(args)
+        return f"{self.name}({args})"
 
     def __getstate__(self):
         return self.name, self.args, self.kwargs
 
     def __setstate__(self, state):
         name, self.args, self.kwargs = state
-        mod_name, _, func_name = name.rpartition('.')
+        mod_name, _, func_name = name.rpartition(".")
         mod = importlib.import_module(mod_name)
         factory = getattr(mod, func_name)
-        self.func = getattr(factory, 'runner_function', factory)
+        self.func = getattr(factory, "runner_function", factory)
 
     def __eq__(self, other):
         if isinstance(other, Runner):
@@ -51,9 +51,9 @@ class Runner:
 
     def to_json(self):
         return {
-            'runner': self.name,
-            'args': to_json(self.args),
-            'kwargs': to_json(self.kwargs),
+            "runner": self.name,
+            "args": to_json(self.args),
+            "kwargs": to_json(self.kwargs),
         }
 
 
@@ -100,7 +100,7 @@ def stage_runner(stages):
 
             duration = min(dt, days)
             if duration:
-                log.debug(f'stage_runner: Running {duration} steps with R0={model.R0}')
+                log.debug(f"stage_runner: Running {duration} steps with R0={model.R0}")
                 model.run(duration)
 
             days -= dt
