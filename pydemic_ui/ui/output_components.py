@@ -1,39 +1,48 @@
+from pydemic_ui.components import html
+
 __package__ = "pydemic_ui.ui"
 
 import os
 
+import streamlit as st
 import pandas as pd
 from babel.dates import format_date
 
 from pydemic.utils import fmt, pc
-from .generic_components import footnote_disclaimer
 from .. import info
-from ..components import cards
-from ..components import info_component, md_description
+from ..components import cards, info_component, md_description, footnote_disclaimer
 from ..i18n import _
 
 #
 # Messages
 #
-NO_ICU_MESSAGE = _("""
+NO_ICU_MESSAGE = _(
+    """
 The location does not have any ICU beds. At peak demand, it needs to reserve {n}
 beds from neighboring cities.
-""")
+"""
+)
 
-ICU_OVERFLOW_MESSAGE = _("""
+ICU_OVERFLOW_MESSAGE = _(
+    """
 The location will **run out of ICU beds at {date}**. At peak demand, it will need **{n}
 new ICUs**. This demand corresponds to **{surge} times** the number of beds dedicated
 to COVID-19 and {total} of the total number of ICU beds.
-""")
+"""
+)
 
-GOOD_CAPACITY_MESSAGE = _("""
+GOOD_CAPACITY_MESSAGE = _(
+    """
 The number of ICU beds is sufficient for the expected demand in this scenario.
-""")
+"""
+)
 
-EQUIPMENT_MESSAGE = _("""
+EQUIPMENT_MESSAGE = _(
+    """
 The table bellow show the recommended usage of PPE by healthcare workers
 during the period of simulation.
-""")
+"""
+)
 
 
 def summary_cards(model):
@@ -42,26 +51,26 @@ def summary_cards(model):
     """
 
     def datum(x):
-        return f'{fmt(int(x))} ({pc(x / population)})'
+        return f"{fmt(int(x))} ({pc(x / population)})"
 
     region = model.region
     disease = model.disease
     results = model.results
 
-    deaths = results['deaths']
-    hospitalizations = results['hospitalized_cases']
-    extra_icu = model['icu_overflow:max']
-    extra_hospitals = model['hospital_overflow:max']
+    deaths = results["deaths"]
+    hospitalizations = results["hospitalized_cases"]
+    extra_icu = model["icu_overflow:max"]
+    extra_hospitals = model["hospital_overflow:max"]
     recovered = results["recovered"]
     population = model.population
 
     # Print friendlier messages if region has no ICU or hospital beds
     if model.icu_capacity > 0:
-        icu_overflow_date = results['dates.icu_overflow']
+        icu_overflow_date = results["dates.icu_overflow"]
     else:
         icu_overflow_date = _("No ICU beds!")
     if model.hospital_capacity > 0:
-        hospital_overflow_date = results['dates.hospital_overflow']
+        hospital_overflow_date = results["dates.hospital_overflow"]
     else:
         hospital_overflow_date = _("No hospital beds!")
 
@@ -69,30 +78,42 @@ def summary_cards(model):
     # to a simulation that simply did not run long enough to see the peak
     peak_cases = model["infectious:peak-date"]
     if peak_cases == model.date:
-        peak_cases = _('Still coming...')
+        peak_cases = _("Still coming...")
 
-    return cards({
-        _("Confirmed cases"): fmt(info.confirmed_cases(region, disease)),
-        _("Confirmed deaths"): fmt(info.confirmed_deaths(region, disease)),
-        _("Deaths"): datum(deaths),
-        _("Hospitalizations"): datum(hospitalizations),
-        _("Required extra ICU beds"): fmt(extra_icu),
-        _("Required extra hospital beds"): fmt(extra_hospitals),
-        _("No more ICU beds available by"): natural_date(icu_overflow_date),
-        _("No more hospital beds available by"): natural_date(hospital_overflow_date),
-        _("Peak of cases"): natural_date(peak_cases),
-        _("Infected"): pc(recovered / population),
-    })
+    brasil_io = '<a href="http://brasil.io" target="_blank">Brasil.io</a>'
+    cases_title = _("Confirmed cases ({link})").format(link=brasil_io)
+    deaths_title = _("Confirmed deaths ({link})").format(link=brasil_io)
+    cards(
+        {
+            cases_title: fmt(info.confirmed_cases(region, disease)),
+            deaths_title: fmt(info.confirmed_deaths(region, disease)),
+        },
+        escape=False,
+        color="rgb(246, 51, 102)",
+    )
+    html('<div style="height: 0.5rem;"></div>')
+    cards(
+        {
+            _("Deaths"): datum(deaths),
+            _("Hospitalizations"): datum(hospitalizations),
+            _("Required extra ICU beds"): fmt(extra_icu),
+            _("Required extra hospital beds"): fmt(extra_hospitals),
+            _("No more ICU beds available by"): natural_date(icu_overflow_date),
+            _("No more hospital beds available by"): natural_date(hospital_overflow_date),
+            _("Estimated peak of cases"): natural_date(peak_cases),
+            _("Infected"): pc(recovered / population),
+        }
+    )
 
 
-@info_component('main')
+@info_component("main")
 def healthcare_parameters(
-        icu_capacity,
-        hospital_capacity,
-        icu_full_capacity,
-        icu_overflow_date,
-        extra_icu,
-        where=None,
+    icu_capacity,
+    hospital_capacity,
+    icu_full_capacity,
+    icu_overflow_date,
+    extra_icu,
+    where=st,
 ):
     """
     Write base healthcare parameters.
@@ -123,14 +144,9 @@ def healthcare_parameters(
     where.markdown(msg)
 
 
-@info_component('main')
+@info_component("main")
 def epidemiological_parameters(
-        R0,
-        mortality,
-        fatality,
-        infected,
-        prob_symptoms,
-        where=None,
+    R0, mortality, fatality, infected, prob_symptoms, where=st
 ):
     """
     Basic report with epidemiological parameters.
@@ -147,18 +163,17 @@ def epidemiological_parameters(
         {
             _("Number of cases generated by a single case"): fmt(R0),
             _("Mortality (deaths per 100k population)"): mortality,
-            _("Letality ({pc} of deaths among the ill)").format(pc="%"): fatality.rstrip('%'),
+            _("Letality ({pc} of deaths among the ill)").format(pc="%"): fatality.rstrip(
+                "%"
+            ),
         }
     )
     lang = os.environ.get("LANGUAGE", "en_US")
     footnote_disclaimer(**locals())
 
 
-@info_component('main')
-def protection_equipment_demand(
-        hospitalized_ts,
-        icu_ts,
-        where=None):
+@info_component("main")
+def protection_equipment_demand(hospitalized_ts, icu_ts, where=st):
     """
     A simple table with the required protection equipament usage.
     """
@@ -180,7 +195,7 @@ def healthcare_equipment_resources(hospital_days, icu_days):
     """
 
     columns = [_("Quantity"), _("Total")]
-    tuples = zip([_('Patients/day'), ''], columns)
+    tuples = zip([_("Patients/day"), ""], columns)
 
     N = int(hospital_days + icu_days)
     a = 1  # / 5
@@ -192,7 +207,7 @@ def healthcare_equipment_resources(hospital_days, icu_days):
             [_("Waterproof apron"), 25, 25 * N],
             [_("Non-sterile glove"), 50, 50 * N],
             [_("Faceshield"), b, b * N],
-        ],
+        ]
     ).set_index(0)
 
     df.index.name = _("Name")
