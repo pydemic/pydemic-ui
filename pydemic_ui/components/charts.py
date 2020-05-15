@@ -7,8 +7,7 @@ from .base import main_component
 
 
 @main_component()
-def pyramid_chart(data, left="left", right="right", hleft=fmt, hright=fmt,
-                  where=None):
+def pyramid_chart(data, left="left", right="right", hleft=fmt, hright=fmt, where=None):
     """
     A Population pyramid chart.
 
@@ -54,14 +53,14 @@ def pyramid_chart(data, left="left", right="right", hleft=fmt, hright=fmt,
     def piece(i):
         return (
             base.mark_bar()
-                .encode(
+            .encode(
                 x=alt.X(cols[i], title=None, sort=alt.SortOrder(directions[i])),
                 y=alt.Y("index", axis=None, title=None, sort=alt.SortOrder("descending")),
                 tooltip=alt.Tooltip([h_cols[i]]),
                 color=alt.Color(f"color_{cols[i]}:N", legend=None),
             )
-                .properties(title=titles[i], width=width, height=height)
-                .interactive()
+            .properties(title=titles[i], width=width, height=height)
+            .interactive()
         )
 
     where.altair_chart(
@@ -71,8 +70,8 @@ def pyramid_chart(data, left="left", right="right", hleft=fmt, hright=fmt,
                 y=alt.Y("index", axis=None, sort=alt.SortOrder("descending")),
                 text=alt.Text("index"),
             )
-                .mark_text()
-                .properties(width=50, height=height),
+            .mark_text()
+            .properties(width=50, height=height),
             piece(1),
             spacing=5,
         ),
