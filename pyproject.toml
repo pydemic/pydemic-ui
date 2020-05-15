@@ -27,7 +27,7 @@ requires = [
   "babel",
   "altair",
   "sidekick",
-  "pydemic-models>=0.1.2",
+  "pydemic-models>=0.1.3",
   "mundi>=0.2.3",
   "mundi-demography",
   "mundi-healthcare",

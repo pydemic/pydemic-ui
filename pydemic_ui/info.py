@@ -42,7 +42,7 @@ def model_info(model) -> dict:
     # Create result from locals()
     data = locals()
     del data["model"]
-    data.update(getattr(model, 'extra_info', {}))
+    data.update(getattr(model, "extra_info", {}))
     return data
 
 
@@ -73,10 +73,7 @@ def region_info(region: str, disease=covid19) -> dict:
 
     out = locals()
     out.update()
-    return {
-        **disease.to_dict(age_distribution=age_distribution),
-        **out,
-    }
+    return {**disease.to_dict(age_distribution=age_distribution), **out}
 
 
 def full_info(model, disease=None):
@@ -85,10 +82,7 @@ def full_info(model, disease=None):
     """
 
     disease = coalesce(disease, model.disease, covid19)
-    return {
-        **region_info(model.region.id, disease=disease),
-        **model_info(model),
-    }
+    return {**region_info(model.region.id, disease=disease), **model_info(model)}
 
 
 #
@@ -134,7 +128,7 @@ def load_deaths(code):
 @lru_cache(1024)
 def load_cases_deaths(code):
     data = covid19.epidemic_curve(code).dropna().max()
-    return data['cases'], data['deaths']
+    return data["cases"], data["deaths"]
 
 
 def population(code):

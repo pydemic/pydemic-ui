@@ -1,4 +1,8 @@
 <style>
+    :root {
+        --cardBoxBackground: purple;
+    }
+
     #MainMenu {
         display: none;
         visibility: hidden;
@@ -41,6 +45,7 @@
         font-size: 2rem;
         border-radius: 0.5rem;
         background: purple;
+        background: var(--cardBoxBackground);
         color: white;
         display: flex;
         flex-direction: column;
@@ -59,6 +64,11 @@
         padding: 0.5rem 1.5rem 0 1.5rem;
         opacity: 66%;
         margin: 0;
+    }
+
+    .card-box a {
+        color: white !important;
+        opacity: 1.0 !important;
     }
 
     .block-container {
