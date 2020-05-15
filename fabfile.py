@@ -53,7 +53,7 @@ def download(ctx, file, name=None):
     if name is None:
         name = Path(file).name
 
-    with open(name, 'bw') as fd:
+    with open(name, "bw") as fd:
         fd.write(data)
 
 

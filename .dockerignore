@@ -16,3 +16,4 @@ docker-compose*
 # gettext
 *.mo
 htmlcov/
+inventory.yml
