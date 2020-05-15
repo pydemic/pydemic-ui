@@ -10,21 +10,14 @@ from mundi import Region
 from ..base import twin_component
 from ...i18n import gettext as _
 
-COUNTRIES = {
-    "BR": _("Brazil"),
-}
-TEMPLATE_START = [
-    (_("Region"), "region", "macro-region"),
-    (_("State"), "state", None),
-]
+COUNTRIES = {"BR": _("Brazil")}
+TEMPLATE_START = [(_("Region"), "region", "macro-region"), (_("State"), "state", None)]
 TEMPLATE_IBGE = [
     (_("Meso Region"), "region", "meso-region"),
     (_("Micro-Region"), "region", "micro-region"),
     (_("City"), "city", None),
 ]
-TEMPLATE_SUS = [
-    (_("SUS macro region"), "region", "healthcare region"),
-]
+TEMPLATE_SUS = [(_("SUS macro region"), "region", "healthcare region")]
 
 
 @twin_component()
@@ -55,9 +48,10 @@ def select_from_sub_regions(code, label, where=None, fastrack=False, **kwargs) -
     regions = sub_regions(region.id, **kwargs)
     if len(regions) == 1 and fastrack:
         return regions[0]
-    regions = ('*' + region.id, *regions)
+    regions = ("*" + region.id, *regions)
     return mundi.region(
-        where.selectbox(label, regions, format_func=region_name).lstrip('*'))
+        where.selectbox(label, regions, format_func=region_name).lstrip("*")
+    )
 
 
 def select_from_template(code, template, title=_("Location"), where=st) -> Region:
@@ -82,8 +76,9 @@ def select_from_template(code, template, title=_("Location"), where=st) -> Regio
 #
 # Country-specific selectors.
 #
-def select_br_region(title=_("Location"), where=None, hide_cities=False,
-                     healthcare_regions=False) -> Region:
+def select_br_region(
+    title=_("Location"), where=None, hide_cities=False, healthcare_regions=False
+) -> Region:
     """
     Select a Brazilian region from country up to municipality.
     """
@@ -91,27 +86,27 @@ def select_br_region(title=_("Location"), where=None, hide_cities=False,
     # Select macro-region or the whole country
     region = select_from_template("BR", TEMPLATE_START, title=title, where=where)
 
-    if re.fullmatch(r'[A-Z]{2}(-[0-9])?', region.id):
+    if re.fullmatch(r"[A-Z]{2}(-[0-9])?", region.id):
         return region
 
     # Choose between IBGE hierarchy and SUS
     if healthcare_regions:
-        fmt = {'ibge': _('IBGE subdivisions'), 'sus': _('SUS healthcare region')}
-        kind = where.radio(_('Select'), ['ibge', 'sus'], format_func=fmt.get)
+        fmt = {"ibge": _("IBGE subdivisions"), "sus": _("SUS healthcare region")}
+        kind = where.radio(_("Select"), ["ibge", "sus"], format_func=fmt.get)
     else:
-        kind = 'ibge'
+        kind = "ibge"
 
     # Continue selection
-    template = TEMPLATE_IBGE if kind == 'ibge' else TEMPLATE_SUS
+    template = TEMPLATE_IBGE if kind == "ibge" else TEMPLATE_SUS
     region = select_from_template(region, template, title=None, where=where)
 
-    if not hide_cities and kind == 'sus' and 'SUS:' in region.id:
+    if not hide_cities and kind == "sus" and "SUS:" in region.id:
         lines = [
-            _('List of cities'),
-            '',
-            *(f'* {child.name}' for child in children(region))
+            _("List of cities"),
+            "",
+            *(f"* {child.name}" for child in children(region)),
         ]
-        where.markdown('\n'.join(lines))
+        where.markdown("\n".join(lines))
     return region
 
 
@@ -122,8 +117,8 @@ def select_br_region(title=_("Location"), where=None, hide_cities=False,
 def region_name(code):
     """Region name from Mundi code."""
 
-    if code.startswith('*'):
-        return _('{name} (everything)').format(name=region_name(code[1:]))
+    if code.startswith("*"):
+        return _("{name} (everything)").format(name=region_name(code[1:]))
 
     reg = mundi.region(code)
     return _(reg["name"])
@@ -145,14 +140,14 @@ def sub_regions(code, **kwargs):
 
 
 @lru_cache(2048)
-def children(region, which='both'):
+def children(region, which="both"):
     """
     Return a list of children for the given code.
     """
     return region.children(which=which)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     r1 = select_region("BR", where=st.sidebar)
     st.write(r1)
     st.write(select_region("RU"))

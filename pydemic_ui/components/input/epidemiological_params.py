@@ -10,11 +10,7 @@ from ...i18n import _
 
 @twin_component()
 def epidemiological_params(
-        region,
-        disease=covid19,
-        R0_max=5.0,
-        title=_("Epidemiology"),
-        where=st,
+    region, disease=covid19, R0_max=5.0, title=_("Epidemiology"), where=st
 ):
     """
     Return a dictionary with additional simulation parameters from user input.
@@ -43,12 +39,14 @@ def epidemiological_params(
     R0 = where.slider(msg, min_value=0.0, max_value=R0_max, value=params.R0)
 
     msg = _("Virus incubation period")
-    Tinc = where.slider(msg, min_value=0.1, max_value=10.0,
-                        value=params.incubation_period)
+    Tinc = where.slider(
+        msg, min_value=0.1, max_value=10.0, value=params.incubation_period
+    )
 
     msg = _("Infectious period")
-    Tinf = where.slider(msg, min_value=0.1, max_value=14.0,
-                        value=params.infectious_period)
+    Tinf = where.slider(
+        msg, min_value=0.1, max_value=14.0, value=params.infectious_period
+    )
 
     msg = _("Fraction of symptomatic cases")
     Qs = 100 * params.prob_symptoms
@@ -67,8 +65,9 @@ def epidemiological_params(
     Qcr *= Qsv
 
     msg = _("Hospitalization period (days)")
-    Th = where.slider(msg, min_value=0.1, max_value=30.0,
-                      value=params.hospitalization_period)
+    Th = where.slider(
+        msg, min_value=0.1, max_value=30.0, value=params.hospitalization_period
+    )
 
     msg = _("Hospitalization period for ICU patients (days)")
     Tc = where.slider(msg, min_value=0.1, max_value=30.0, value=params.icu_period)
@@ -86,5 +85,5 @@ def epidemiological_params(
 
 
 if __name__ == "__main__":
-    st.header('Params')
-    st.write(epidemiological_params('BR'))
+    st.header("Params")
+    st.write(epidemiological_params("BR"))

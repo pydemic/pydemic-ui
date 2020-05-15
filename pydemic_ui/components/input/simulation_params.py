@@ -1,4 +1,4 @@
-__package__ = 'pydemic_ui.components.input'
+__package__ = "pydemic_ui.components.input"
 
 import streamlit as st
 from markdown import markdown
@@ -11,15 +11,18 @@ from ..generic import html
 from ...i18n import _
 from ...info import confirmed_daily_cases, notification_estimate
 
-OCCUPANCY_MSG = _("""
+OCCUPANCY_MSG = _(
+    """
 The Brazilian occupancy rate is traditionally above **{globalrate}**. The input
 parameters assume a **{rate}** occupancy rate and **{n}** available beds.
-""")
+"""
+)
 
 
 @twin_component()
-def simulation_params(region, disease=covid19, title=_("Simulation options"),
-                      where=st) -> dict:
+def simulation_params(
+    region, disease=covid19, title=_("Simulation options"), where=st
+) -> dict:
     """
     Return a dictionary with basic simulation parameters from user input.
 
@@ -39,7 +42,7 @@ def simulation_params(region, disease=covid19, title=_("Simulation options"),
     start_date = st.date_input(_("Simulation date"))
 
     # Seed
-    st.subheader(_('Cases'))
+    st.subheader(_("Cases"))
     msg = _("Average new confirmed COVID-19 cases per day")
     cases = confirmed_daily_cases(region, disease) or 1
     cases = st.number_input(msg, 1, int(region.population), value=cases)
@@ -48,9 +51,7 @@ def simulation_params(region, disease=covid19, title=_("Simulation options"),
     notification = notification_estimate(region, disease)
     notification = 0.01 * st.slider(msg, 1.0, 100.0, max(1.0, 100.0 * notification))
 
-    return {
-        "period": period, "date": start_date, "daily_cases": cases / notification
-    }
+    return {"period": period, "date": start_date, "daily_cases": cases / notification}
 
 
 @twin_component()
@@ -72,10 +73,7 @@ def healthcare_params(region, title=_("Hospital capacity"), occupancy=0.75, wher
         where.subheader(title)
 
         total = where.number_input(
-            _("Total capacity"),
-            min_value=0,
-            value=int(capacity),
-            key=key + "_total",
+            _("Total capacity"), min_value=0, value=int(capacity), key=key + "_total"
         )
         result = where.number_input(
             _("Occupied"),
@@ -84,11 +82,11 @@ def healthcare_params(region, title=_("Hospital capacity"), occupancy=0.75, wher
             value=int(total * rate),
             key=key + "_rate",
         )
-        msg = markdown(OCCUPANCY_MSG.format(
-            n=fmt(total - result),
-            rate=pc(result / total),
-            globalrate=pc(rate),
-        ))
+        msg = markdown(
+            OCCUPANCY_MSG.format(
+                n=fmt(total - result), rate=pc(result / total), globalrate=pc(rate)
+            )
+        )
         html(f'<span style="font-size: smaller;">{msg}</span>', where=where)
         return total - result
 

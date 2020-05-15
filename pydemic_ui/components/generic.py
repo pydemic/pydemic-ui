@@ -1,14 +1,17 @@
 __package__ = "pydemic_ui.components"
 
-from typing import Mapping
+import html as _html
+from typing import Mapping, Optional, Any
 
 import streamlit as st
 
 from .base import twin_component
 
+html_escape = _html.escape
+
 
 @twin_component()
-def html(data: str, where=None):
+def html(data: str, where=st):
     """
     Renders raw HTML string.
 
@@ -25,28 +28,34 @@ def html(data: str, where=None):
 
 
 @twin_component()
-def card(title: str, data: str, where=None):
+def card(title: str, data: str, escape=True, color=None, where: Optional[Any] = st):
     """
     Render description list element representing a summary card with given
     title and datasets.
     """
-    data = f'<dl class="card-box"><dt>{title}</dt><dd>{data}</dd></dl>'
+    if escape:
+        title = html_escape(title)
+        data = html_escape(data)
+    style = "" if color is None else f'style="background: {color};"'
+    data = f'<dl class="card-box" {style}><dt>{title}</dt><dd>{data}</dd></dl>'
+    if where is None:
+        return data
     return html(data, where=where)
 
 
 @twin_component()
-def cards(entries: Mapping, where=None):
+def cards(entries: Mapping, escape=True, color=None, where=st):
     """
     Renders mapping as a list of cards.
     """
     entries = getattr(entries, "items", lambda: entries)()
-    raw = "".join(card(k, v, where=None) for k, v in entries)
+    raw = "".join(card(k, v, escape, color, where=None) for k, v in entries)
     data = f"""<div class="card-boxes">{raw}</div>"""
     return html(data, where=where)
 
 
 @twin_component()
-def md_description(data: Mapping, where=None):
+def md_description(data: Mapping, where=st):
     """
     Renders a dictionary or sequence of tuples as a markdown string of associations.
     """
@@ -56,7 +65,7 @@ def md_description(data: Mapping, where=None):
 
 
 @twin_component()
-def pause(where=None):
+def pause(where=st):
     """
     Space separator between commands.
     """
@@ -64,7 +73,7 @@ def pause(where=None):
 
 
 @twin_component()
-def line(where=None):
+def line(where=st):
     """
     Line separator between commands.
     """
@@ -82,15 +91,12 @@ if __name__ == "__main__":
 
     st.subheader("card()")
     card("Card", "Card data")
+    card("Colored Card", "Card data", color="blue")
 
     st.subheader("cards()")
-    cards({
-        "Card 1": "Card 1 data",
-        "Card 2": "Card 2 data",
-    })
+    cards({"Card 1": "Card 1 data", "Card 2": "Card 2 data"}, color="red")
 
     st.subheader("md_description()")
-    md_description({
-        "Entry 1": "Description for entry 1",
-        "Entry 2": "Description for entry 2",
-    })
+    md_description(
+        {"Entry 1": "Description for entry 1", "Entry 2": "Description for entry 2"}
+    )

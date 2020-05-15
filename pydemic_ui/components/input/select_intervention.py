@@ -8,12 +8,14 @@ from ... import runner
 from ...i18n import _
 
 DAY = datetime.timedelta(days=1)
-INTERVENTION_TEXT = _("""
+INTERVENTION_TEXT = _(
+    """
 This intervention simulates a situation in which everyone reduces
 the average number of encounters throughout the day. Small reductions (~15%) are
 possible through small behavioral changes. Larger reductions require implementation
 of many non-pharmacological measures.
-""")
+"""
+)
 
 
 @twin_component()
@@ -39,9 +41,9 @@ def select_intervention(duration, title=_("Intervention"), where=st) -> runner.R
 
         days_msg = _("Duration of intervention")
         rate_msg = _("Social isolation (0% represents no isolation)")
-        msg_info = _('Intervention starts at day {} of simulation')
+        msg_info = _("Intervention starts at day {} of simulation")
 
-        where.subheader(_('First intervention'))
+        where.subheader(_("First intervention"))
 
         # Read first intervention
         start = where.slider(_("Days before enacting"), 0, duration)
@@ -56,16 +58,16 @@ def select_intervention(duration, title=_("Intervention"), where=st) -> runner.R
 
         idx = 1
         key = None
-        while duration > 0 and where.checkbox(_('Add more stages'), key=key):
+        while duration > 0 and where.checkbox(_("Add more stages"), key=key):
             idx += 1
-            key = f'intervention-{idx}'
+            key = f"intervention-{idx}"
 
             # header = where.empty()
-            msg = _('Intervention {n}')
+            msg = _("Intervention {n}")
             where.subheader(msg.format(n=idx))
 
-            size = where.slider(days_msg, 1, duration, min(7, duration), key='T-' + key)
-            rate = where.slider(rate_msg, value=50, step=step, key='R-' + key)
+            size = where.slider(days_msg, 1, duration, min(7, duration), key="T-" + key)
+            rate = where.slider(rate_msg, value=50, step=step, key="R-" + key)
             where.info(msg_info.format(start + size))
 
             stages.append((size, 1 - rate / 100))
