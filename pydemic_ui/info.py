@@ -240,8 +240,6 @@ def get_seair_curves_for_region(
             ),
         )
         data /= params.CFR * CFR_bias * notification_rate
-        st.line_chart(data)
-        st.line_chart(cases["cases"] / notification_rate)
     else:
         data = cases["cases"] / notification_rate
 

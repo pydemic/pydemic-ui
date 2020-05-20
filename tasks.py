@@ -67,6 +67,7 @@ def publish(ctx):
 
 
 @task
-def clean_cache(ctx):
-    for dir in ("ui", "ui.info", "ui.app.calc"):
+def clear_cache(ctx, all=False):
+    extra = ("pydemic",) if all else ()
+    for dir in ("ui", "ui.info", "ui.app.calc", *extra):
         ctx.run(f"rm ~/.local/pydemic/cache/{dir} -rfv")
