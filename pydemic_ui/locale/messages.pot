@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-20 18:27-0300\n"
+"POT-Creation-Date: 2020-05-20 19:52-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -404,23 +404,23 @@ msgstr ""
 msgid "Initial social isolation (0{pc} represents no isolation)"
 msgstr ""
 
-#: pydemic_ui/components/input/select_intervention.py:53
-msgid "First intervention"
+#: pydemic_ui/components/input/select_intervention.py:54
+msgid "Start intervention immediately"
 msgstr ""
 
 #: pydemic_ui/components/input/select_intervention.py:56
-msgid "Delay start"
+msgid "How many days before intervention start?"
 msgstr ""
 
-#: pydemic_ui/components/input/select_intervention.py:58
-msgid "Days without intervention"
+#: pydemic_ui/components/input/select_intervention.py:64
+msgid "First intervention"
 msgstr ""
 
-#: pydemic_ui/components/input/select_intervention.py:75
+#: pydemic_ui/components/input/select_intervention.py:78
 msgid "Add more stages"
 msgstr ""
 
-#: pydemic_ui/components/input/select_intervention.py:80
+#: pydemic_ui/components/input/select_intervention.py:83
 msgid "Intervention {n}"
 msgstr ""
 

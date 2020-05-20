@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-20 18:27-0300\n"
-"PO-Revision-Date: 2020-05-20 18:27-0300\n"
+"POT-Creation-Date: 2020-05-20 19:52-0300\n"
+"PO-Revision-Date: 2020-05-20 19:52-0300\n"
 "Last-Translator: Fábio Mendes <fabiomacedomendes@gmail.com>\n"
 "Language: pt_BR\n"
 "Language-Team: pt_BR <LL@li.org>\n"
@@ -405,23 +405,23 @@ msgstr "Distanciamento social previsto (0{pc} significa ausência de distanciame
 msgid "Initial social isolation (0{pc} represents no isolation)"
 msgstr "Isolamento inicial (0{pc} representa ausência de isolamento)"
 
-#: pydemic_ui/components/input/select_intervention.py:53
+#: pydemic_ui/components/input/select_intervention.py:54
+msgid "Start intervention immediately"
+msgstr "Começar intervenção imediatamente"
+
+#: pydemic_ui/components/input/select_intervention.py:56
+msgid "How many days before intervention start?"
+msgstr "Quantos dias antes de começar a intervenção?"
+
+#: pydemic_ui/components/input/select_intervention.py:64
 msgid "First intervention"
 msgstr "Primeira intervenção"
 
-#: pydemic_ui/components/input/select_intervention.py:56
-msgid "Delay start"
-msgstr "Atrasar o início"
-
-#: pydemic_ui/components/input/select_intervention.py:58
-msgid "Days without intervention"
-msgstr "Dias sem intevenção"
-
-#: pydemic_ui/components/input/select_intervention.py:75
+#: pydemic_ui/components/input/select_intervention.py:78
 msgid "Add more stages"
 msgstr "Acrescentar etapa"
 
-#: pydemic_ui/components/input/select_intervention.py:80
+#: pydemic_ui/components/input/select_intervention.py:83
 msgid "Intervention {n}"
 msgstr "Intervenção {n}"
 
@@ -1382,3 +1382,12 @@ msgstr "Não por agora..."
 
 #~ msgid "Confirmed deaths ({link})"
 #~ msgstr "Óbitos confirmados ({link})"
+
+#~ msgid "Delay start"
+#~ msgstr "Atrasar o início"
+
+#~ msgid "Days without intervention"
+#~ msgstr "Dias sem intevenção"
+
+#~ msgid "Start simulation without intervention"
+#~ msgstr "Iniciar a simulação sem intervenção"

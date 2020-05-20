@@ -46,19 +46,13 @@ def build(ctx, tag=None):
 
 
 @task
-def deploy(ctx, user=None, server=None, opts=None):
-    ctx.run("git push")
+def deploy_update(ctx, inventory="deploy-pydemic-ui/inventory.yml"):
+    ctx.run(f"ansible-playbook -i {inventory} deploy-pydemic-ui/playbook-update.yml")
 
-    try:
-        with open(".deploy.json") as fd:
-            data = json.load(fd)
-    except FileNotFoundError:
-        data = {}
 
-    user = user or data.get("user", os.environ.get("USER", "user"))
-    server = server or data.get("server", "localhost")
-    opts = opts or data.get("opts") or ""
-    ctx.run(f"fab -eH {user}@{server} {opts} update")
+@task
+def deploy_restart(ctx, inventory="deploy-pydemic-ui/inventory.yml"):
+    ctx.run(f"ansible-playbook -i {inventory} deploy-pydemic-ui/playbook-restart.yml")
 
 
 @task

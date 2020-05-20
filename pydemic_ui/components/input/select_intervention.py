@@ -50,15 +50,18 @@ def select_intervention(duration, title=__("Intervention"), where=st) -> runner.
         rate_msg = rate_msg.format(pc="%")
         rate_msg_now = rate_msg_now.format(pc="%")
 
-        where.subheader(_("First intervention"))
-
         # Read first intervention
-        if where.checkbox(_("Delay start")):
+        if not where.checkbox(_("Start intervention immediately"), value=True):
             start = where.slider(
-                _("Days without intervention"), 1, duration, value=min(7, duration)
+                _("How many days before intervention start?"),
+                1,
+                duration,
+                value=min(7, duration),
             )
         else:
             start = 0
+
+        where.subheader(_("First intervention"))
 
         duration -= start
         stages = [(start, 1)] if start else []
