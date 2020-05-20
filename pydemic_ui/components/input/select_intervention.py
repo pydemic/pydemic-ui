@@ -53,7 +53,7 @@ def select_intervention(duration, title=__("Intervention"), where=st) -> runner.
         where.subheader(_("First intervention"))
 
         # Read first intervention
-        if st.checkbox(_("Delay start")):
+        if where.checkbox(_("Delay start")):
             start = where.slider(
                 _("Days without intervention"), 1, duration, value=min(7, duration)
             )
