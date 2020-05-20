@@ -1,0 +1,13 @@
+- name: Deploy
+  hosts: all
+  become: true
+
+  vars:
+    path: /home/pydemic/apps/calc/
+
+  tasks:
+    - name: Run `docker-compose up`
+      docker_compose:
+        project_src: "{{ path }}/deploy"
+        build: no
+      register: output

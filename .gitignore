@@ -17,4 +17,4 @@ htmlcov/
 .deploy.json
 .fabfile.yml
 .fabric.yml
-inventory.yml
+deploy/inventory.yml

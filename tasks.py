@@ -64,3 +64,9 @@ def deploy(ctx, user=None, server=None, opts=None):
 @task
 def publish(ctx):
     ctx.run("flit publish")
+
+
+@task
+def clean_cache(ctx):
+    for dir in ("ui", "ui.info", "ui.app.calc"):
+        ctx.run(f"rm ~/.local/pydemic/cache/{dir} -rfv")

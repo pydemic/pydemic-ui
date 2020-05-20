@@ -4,7 +4,7 @@ services:
   build:
     image: pydemic/pydemic-ui:${TAG:-production}
     build:
-      context: .
+      context: ../
       dockerfile: Dockerfile
     environment:
       LANG: pt_BR.UTF-8
