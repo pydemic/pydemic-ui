@@ -1,12 +1,43 @@
+import datetime
+import os
 from functools import lru_cache
 
 import numpy as np
+import pandas as pd
 import streamlit as st
 
+import mundi
 import mundi_demography as mdm
 import mundi_healthcare as mhc
+from pydemic import cache
+from pydemic import fitting as fit
 from pydemic.diseases import covid19
 from pydemic.utils import coalesce, safe_int
+
+TTL_DURATION = 2 * 60 * 60
+
+
+def ttl_cache(
+    fn=None, ttl=TTL_DURATION, force_streamlit=False, force_joblib=False, key="ui.info"
+):
+    """
+    Default time-to-live cache logic.
+    """
+    if fn is None:
+        return lambda f: ttl_cache(f, ttl, force_streamlit, force_joblib)
+
+    if force_streamlit:
+        return st.cache(ttl=ttl)(fn)
+    elif force_joblib:
+        return cache.ttl_cache(key, timeout=ttl)(fn)
+
+    backend = os.environ.get("PYDEMIC_UI_CACHE_BACKEND", "joblib").lower()
+    if backend == "joblib":
+        return ttl_cache(fn, ttl, force_joblib=True)
+    elif backend == "streamlit":
+        return ttl_cache(fn, ttl, force_streamlit=True)
+    else:
+        raise ValueError(f"invalid cache backend: {backend!r}")
 
 
 def model_info(model) -> dict:
@@ -66,7 +97,7 @@ def region_info(region: str, disease=covid19) -> dict:
     hospital_capacity = safe_int(mhc.hospital_capacity(region))
 
     # Epidemiology
-    R0 = R0_from_region(region, disease)
+    R0 = get_R0_estimate_for_region(region, disease)
 
     # Cases and deaths
     cases_ts, deaths_ts = load_cases_deaths(region)
@@ -88,49 +119,6 @@ def full_info(model, disease=None):
 #
 # Cache
 #
-@lru_cache(1024)
-def load_seed(code):
-    """
-    Load seed from code regional code.
-    """
-    try:
-        cases, deaths = load_cases_deaths(code)
-        if np.isnan(cases):
-            raise ValueError
-    except (LookupError, ValueError):
-        prevalence = 1 / 10_000
-        pop_size = population(code)
-        return int(pop_size * prevalence)
-    else:
-        CFR = max(covid19.CFR(age_distribution=mdm.age_distribution(code)), 0.012)
-        return int(max(cases, deaths / CFR))
-
-
-@lru_cache(1024)
-def load_deaths(code):
-    """
-    Load deaths from code region code.
-    """
-    try:
-        curve = covid19.epidemic_curve(code).dropna().max()
-        if np.isnan(curve["cases"]):
-            raise ValueError
-
-    except (LookupError, ValueError):
-        prevalence = 1 / 1_000
-        pop_size = population(code)
-        return int(pop_size * prevalence)
-    else:
-        CFR = max(covid19.CFR(age_distribution=mdm.age_distribution(code)), 0.012)
-        return int(max(curve["cases"], curve["deaths"] / CFR))
-
-
-@lru_cache(1024)
-def load_cases_deaths(code):
-    data = covid19.epidemic_curve(code).dropna().max()
-    return data["cases"], data["deaths"]
-
-
 def population(code):
     try:
         return int(mdm.population(code))
@@ -139,29 +127,45 @@ def population(code):
 
 
 @lru_cache(1024)
-def R0_from_region(region, disease):
+def load_cases_deaths(code):
+    data = covid19.epidemic_curve(code).dropna().max()
+    return data["cases"], data["deaths"]
+
+
+@ttl_cache()
+def get_R0_estimate_for_region(region, disease=covid19):
     # In the future we might infer R0 from epidemic curves
     return disease.R0()
 
 
-@st.cache(ttl=4 * 3600)
-def confirmed_cases(region, disease):
+@ttl_cache()
+def get_cases_for_region(region, disease=covid19) -> pd.DataFrame:
+    """
+    A cached function that return a list of cases from region.
+    """
+    return disease.epidemic_curve(region)
+
+
+@ttl_cache()
+def get_confirmed_cases_for_region(region, disease=covid19):
     """
     List of confirmed cases for the given region.
     """
-    return safe_int(disease.epidemic_curve(region)["cases"].max())
+    cases = get_cases_for_region(region, disease)
+    return safe_int(cases["cases"].max())
 
 
-@st.cache(ttl=4 * 3600)
-def confirmed_deaths(region, disease):
+@ttl_cache()
+def get_confirmed_deaths_for_region(region, disease) -> int:
     """
     List of confirmed deaths for region.
     """
-    return safe_int(disease.epidemic_curve(region)["deaths"].max())
+    cases = get_cases_for_region(region, disease)
+    return safe_int(cases["deaths"].max())
 
 
-@st.cache
-def confirmed_daily_cases(region, disease) -> int:
+@ttl_cache()
+def get_confirmed_daily_cases_for_region(region, disease=covid19) -> int:
     """
     Return the number of newly confirmed cases per day.
     """
@@ -169,8 +173,8 @@ def confirmed_daily_cases(region, disease) -> int:
     return safe_int(df["cases"].diff().iloc[-7:].mean())
 
 
-@st.cache
-def notification_estimate(region, disease) -> float:
+@ttl_cache()
+def get_notification_estimate_for_region(region, disease=covid19) -> float:
     """
     Return an estimate on the notification rate for disease in the given
     region.
@@ -193,3 +197,52 @@ def notification_estimate(region, disease) -> float:
     # 0.75, hence we also put a cap on the value.
     ratio = min((cases / expected_cases) ** 0.8, 0.75)
     return ratio if np.isfinite(ratio) else 0.1
+
+
+@ttl_cache()
+def get_seair_curves_for_region(
+    region,
+    disease=covid19,
+    notification_rate=1.0,
+    R0=None,
+    use_deaths=False,
+    CFR_bias=1.0,
+) -> pd.DataFrame:
+    """
+    A cached function that returns SEAIR compartments from cases inferred from
+    region.
+    """
+    region = mundi.region(region)
+    cases = get_cases_for_region(region)
+    params = disease.params(region=region)
+    if use_deaths:
+        delay = int(params.death_delay + params.symptom_delay)
+
+        # Filter deaths time series
+        deaths = cases["deaths"].dropna()
+        deaths = deaths[deaths > 0]
+        total_deaths = deaths.iloc[-1]
+
+        # Obtain smoothed differences to avoid problems with datapoints in which
+        # the daily number of new deaths is zero. We also force the accumulated
+        # number of deaths to be the same in each case.
+        daily_deaths = fit.smoothed_diff(deaths)
+        daily_deaths *= total_deaths / daily_deaths.sum()
+
+        # Compute extrapolation and concatenate the series for deaths with
+        # the extrapolation using data from the past 3 weeks
+        extrapolated = fit.exponential_extrapolation(daily_deaths[-21:], delay)
+        extrapolated = np.add.accumulate(extrapolated) + total_deaths
+        data = pd.Series(
+            np.concatenate([deaths, extrapolated]),
+            index=np.concatenate(
+                [deaths.index - datetime.timedelta(days=delay), deaths.index[-delay:]]
+            ),
+        )
+        data /= params.CFR * CFR_bias * notification_rate
+        st.line_chart(data)
+        st.line_chart(cases["cases"] / notification_rate)
+    else:
+        data = cases["cases"] / notification_rate
+
+    return fit.seair_curves(data, params, population=region.population, R0=R0)
