@@ -34,12 +34,12 @@ def select_region(code, *, where=st, **kwargs) -> Region:
         title = kwargs.pop("title", _("Location"))
         if title:
             where.header(title)
-        return select_from_sub_regions(region, _("Location"))
+        return select_from_sub_regions(region, _("Location"), where=where)
     else:
         raise NotImplementedError(f"Cannot select {code!r}")
 
 
-def select_from_sub_regions(code, label, where=None, fastrack=False, **kwargs) -> Region:
+def select_from_sub_regions(code, label, where=st, fastrack=False, **kwargs) -> Region:
     """
     Select a region between a list that starts with the parent region and its
     children.
@@ -77,7 +77,7 @@ def select_from_template(code, template, title=_("Location"), where=st) -> Regio
 # Country-specific selectors.
 #
 def select_br_region(
-    title=_("Location"), where=None, hide_cities=False, healthcare_regions=False
+    title=_("Location"), where=st, hide_cities=False, healthcare_regions=False
 ) -> Region:
     """
     Select a Brazilian region from country up to municipality.
@@ -101,12 +101,13 @@ def select_br_region(
     region = select_from_template(region, template, title=None, where=where)
 
     if not hide_cities and kind == "sus" and "SUS:" in region.id:
-        lines = [
-            _("List of cities"),
-            "",
-            *(f"* {child.name}" for child in children(region)),
-        ]
-        where.markdown("\n".join(lines))
+        if where.checkbox(_("Show cities")):
+            lines = [
+                _("List of cities"),
+                "",
+                *(f"* {child.name}" for child in children(region)),
+            ]
+            where.markdown("\n".join(lines))
     return region
 
 
@@ -148,9 +149,6 @@ def children(region, which="both"):
 
 
 if __name__ == "__main__":
-    r1 = select_region("BR", where=st.sidebar)
-    st.write(r1)
-    st.write(select_region("RU"))
+    r1 = select_region("BR", healthcare_regions=st.checkbox("SUS?"))
+    st.write(select_region("RU", where=st.sidebar))
     st.write(r1.to_series("name", "type", "subtype", "population"))
-    st.write(r1.children())
-    # st.write(r1.children(deep=True))

@@ -9,7 +9,10 @@ from pydemic.utils import fmt, safe_int, pc
 from ..base import twin_component
 from ..generic import html
 from ...i18n import _
-from ...info import confirmed_daily_cases, notification_estimate
+from ...info import (
+    get_confirmed_daily_cases_for_region,
+    get_notification_estimate_for_region,
+)
 
 OCCUPANCY_MSG = _(
     """
@@ -44,11 +47,11 @@ def simulation_params(
     # Seed
     st.subheader(_("Cases"))
     msg = _("Average new confirmed COVID-19 cases per day")
-    cases = confirmed_daily_cases(region, disease) or 1
+    cases = get_confirmed_daily_cases_for_region(region, disease) or 1
     cases = st.number_input(msg, 1, int(region.population), value=cases)
 
     msg = _("Notification rate (%)")
-    notification = notification_estimate(region, disease)
+    notification = get_notification_estimate_for_region(region, disease)
     notification = 0.01 * st.slider(msg, 1.0, 100.0, max(1.0, 100.0 * notification))
 
     return {"period": period, "date": start_date, "daily_cases": cases / notification}

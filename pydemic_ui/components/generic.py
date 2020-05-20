@@ -9,6 +9,25 @@ from .base import twin_component
 
 html_escape = _html.escape
 
+# Friently names to colors in the Streamlit palette
+# See https://pmbaumgartner.github.io/streamlitopedia/essentials.html
+COLOR_ALIASES = {
+    # Main colors
+    "st-primary": "#f63366",  # Primary pink/magenta used for widgets throughout the app
+    "st-secondary": "#f0f2f6",  # Background color of Sidebar
+    "st-black": "#262730",  # Font Color
+    "st-light-yellow": "#fffd80",  # Right side of top header decoration in app
+    "st-white": "#ffffff",  # Background
+    # Secondary
+    "st-red": "#ff2b2b",
+    "st-yellow": "#faca2b",
+    "st-blue": "#0068c9",
+    "st-green": "#09ab3b",
+    "st-gray-200": "#f0f2f6",
+    "st-gray-600": "#a3a8b4",
+    "st-gray-900": "#262730",
+}
+
 
 @twin_component()
 def html(data: str, where=st):
@@ -21,6 +40,8 @@ def html(data: str, where=st):
         where:
             Can be None, st or st.sidebar. If it is None, return the raw string.
     """
+    if where is None:
+        return data
     try:
         return where.write(data, unsafe_allow_html=True)
     except st.StreamlitAPIException:
@@ -36,10 +57,11 @@ def card(title: str, data: str, escape=True, color=None, where: Optional[Any] = 
     if escape:
         title = html_escape(title)
         data = html_escape(data)
+
+    color = COLOR_ALIASES.get(color, color)
     style = "" if color is None else f'style="background: {color};"'
     data = f'<dl class="card-box" {style}><dt>{title}</dt><dd>{data}</dd></dl>'
-    if where is None:
-        return data
+
     return html(data, where=where)
 
 

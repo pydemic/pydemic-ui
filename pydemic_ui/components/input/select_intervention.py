@@ -1,9 +1,11 @@
+__package__ = "pydemic_ui.components.input"
+
 import datetime
 
 import streamlit as st
 
-from ..generic import html
 from ..base import twin_component
+from ..generic import html
 from ... import runner
 from ...i18n import _
 
@@ -11,7 +13,7 @@ DAY = datetime.timedelta(days=1)
 INTERVENTION_TEXT = _(
     """
 This intervention simulates a situation in which everyone reduces
-the average number of encounters throughout the day. Small reductions (~15%) are
+the average number of contacts throughout the day. Small reductions (~15%) are
 possible through small behavioral changes. Larger reductions require implementation
 of many non-pharmacological measures.
 """
@@ -39,21 +41,29 @@ def select_intervention(duration, title=_("Intervention"), where=st) -> runner.R
         step = 1
         html(f'<span style="font-size: smaller;">{INTERVENTION_TEXT}</span>', where=where)
 
-        days_msg = _("Duration of intervention")
-        rate_msg = _("Social isolation (0% represents no isolation)")
+        days_msg = _("Duration of intervention (days)")
         msg_info = _("Intervention starts at day {} of simulation")
+        rate_msg = _("Expected social isolation (0% represents no isolation)")
+        rate_msg_now = _("Initial social isolation (0% represents no isolation)")
 
         where.subheader(_("First intervention"))
 
         # Read first intervention
-        start = where.slider(_("Days before enacting"), 0, duration)
+        if st.checkbox(_("Delay start")):
+            start = where.slider(
+                _("Days without intervention"), 1, duration, value=min(7, duration)
+            )
+        else:
+            start = 0
+
         duration -= start
         stages = [(start, 1)] if start else []
 
         size = where.slider(days_msg, 1, duration, duration)
         duration -= size
 
-        rate = where.slider(rate_msg, value=15, step=step)
+        msg = rate_msg_now if start == 0 else rate_msg
+        rate = where.slider(msg, value=15, step=step)
         stages.append((size, 1 - rate / 100))
 
         idx = 1

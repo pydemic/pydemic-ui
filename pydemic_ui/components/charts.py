@@ -1,8 +1,8 @@
 __package__ = "pydemic_ui.components"
 
 import altair as alt
-from pydemic.utils import fmt
 
+from pydemic.utils import fmt
 from .base import main_component
 
 
