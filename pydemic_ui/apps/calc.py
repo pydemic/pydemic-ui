@@ -9,25 +9,20 @@ in the near future.
 
 This app uses components from the Pydemic UI package.
 """
-__package__ = "pydemic_ui.apps"
-
+import datetime
 import os
 
-from pydemic_ui import st
+import numpy as np
+import pandas as pd
 
+import mundi
 from pydemic.diseases import covid19
 from pydemic.models import SEAIR
-from pydemic.utils import extract_keys
+from pydemic.utils import extract_keys, pc
 from pydemic_ui import info
+from pydemic_ui import st
 from pydemic_ui import ui
-from pydemic_ui.ui import healthcare_parameters, epidemiological_parameters
-from ..i18n import _
-from ..ui import (
-    summary_cards,
-    population_info_chart,
-    deaths_chart,
-    protection_equipment_demand,
-)
+from pydemic_ui.i18n import _
 
 DEBUG = os.environ.get("DEBUG", "false").lower() in ("true", "on", "1")
 
@@ -94,7 +89,7 @@ def output(model, info, title=_("Hospital pressure calculator")):
     if title:
         st.title(title)
 
-    summary_cards(model)
+    model.ui.summary_cards()
 
     st.pause()
     model.ui.hospitalizations_chart()
@@ -103,19 +98,19 @@ def output(model, info, title=_("Hospital pressure calculator")):
     model.ui.available_beds_chart()
 
     st.line()
-    population_info_chart(info["age_pyramid"])
+    ui.population_info_chart(info["age_pyramid"])
 
     st.pause()
-    deaths_chart(info)
+    model.ui.deaths_chart()
 
     st.line()
-    healthcare_parameters(info)
+    ui.healthcare_parameters(info)
 
     st.pause()
-    protection_equipment_demand(info)
+    model.ui.ppe_demand()
 
     st.pause()
-    epidemiological_parameters(info)
+    model.ui.epidemiological_parameters()
 
     st.pause()
     st.footnotes()
@@ -155,6 +150,10 @@ def main(region="BR", disease=covid19):
             )
         )
         debug = True
+
+    if params["date"] == datetime.date(1904, 11, 10):
+        st.title(_("Secret area for beta testers"))
+        return secret(params)
 
     epidemiology = extract_keys(PARAMS, params)
     clinical = extract_keys(CLINICAL, params)
@@ -197,6 +196,54 @@ def main(region="BR", disease=covid19):
                 df = cm[DEATH_DISTRIBUTION_COLUMNS]
                 df.columns = [DEATH_DISTRIBUTION_COL_NAMES[k] for k in df.columns]
                 st.area_chart(df)
+
+
+def secret(params, disease=covid19):
+    states = mundi.regions("BR", type="state")
+    region = st.selectbox(_("Select state"), states.index)
+
+    msg = _("Isolation scores")
+    scores = [n / 10 for n in range(1, 10)]
+    isolation = st.multiselect(msg, scores, default=[0.3, 0.5, 0.7], format_func=pc)
+    rates = 1 - np.array(isolation)
+
+    duration = st.number_input(_("Duration"), 1, value=60)
+
+    daily_cases = info.get_confirmed_daily_cases_for_region(region, disease)
+    daily_cases /= max(info.get_notification_estimate_for_region(region, disease), 1e-2)
+
+    def run_model(daily_cases, rate=1.0):
+        m = SEAIR(region=region, disease=disease)
+        m.R0 *= rate
+
+        R = 0.0
+        E = daily_cases * m.incubation_period
+        I = daily_cases * m.infectious_period * m.Qs
+        A = daily_cases * m.infectious_period * (1 - m.Qs)
+        S = m.population - E - A - I - R
+        m.set_ic(state=(S, E, A, I, R))
+
+        m.run(duration)
+        cm = m.clinical.overflow_model()
+        cm.score = f"Isolation {pc(1 - rate)}"
+        return cm
+
+    def dataframe(models, col, attr):
+        return pd.DataFrame({getattr(m, attr): m[col] for m in models})
+
+    cms = [run_model(daily_cases, r) for r in rates]
+
+    st.subheader(_("ICU beds"))
+    st.line_chart(dataframe(cms, "critical", "score"))
+
+    st.subheader(_("Hospital beds"))
+    st.line_chart(dataframe(cms, "severe", "score"))
+
+    st.subheader(_("Cases"))
+    st.line_chart(dataframe(cms, "cases", "score"))
+
+    st.subheader(_("Deaths"))
+    st.line_chart(dataframe(cms, "deaths", "score"))
 
 
 # Start main script
