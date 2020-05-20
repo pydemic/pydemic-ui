@@ -27,10 +27,12 @@ requires = [
   "babel",
   "altair",
   "sidekick",
-  "pydemic-models>=0.1.4",
+  "pydemic-models>=0.1.5",
   "mundi>=0.2.3",
   "mundi-demography",
   "mundi-healthcare",
+  "statsmodels",
+  "markdown"
 ]
 
 [tool.flit.metadata.requires-extra]
