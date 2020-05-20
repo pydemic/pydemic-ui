@@ -5,7 +5,7 @@ services:
     image: pydemic/pydemic-ui:${TAG:-production}
     build:
       context: ../
-      dockerfile: Dockerfile
+      dockerfile: deploy/Dockerfile
     environment:
       LANG: pt_BR.UTF-8
       # STREAMLIT_BROWSER_SERVER_ADDRESS: 164.41.109.19,covid-calc.unb.br

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-20 11:56-0300\n"
-"PO-Revision-Date: 2020-05-20 11:52-0300\n"
+"POT-Creation-Date: 2020-05-20 14:31-0300\n"
+"PO-Revision-Date: 2020-05-20 14:30-0300\n"
 "Last-Translator: Fábio Mendes <fabiomacedomendes@gmail.com>\n"
 "Language: pt_BR\n"
 "Language-Team: pt_BR <LL@li.org>\n"
@@ -400,34 +400,32 @@ msgid "Intervention starts at day {} of simulation"
 msgstr "Intervenção começa no dia {} da simulação"
 
 #: pydemic_ui/components/input/select_intervention.py:46
-#, python-format
-msgid "Expected social isolation (0% represents no isolation)"
+msgid "Expected social isolation (0{pc} represents no isolation)"
 msgstr ""
-"Distanciamento social previsto (0% significa ausência de distanciamento "
-"social)"
+"Distanciamento social previsto (0{pc} significa ausência de "
+"distanciamento social)"
 
 #: pydemic_ui/components/input/select_intervention.py:47
-#, python-format
-msgid "Initial social isolation (0% represents no isolation)"
-msgstr "Isolamento inicial (0% representa ausência de isolamento)"
+msgid "Initial social isolation (0{pc} represents no isolation)"
+msgstr "Isolamento inicial (0{pc} representa ausência de isolamento)"
 
-#: pydemic_ui/components/input/select_intervention.py:49
+#: pydemic_ui/components/input/select_intervention.py:53
 msgid "First intervention"
 msgstr "Primeira intervenção"
 
-#: pydemic_ui/components/input/select_intervention.py:52
+#: pydemic_ui/components/input/select_intervention.py:56
 msgid "Delay start"
 msgstr "Início do atraso"
 
-#: pydemic_ui/components/input/select_intervention.py:54
+#: pydemic_ui/components/input/select_intervention.py:58
 msgid "Days without intervention"
 msgstr "Dias sem intevenção"
 
-#: pydemic_ui/components/input/select_intervention.py:71
+#: pydemic_ui/components/input/select_intervention.py:75
 msgid "Add more stages"
 msgstr "Acrescentar etapa"
 
-#: pydemic_ui/components/input/select_intervention.py:76
+#: pydemic_ui/components/input/select_intervention.py:80
 msgid "Intervention {n}"
 msgstr "Intervenção {n}"
 
@@ -1396,3 +1394,11 @@ msgstr "Não por agora..."
 #~ "**{rate}**  e **{n}** leitos disponíveis.\n"
 #~ ""
 #~ "\n"
+
+#~ msgid "Expected social isolation (0% represents no isolation)"
+#~ msgstr ""
+#~ "Distanciamento social previsto (0% significa"
+#~ " ausência de distanciamento social)"
+
+#~ msgid "Initial social isolation (0% represents no isolation)"
+#~ msgstr "Isolamento inicial (0% representa ausência de isolamento)"

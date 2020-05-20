@@ -43,8 +43,12 @@ def select_intervention(duration, title=__("Intervention"), where=st) -> runner.
 
         days_msg = _("Duration of intervention (days)")
         msg_info = _("Intervention starts at day {} of simulation")
-        rate_msg = _("Expected social isolation (0% represents no isolation)")
-        rate_msg_now = _("Initial social isolation (0% represents no isolation)")
+        rate_msg = _("Expected social isolation (0{pc} represents no isolation)")
+        rate_msg_now = _("Initial social isolation (0{pc} represents no isolation)")
+
+        # Error in pybabel extracting strings with % signs?
+        rate_msg = rate_msg.format(pc="%")
+        rate_msg_now = rate_msg_now.format(pc="%")
 
         where.subheader(_("First intervention"))
 
