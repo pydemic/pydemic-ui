@@ -54,9 +54,15 @@ def footnotes(where=st):
         template.format(href=fiocruz_href, name="Fiocruz"),
         template.format(href="https://famed.ufms.br/", name="FAMED"),
     ]
+    ack_institutions = [template.format(href="http://brasil.io", name="Brasil.io")]
     links = _("Support: {institutions}").format(institutions=", ".join(institutions))
-    styles = "text-align: center; margin: 2rem 0 -5rem 0;"
-    return html(f'<div style="{styles}">{links}</div>', where=where)
+    styles = "text-align: center; margin: 2rem 0 1rem 0;"
+    html(f'<div style="{styles}">{links}</div>', where=where)
+
+    links = _("Acknowledgements: {institutions}").format(
+        institutions=", ".join(ack_institutions)
+    )
+    html(f'<div style="{styles}">{links}</div>', where=where)
 
 
 if __name__ == "__main__":

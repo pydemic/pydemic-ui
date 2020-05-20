@@ -231,14 +231,14 @@ def get_seair_curves_for_region(
 
         # Compute extrapolation and concatenate the series for deaths with
         # the extrapolation using data from the past 3 weeks
+        delay = min(delay, len(deaths))
         extrapolated = fit.exponential_extrapolation(daily_deaths[-21:], delay)
         extrapolated = np.add.accumulate(extrapolated) + total_deaths
-        data = pd.Series(
-            np.concatenate([deaths, extrapolated]),
-            index=np.concatenate(
-                [deaths.index - datetime.timedelta(days=delay), deaths.index[-delay:]]
-            ),
-        )
+
+        # Indexes
+        index_delay = deaths.index - datetime.timedelta(days=delay)
+        index = np.concatenate([index_delay, deaths.index[-delay:]])
+        data = pd.Series(np.concatenate([deaths, extrapolated]), index=index)
         data /= params.CFR * CFR_bias * notification_rate
     else:
         data = cases["cases"] / notification_rate

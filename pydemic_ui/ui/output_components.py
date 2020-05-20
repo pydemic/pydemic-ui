@@ -86,16 +86,17 @@ def summary_cards(model):
     if peak_cases == model.date:
         peak_cases = _("Still coming...")
 
+    # Do not reference Brasil io as a data source :(
     brasil_io = '<a href="http://brasil.io" target="_blank">Brasil.io</a>'
-    cases_title = _("Confirmed cases ({link})").format(link=brasil_io)
-    deaths_title = _("Confirmed deaths ({link})").format(link=brasil_io)
+    cases_title = _("Confirmed cases*").format(link=brasil_io)
+    deaths_title = _("Confirmed deaths*").format(link=brasil_io)
     cards(
         {
             cases_title: fmt(info.get_confirmed_cases_for_region(region, disease)),
             deaths_title: fmt(info.get_confirmed_deaths_for_region(region, disease)),
         },
         escape=False,
-        color="#09ab3b",
+        color="st-red",
     )
     html('<div style="height: 0.5rem;"></div>')
     cards(
@@ -110,6 +111,7 @@ def summary_cards(model):
             _("Cumulative attack rate"): pc(recovered / population),
         }
     )
+    st.markdown(_("&ast; Compiled from local Healthcare Secretaries"))
 
 
 @info_component("main")
