@@ -1,5 +1,5 @@
 Este cenário prevê que **{mortality}** por 100.000 habitantes morreria no surto
-de COVID-19. Este número corresponde a **{fatality}** de todos que ficaram doentes.
+de COVID-19 nos **{days}** dias de simulação considerados. Este número corresponde a **{fatality}** de todos que ficaram doentes.
 O modelo também indica que **{infected}** da população será infectada pelo vírus, mas apenas
 **{symptomatic}** destes desenvolverão sintomas visíveis.
 
