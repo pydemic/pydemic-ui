@@ -11,7 +11,7 @@ from .output_components import (
     summary_cards,
     healthcare_parameters,
     epidemiological_parameters,
-    protection_equipment_demand,
+    ppe_demand,
 )
 from .ui_accessor import UI
 

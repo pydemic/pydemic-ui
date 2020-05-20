@@ -4,9 +4,8 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-from pydemic.diseases import covid19
 from pydemic.utils import fmt, pc
-from ..components import cards, pause, pyramid_chart, main_component, info_component
+from ..components import cards, pause, pyramid_chart, main_component, html
 from ..i18n import _
 
 
@@ -56,15 +55,19 @@ def available_beds_chart(model, title=_("Available hospital beds")):
     )
 
 
-@info_component("main")
-def deaths_chart(deaths, age_distribution, disease=covid19, where=st):
+@main_component()
+def deaths_chart(model, where=st):
     """
     Age-stratified deaths.
 
     Stratification is inferred from age distribution if deaths is a scalar.
     """
 
-    where.header(_("Anticipated age distribution of COVID deaths"))
+    deaths = model["deaths:final"]
+    age_distribution = model.age_distribution
+    disease = model.disease
+
+    where.header(_("Anticipated age distribution of COVID deaths by age"))
 
     mortality = disease.mortality_table()
     idxs = [*zip(range(0, 80, 10), range(5, 80, 10)), (80, 85, 90, 95, 100)]
@@ -87,18 +90,21 @@ def deaths_chart(deaths, age_distribution, disease=covid19, where=st):
     where.bar_chart(data.iloc[:, 1])
 
 
-@info_component("main")
-def population_info_chart(age_pyramid, where=st):
+@main_component()
+def population_info_chart(age_pyramid):
     """
     Write additional information about the model.
     """
 
     # Info
+    if not isinstance(age_pyramid, pd.DataFrame):
+        age_pyramid = age_pyramid.age_pyramid
+
     population = age_pyramid.values.sum()
     seniors_population = age_pyramid.loc[60:].values.sum()
 
     # Cards
-    where.header(_("Population"))
+    st.header(_("Population"))
 
     entries = {
         _("Total"): fmt(population),
@@ -106,11 +112,11 @@ def population_info_chart(age_pyramid, where=st):
             "Age 60+"
         ): f"{fmt(seniors_population)} ({pc(seniors_population / population)})",
     }
-    cards(entries, where=where)
+    cards(entries, where=st)
 
     # Pyramid chart
-    pause(where=where)
-    where.subheader(_("Population pyramid"))
+    pause(where=st)
+    st.subheader(_("Population pyramid") + "*")
 
     # Reindex age_pyramid to 10yrs groups
     ages = list(map(list, zip(age_pyramid.index[:-3:2], age_pyramid.index[1::2])))
@@ -126,15 +132,30 @@ def population_info_chart(age_pyramid, where=st):
     data.index = age_ranges
 
     data = data.rename({"female": "left", "male": "right"}, axis=1)
-    pyramid_chart(data, _("Female"), _("Male"), where=where)
+    pyramid_chart(data, _("Female"), _("Male"), where=st)
+
+    source = _(
+        """
+FREIRE, F.H.M.A; GONZAGA, M.R; QUEIROZ, B.L. Projeção populacional municipal
+com estimadores bayesianos, Brasil 2010 - 2030, 2019
+"""
+    )
+    label = _("Source")
+    html(
+        f'<div style="font-size: smaller; text-align: right;">* '
+        f"<strong>{label}</strong>:{source}</div>"
+    )
 
 
 if __name__ == "__main__":
     from ..examples import seir_info, seir
+    from ..components import css
+
+    css()
 
     model = seir()
     info = seir_info()
     hospitalizations_chart(model)
     deaths_chart(model)
-    available_beds_chart(info)
-    population_info_chart(info)
+    population_info_chart(model)
+    # available_beds_chart(info)
