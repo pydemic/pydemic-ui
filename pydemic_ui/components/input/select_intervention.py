@@ -7,10 +7,10 @@ import streamlit as st
 from ..base import twin_component
 from ..generic import html
 from ... import runner
-from ...i18n import _
+from ...i18n import _, __
 
 DAY = datetime.timedelta(days=1)
-INTERVENTION_TEXT = _(
+INTERVENTION_TEXT = __(
     """
 This intervention simulates a situation in which everyone reduces
 the average number of contacts throughout the day. Small reductions (~15%) are
@@ -21,7 +21,7 @@ of many non-pharmacological measures.
 
 
 @twin_component()
-def select_intervention(duration, title=_("Intervention"), where=st) -> runner.Runner:
+def select_intervention(duration, title=__("Intervention"), where=st) -> runner.Runner:
     """
     Return a dictionary with intervention parameters.
 
@@ -29,7 +29,7 @@ def select_intervention(duration, title=_("Intervention"), where=st) -> runner.R
         runner, hospital_capacity (float): maximum system capacity
     """
 
-    where.header(title)
+    where.header(str(title))
 
     baseline, social_distance = interventions = [_("None"), _("Social distancing")]
     intervention = where.selectbox(_("Scenario"), interventions)

@@ -8,23 +8,23 @@ from pydemic.diseases import covid19
 from pydemic.utils import fmt, safe_int, pc
 from ..base import twin_component
 from ..generic import html
-from ...i18n import _
+from ...i18n import _, __
 from ...info import (
     get_confirmed_daily_cases_for_region,
     get_notification_estimate_for_region,
 )
 
-OCCUPANCY_MSG = _(
+OCCUPANCY_MSG = __(
     """
-The Brazilian occupancy rate is traditionally above **{globalrate}**. The input
-parameters assume a **{rate}** occupancy rate and **{n}** available beds.
-"""
+   The Brazilian occupancy rate is traditionally above **{globalrate}**. The input
+   parameters assume a **{rate}** occupancy rate and **{n}** available beds.
+   """
 )
 
 
 @twin_component()
 def simulation_params(
-    region, disease=covid19, title=_("Simulation options"), where=st
+    region, disease=covid19, title=__("Simulation options"), where=st
 ) -> dict:
     """
     Return a dictionary with basic simulation parameters from user input.
@@ -37,7 +37,7 @@ def simulation_params(
 
     st = where
     if title:
-        st.header(title)
+        st.header(str(title))
     region = mundi.region(region)
 
     # Durations
@@ -58,7 +58,7 @@ def simulation_params(
 
 
 @twin_component()
-def healthcare_params(region, title=_("Hospital capacity"), occupancy=0.75, where=st):
+def healthcare_params(region, title=__("Hospital capacity"), occupancy=0.75, where=st):
     """
     Return a dictionary with hospital and icu capacities from user input.
 
@@ -70,7 +70,7 @@ def healthcare_params(region, title=_("Hospital capacity"), occupancy=0.75, wher
     """
 
     region = mundi.region(region)
-    where.header(title)
+    where.header(str(title))
 
     def get(title, capacity, rate, key=None):
         where.subheader(title)

@@ -16,19 +16,19 @@ from ..components import (
     html,
     main_component,
 )
-from ..i18n import _
+from ..i18n import _, __
 
 #
 # Messages
 #
-NO_ICU_MESSAGE = _(
+NO_ICU_MESSAGE = __(
     """
 The location does not have any ICU beds. At peak demand, it needs to reserve {n}
 beds from neighboring cities.
 """
 )
 
-ICU_OVERFLOW_MESSAGE = _(
+ICU_OVERFLOW_MESSAGE = __(
     """
 The location will **run out of ICU beds at {date}**. At peak demand, it will need **{n}
 new ICUs**. This demand corresponds to **{surge} times** the number of beds dedicated
@@ -36,13 +36,13 @@ to COVID-19 and {total} of the total number of ICU beds.
 """
 )
 
-GOOD_CAPACITY_MESSAGE = _(
+GOOD_CAPACITY_MESSAGE = __(
     """
 The number of ICU beds is sufficient for the expected demand in this scenario.
 """
 )
 
-EQUIPMENT_MESSAGE = _(
+EQUIPMENT_MESSAGE = __(
     """
 The table bellow show the recommended usage of PPE by healthcare workers
 during the period of simulation.
@@ -145,7 +145,7 @@ def healthcare_parameters(
             total=fmt(peak_icu / icu_full_capacity),
         )
     else:
-        msg = GOOD_CAPACITY_MESSAGE
+        msg = str(GOOD_CAPACITY_MESSAGE)
 
     where.markdown(msg)
 
@@ -189,7 +189,7 @@ def ppe_demand(model):
 
     # TODO: add source
     st.header(_("Personal protection equipment"))
-    st.markdown(EQUIPMENT_MESSAGE)
+    st.markdown(str(EQUIPMENT_MESSAGE))
 
     h_days = model["severe"].sum()
     i_days = model["critical"].sum()

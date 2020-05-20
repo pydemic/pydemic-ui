@@ -5,12 +5,12 @@ import streamlit as st
 import mundi
 from pydemic.diseases import covid19
 from ..base import twin_component
-from ...i18n import _
+from ...i18n import _, __
 
 
 @twin_component()
 def epidemiological_params(
-    region, disease=covid19, R0_max=5.0, title=_("Epidemiology"), where=st
+    region, disease=covid19, R0_max=5.0, title=__("Epidemiology"), where=st
 ):
     """
     Return a dictionary with additional simulation parameters from user input.
@@ -21,7 +21,7 @@ def epidemiological_params(
     region = mundi.region(region)
 
     # Choose scenario
-    where.header(title)
+    where.header(str(title))
 
     opts = [_("Standard"), _("Advanced")]
     std, custom = scenarios = opts

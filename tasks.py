@@ -26,7 +26,7 @@ def run(ctx, app="calc", lang=None, debug=False):
 
 @task
 def i18n(ctx, edit=False, lang="pt_BR"):
-    ctx.run("pybabel extract -o pydemic_ui/locale/messages.pot pydemic_ui")
+    ctx.run("pybabel extract -k __ -o pydemic_ui/locale/messages.pot pydemic_ui")
     ctx.run("pybabel update -i pydemic_ui/locale/messages.pot -d pydemic_ui/locale")
     if edit:
         ctx.run(f"poedit pydemic_ui/locale/{lang}/LC_MESSAGES/messages.po")

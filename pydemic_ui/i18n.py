@@ -1,6 +1,7 @@
 from gettext import gettext
-
 from pathlib import Path
+
+import sidekick as sk
 
 LOCALEDIR = Path(__file__).parent / "locale"
 
@@ -34,4 +35,9 @@ def run():
     set_i18n(lang)
 
 
+def gettext_lazy(st):
+    return sk.deferred(gettext, st)
+
+
 _ = gettext
+__ = gettext_lazy

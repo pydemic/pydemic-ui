@@ -8,16 +8,16 @@ import streamlit as st
 import mundi
 from mundi import Region
 from ..base import twin_component
-from ...i18n import gettext as _
+from ...i18n import _, __
 
-COUNTRIES = {"BR": _("Brazil")}
-TEMPLATE_START = [(_("Region"), "region", "macro-region"), (_("State"), "state", None)]
+COUNTRIES = {"BR": __("Brazil")}
+TEMPLATE_START = [(__("Region"), "region", "macro-region"), (__("State"), "state", None)]
 TEMPLATE_IBGE = [
-    (_("Meso Region"), "region", "meso-region"),
-    (_("Micro-Region"), "region", "micro-region"),
-    (_("City"), "city", None),
+    (__("Meso Region"), "region", "meso-region"),
+    (__("Micro-Region"), "region", "micro-region"),
+    (__("City"), "city", None),
 ]
-TEMPLATE_SUS = [(_("SUS macro region"), "region", "healthcare region")]
+TEMPLATE_SUS = [(__("SUS macro region"), "region", "healthcare region")]
 
 
 @twin_component()
@@ -50,16 +50,16 @@ def select_from_sub_regions(code, label, where=st, fastrack=False, **kwargs) -> 
         return regions[0]
     regions = ("*" + region.id, *regions)
     return mundi.region(
-        where.selectbox(label, regions, format_func=region_name).lstrip("*")
+        where.selectbox(str(label), regions, format_func=region_name).lstrip("*")
     )
 
 
-def select_from_template(code, template, title=_("Location"), where=st) -> Region:
+def select_from_template(code, template, title=__("Location"), where=st) -> Region:
     """
     Select a Brazilian region from country up to municipality.
     """
     if title:
-        where.header(title)
+        where.header(str(title))
 
     code = mundi.region(code)
     for label, type_, subtype in template:
@@ -77,7 +77,7 @@ def select_from_template(code, template, title=_("Location"), where=st) -> Regio
 # Country-specific selectors.
 #
 def select_br_region(
-    title=_("Location"), where=st, hide_cities=False, healthcare_regions=False
+    title=__("Location"), where=st, hide_cities=False, healthcare_regions=False
 ) -> Region:
     """
     Select a Brazilian region from country up to municipality.

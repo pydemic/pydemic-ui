@@ -6,16 +6,16 @@ import streamlit as st
 
 from pydemic.utils import fmt, pc
 from ..components import cards, pause, pyramid_chart, main_component, html
-from ..i18n import _
+from ..i18n import _, __
 
 
 @main_component()
-def hospitalizations_chart(model, title=_("Hospital demand")):
+def hospitalizations_chart(model, title=__("Hospital demand")):
     """
     Write plot of hospitalization pressure information.
     """
     if title:
-        st.header(title)
+        st.header(str(title))
 
     icu_ts = model["critical:dates"]
     hospitalized_ts = model["severe:dates"]
@@ -33,13 +33,13 @@ def hospitalizations_chart(model, title=_("Hospital demand")):
 
 
 @main_component()
-def available_beds_chart(model, title=_("Available hospital beds")):
+def available_beds_chart(model, title=__("Available hospital beds")):
     """
     Write plot of available beds.
     """
 
     if title:
-        st.header(title)
+        st.header(str(title))
 
     icu_ts = model["critical:dates"]
     hospitalized_ts = model["severe:dates"]
