@@ -13,6 +13,6 @@
 
     - name: Run `docker-compose up`
       docker_compose:
-        project_src: "{{ path }}/deploy"
+        project_src: "{{ path }}/deploy-pydemic-ui"
         build: yes
       register: output

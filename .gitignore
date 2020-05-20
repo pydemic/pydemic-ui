@@ -18,3 +18,4 @@ htmlcov/
 .fabfile.yml
 .fabric.yml
 deploy/inventory.yml
+deploy-pydemic-ui/inventory.yml
