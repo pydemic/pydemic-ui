@@ -210,7 +210,7 @@ def main(region="BR", disease=covid19):
 def secret(disease=covid19):
     from pydemic_ui.apps.projections_br import main
 
-    main(embed=True)
+    main(embed=True, disease=disease)
 
 
 # Start main script

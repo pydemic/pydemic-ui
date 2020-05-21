@@ -256,7 +256,7 @@ def collect_inputs(parent_region="BR", where=st.sidebar):
     }
 
 
-def show_results(parent_region, regions, columns, targets, days):
+def show_results(parent_region, regions, columns, targets, days, disease=covid19):
     """
     Show results from user input.
     """
@@ -269,7 +269,7 @@ def show_results(parent_region, regions, columns, targets, days):
         dataframe_download_link(df, name="report-brazil.{ext}")
 
 
-def main(embed=False):
+def main(embed=False, disease=covid19):
     """
     Main function for application.
     """
@@ -281,7 +281,7 @@ def main(embed=False):
         ui.logo(where=st.sidebar)
 
     inputs = collect_inputs(where=st if embed else st.sidebar)
-    show_results(**inputs)
+    show_results(disease=disease, **inputs)
 
 
 if __name__ == "__main__":

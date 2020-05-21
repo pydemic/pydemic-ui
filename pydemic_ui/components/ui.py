@@ -6,11 +6,13 @@ import streamlit as st
 
 
 @twin_component()
-def css(where=st):
+def css(where=st, keep_menu=False):
     """
     Inject Pydemic CSS. Should always be the first command in script.
     """
-    return html(asset("custom.html"), where=where)
+    if not keep_menu:
+        html(asset("hide_menu.html"), where=where)
+    html(asset("custom.html"), where=where)
 
 
 @twin_component()
