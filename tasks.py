@@ -6,11 +6,14 @@ from invoke import task
 
 
 @task
-def run(ctx, app="calc", lang=None, debug=False):
+def run(ctx, app="calc", lang=None, debug=False, keep_cache=False, clear_cache_all=False):
     """
     Run the selected app.
     """
     from streamlit.cli import main
+
+    if not keep_cache:
+        clear_cache(ctx, clear_cache_all)
 
     sys.argv = ["streamlit", "run", f"pydemic_ui/apps/{app}.py"]
     os.environ.update(

@@ -95,7 +95,7 @@ def run_model(region, duration, R0, notification_rate):
 #
 st.css()
 st.sidebar.logo()
-code = st.sidebar.select_region("BR")
+code = st.sidebar.select_region("BR", healthcare_regions=True)
 region = mundi.region(code)
 params = covid19.params(region=region)
 

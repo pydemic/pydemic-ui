@@ -1,10 +1,12 @@
 import base64
 import io
 from types import MappingProxyType
+from typing import List
 
 import pandas as pd
 
 import mundi
+from mundi import Region
 from pydemic import models
 from pydemic.diseases import covid19
 from pydemic.utils import pc
@@ -59,17 +61,23 @@ REGIONS_TYPES = {
             "subtype": "macro-region",
             "country_code": "BR",
         },
-        _("SUS macro-region"): {
-            "type": "region",
-            "subtype": "healthcare region",
-            "country_code": "BR",
-        },
+        # _("SUS macro-region"): {
+        #     "type": "region",
+        #     "subtype": "healthcare region",
+        #     "country_code": "BR",
+        # },
     }
 }
 
 
 def get_column(
-    col: str, day: int, prev_day: int, isolation: float, models: dict, duration: int
+    col: str,
+    day: int,
+    prev_day: int,
+    isolation: float,
+    models: dict,
+    duration: int,
+    regions: List[Region],
 ):
     data = {}
     for r in regions:
@@ -127,7 +135,9 @@ def get_dataframe(regions, days, targets, columns, duration):
         for isolation in targets:
             frame = pd.DataFrame(
                 {
-                    col: get_column(col, day, prev_day, isolation, models, duration)
+                    col: get_column(
+                        col, day, prev_day, isolation, models, duration, regions
+                    )
                     for col in columns
                 }
             ).astype(int)
@@ -144,10 +154,11 @@ def get_dataframe(regions, days, targets, columns, duration):
         prev_day = day
 
     df = pd.concat(frames, axis=1)
-    extra = df.mundi["name", "short_code", "numeric_code"]
+    extra = df.mundi["numeric_code", "short_code", "name"]
     extra = extra.astype(str)  # streamlit bug?
     extra.columns = pd.MultiIndex.from_tuples(("info", x, "") for x in extra.columns)
-    return pd.concat([extra, df], axis=1)
+    df = pd.concat([extra, df], axis=1)
+    return df.sort_values(df.columns[0])
 
 
 def dataframe_download_link(df, name="data.{ext}", show_option=True):
@@ -212,31 +223,66 @@ def get_regions(**query):
     return [mundi.region(id_) for id_ in mundi.regions(**query).index]
 
 
-ui.css()
-ui.logo(where=st.sidebar)
+def collect_inputs(parent_region="BR", where=st.sidebar):
+    """
+    Collect input parameters for the app to run.
 
-parent_region = "BR"
-kind = st.sidebar.selectbox(_("Select scenario"), list(REGIONS_TYPES[parent_region]))
-query = REGIONS_TYPES[parent_region][kind]
+    Returns:
+        Dictionary with the following keys:
+            parent_region, regions, columns, targets, days
+    """
+    st = where
+    kind = st.selectbox(_("Select scenario"), list(REGIONS_TYPES[parent_region]))
+    query = REGIONS_TYPES[parent_region][kind]
 
-trim_days = st.sidebar.number_input(_("Trim days"), 0, value=0)
+    regions = get_regions(**query)
 
-regions = get_regions(**query)
+    msg = _("Columns")
+    columns = st.multiselect(msg, COLUMNS, default=COLUMNS_DEFAULT)
 
-msg = _("Columns")
-columns = st.sidebar.multiselect(msg, COLUMNS, default=COLUMNS_DEFAULT)
+    msg = _("Isolation scores")
+    kwargs = {"default": TARGETS_DEFAULT, "format_func": lambda x: f"{x}%"}
+    targets = st.multiselect(msg, TARGETS, **kwargs)
 
-msg = _("Isolation scores")
-kwargs = {"default": TARGETS_DEFAULT, "format_func": lambda x: f"{x}%"}
-targets = st.sidebar.multiselect(msg, TARGETS, **kwargs)
+    msg = _("Show values for the given days")
+    days = st.multiselect(msg, DAYS, default=DAYS_DEFAULT)
 
-msg = _("Show values for the given days")
-days = st.sidebar.multiselect(msg, DAYS, default=DAYS_DEFAULT)
+    return {
+        "parent_region": parent_region,
+        "regions": regions,
+        "columns": columns,
+        "targets": targets,
+        "days": days,
+    }
 
-ui.cases_and_deaths_plot.from_region(parent_region, logy=True, grid=True)
 
-if days and targets and columns:
-    df = get_dataframe(regions, tuple(days), tuple(targets), tuple(columns), 61)
+def show_results(parent_region, regions, columns, targets, days):
+    """
+    Show results from user input.
+    """
 
-    st.subheader(_("Download results"))
-    dataframe_download_link(df, name="report-brazil.{ext}")
+    ui.cases_and_deaths_plot.from_region(parent_region, logy=True, grid=True)
+    if days and targets and columns:
+        df = get_dataframe(regions, tuple(days), tuple(targets), tuple(columns), 61)
+
+        st.subheader(_("Download results"))
+        dataframe_download_link(df, name="report-brazil.{ext}")
+
+
+def main(embed=False):
+    """
+    Main function for application.
+    """
+
+    if not embed:
+        ui.css()
+
+    if not embed:
+        ui.logo(where=st.sidebar)
+
+    inputs = collect_inputs(where=st if embed else st.sidebar)
+    show_results(**inputs)
+
+
+if __name__ == "__main__":
+    main()

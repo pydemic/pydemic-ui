@@ -12,13 +12,9 @@ This app uses components from the Pydemic UI package.
 import datetime
 import os
 
-import numpy as np
-import pandas as pd
-
-import mundi
 from pydemic.diseases import covid19
 from pydemic.models import SEAIR
-from pydemic.utils import extract_keys, pc
+from pydemic.utils import extract_keys
 from pydemic_ui import info
 from pydemic_ui import st
 from pydemic_ui import ui
@@ -62,7 +58,9 @@ CLINICAL = [
 CAPACITY = ["hospital_full_capacity", "icu_full_capacity"]
 
 
-def sidebar(region="BR", disease=covid19, where=st.sidebar):
+def sidebar(
+    region="BR", disease=covid19, where=st.sidebar, secret_day=None, secret_function=None
+):
     """
     Calculator sidebar element.
 
@@ -73,6 +71,13 @@ def sidebar(region="BR", disease=covid19, where=st.sidebar):
     st.logo()
     region = st.select_region(region, healthcare_regions=True)
     params = st.simulation_params(region, disease)
+
+    if secret_function and params["date"] == secret_day:
+        st = globals()["st"]
+        st.title(_("Secret area for beta testers"))
+        secret_function()
+        return
+
     return {
         "region": region,
         **params,
@@ -136,7 +141,15 @@ def model(*, daily_cases, runner, period, disease, **kwargs):
 
 def main(region="BR", disease=covid19):
     st.css()
-    params = sidebar(region=region, disease=disease)
+    params = sidebar(
+        region=region,
+        disease=disease,
+        secret_day=datetime.date(1904, 11, 10),
+        secret_function=lambda: secret(disease),
+    )
+    if params is None:  # Secret function was activated
+        return
+
     debug = False
 
     if DEBUG and st.checkbox(_("Enable debug")):
@@ -150,10 +163,6 @@ def main(region="BR", disease=covid19):
             )
         )
         debug = True
-
-    if params["date"] == datetime.date(1904, 11, 10):
-        st.title(_("Secret area for beta testers"))
-        return secret(params)
 
     epidemiology = extract_keys(PARAMS, params)
     clinical = extract_keys(CLINICAL, params)
@@ -198,52 +207,10 @@ def main(region="BR", disease=covid19):
                 st.area_chart(df)
 
 
-def secret(params, disease=covid19):
-    states = mundi.regions("BR", type="state")
-    region = st.selectbox(_("Select state"), states.index)
+def secret(disease=covid19):
+    from pydemic_ui.apps.projections_br import main
 
-    msg = _("Isolation scores")
-    scores = [n / 10 for n in range(1, 10)]
-    isolation = st.multiselect(msg, scores, default=[0.3, 0.5, 0.7], format_func=pc)
-    rates = 1 - np.array(isolation)
-
-    duration = st.number_input(_("Duration"), 1, value=60)
-
-    daily_cases = info.get_confirmed_daily_cases_for_region(region, disease)
-    daily_cases /= max(info.get_notification_estimate_for_region(region, disease), 1e-2)
-
-    def run_model(daily_cases, rate=1.0):
-        m = SEAIR(region=region, disease=disease)
-        m.R0 *= rate
-
-        R = 0.0
-        E = daily_cases * m.incubation_period
-        I = daily_cases * m.infectious_period * m.Qs
-        A = daily_cases * m.infectious_period * (1 - m.Qs)
-        S = m.population - E - A - I - R
-        m.set_ic(state=(S, E, A, I, R))
-
-        m.run(duration)
-        cm = m.clinical.overflow_model()
-        cm.score = f"Isolation {pc(1 - rate)}"
-        return cm
-
-    def dataframe(models, col, attr):
-        return pd.DataFrame({getattr(m, attr): m[col] for m in models})
-
-    cms = [run_model(daily_cases, r) for r in rates]
-
-    st.subheader(_("ICU beds"))
-    st.line_chart(dataframe(cms, "critical", "score"))
-
-    st.subheader(_("Hospital beds"))
-    st.line_chart(dataframe(cms, "severe", "score"))
-
-    st.subheader(_("Cases"))
-    st.line_chart(dataframe(cms, "cases", "score"))
-
-    st.subheader(_("Deaths"))
-    st.line_chart(dataframe(cms, "deaths", "score"))
+    main(embed=True)
 
 
 # Start main script

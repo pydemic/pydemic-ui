@@ -143,7 +143,7 @@ def get_cases_for_region(region, disease=covid19) -> pd.DataFrame:
     """
     A cached function that return a list of cases from region.
     """
-    return disease.epidemic_curve(region)
+    return disease.epidemic_curve(region).fillna(method="bfill")
 
 
 @ttl_cache()
@@ -223,6 +223,19 @@ def get_seair_curves_for_region(
         deaths = deaths[deaths > 0]
         total_deaths = deaths.iloc[-1]
 
+        # We need to check if series number of deaths is sufficient to generate any
+        # good statistics. Otherwise, the next best thing is to use the series of
+        # cases.
+        if len(deaths) < delay:
+            bias = get_notification_estimate_for_region(region, disease)
+            return get_seair_curves_for_region(
+                region=region,
+                disease=disease,
+                notification_rate=bias * notification_rate,
+                R0=R0,
+                use_deaths=False,
+            )
+
         # Obtain smoothed differences to avoid problems with datapoints in which
         # the daily number of new deaths is zero. We also force the accumulated
         # number of deaths to be the same in each case.
@@ -242,5 +255,11 @@ def get_seair_curves_for_region(
         data /= params.CFR * CFR_bias * notification_rate
     else:
         data = cases["cases"] / notification_rate
-
-    return fit.seair_curves(data, params, population=region.population, R0=R0)
+    try:
+        return fit.seair_curves(data, params, population=region.population, R0=R0)
+    except ValueError:
+        region = region.to_dict("country_code", "parent_id")
+        st.write(locals())
+        st.line_chart(data)
+        st.write(data)
+        raise ValueError(f"bad data: {data}")
