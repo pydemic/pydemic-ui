@@ -43,23 +43,19 @@ def cases_and_deaths_plot(
 
 
 # Helper functions
-def from_region(region, disease=covid19, **kwargs):
+def cases_and_deaths_plot_from_region(region, disease=covid19, **kwargs):
     """
     A cached version of cases_chart_section that use region instead of a cases
     dataframe as input.
     """
-    n_cases, n_deaths, plot = cases_and_deaths_plot_from_region(region, disease, **kwargs)
+    n_cases, n_deaths, plot = _cached_plot(region, disease, **kwargs)
     cases_and_deaths_plot(..., n_cases=n_cases, n_deaths=n_deaths, _plt_data=plot)
 
 
-# @st.cache(ttl=info.TTL_DURATION)
 @info.ttl_cache(key="ui.pyplot", force_joblib=True)
-def cases_and_deaths_plot_from_region(region, disease, **kwargs):
+def _cached_plot(region, disease, **kwargs):
     cases = info.get_cases_for_region(region, disease=disease)
     ax = plt.pydemic.cases_and_deaths(cases, **kwargs)
     n_cases = cases.iloc[-1]["cases"]
     n_deaths = cases.iloc[-1]["deaths"]
     return n_cases, n_deaths, ax.get_figure()
-
-
-cases_and_deaths_plot.from_region = from_region

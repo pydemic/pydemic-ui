@@ -14,6 +14,7 @@ asset = _components.asset
 card = _components.card.bind(_st)
 cards = _components.cards.bind(_st)
 css = _components.css.bind(_st)
+dataframe_download = _components.dataframe_download.bind(_st)
 footnote_disclaimer = _components.footnote_disclaimer.bind(_st)
 footnotes = _components.footnotes.bind(_st)
 html = _components.html.bind(_st)

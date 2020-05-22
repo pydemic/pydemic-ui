@@ -24,7 +24,7 @@ OCCUPANCY_MSG = __(
 
 @twin_component()
 def simulation_params(
-    region, disease=covid19, title=__("Simulation options"), where=st
+    region, disease=covid19, title=__("Simulation options"), where=st, secret_date=None
 ) -> dict:
     """
     Return a dictionary with basic simulation parameters from user input.
@@ -43,6 +43,8 @@ def simulation_params(
     # Durations
     period = st.slider(_("Duration (weeks)"), 1, 30, value=10) * 7
     start_date = st.date_input(_("Simulation date"))
+    if start_date == secret_date:
+        raise RuntimeError("run easter egg")
 
     # Seed
     st.subheader(_("Cases"))

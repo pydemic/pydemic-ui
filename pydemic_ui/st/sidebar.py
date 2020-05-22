@@ -13,6 +13,7 @@ asset = _components.asset
 card = _components.card.bind(_st.sidebar)
 cards = _components.cards.bind(_st.sidebar)
 css = _components.css.bind(_st.sidebar)
+dataframe_download = _components.dataframe_download.bind(_st.sidebar)
 footnote_disclaimer = _components.footnote_disclaimer.bind(_st.sidebar)
 footnotes = _components.footnotes.bind(_st.sidebar)
 html = _components.html.bind(_st.sidebar)
