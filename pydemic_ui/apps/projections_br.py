@@ -1,285 +1,162 @@
-import base64
-import io
-from types import MappingProxyType
-from typing import List
-
-import pandas as pd
-
-import mundi
-from mundi import Region
+from pydemic import fitting as fit
+from pydemic import formulas
 from pydemic import models
-from pydemic.diseases import covid19
-from pydemic.utils import pc
+from pydemic.all import *
 from pydemic_ui import components as ui
 from pydemic_ui import info
 from pydemic_ui import st
 from pydemic_ui.i18n import _
 
-MIMETYPES_MAP = {"csv": "text/csv", "xlsx": "application/vnd.ms-excel"}
 
-TARGETS = list(range(90, 10, -10))
-TARGETS_DEFAULT = [TARGETS[2], TARGETS[4], TARGETS[6]]
+@st.cache
+def get_epidemic_curves(refs: list):
+    curves = []
+    for ref in refs:
+        curve = covid19.epidemic_curve(ref)
+        curve.columns = pd.MultiIndex.from_tuples((ref, col) for col in curve.columns)
+        curves.append(curve)
 
-COLUMNS = [
-    # Infectious model
-    "susceptible",
-    "exposed",
-    "asymptomatic",
-    "infectious",
-    "recovered",
-    "cases",
-    "infected",
-    "R0",
-    # Clinical outcomes
-    "severe",
-    "critical",
-    "deaths",
-    "natural_deaths",
-    # Parameters
-    "icu_capacity",
-    "hospital_capacity",
-    "icu_surge_capacity",
-    "hospital_surge_capacity",
-]
-COLUMNS_DEFAULT = ["critical", "severe"]
-COL_NAMES = {
-    "critical": _("ICU"),
-    "severe": _("Clinical"),
-    "cases": _("Cases"),
-    "infected": _("Infected"),
-    "deaths": _("Deaths"),
-}
-
-DAYS = [5, 7, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 75, 90]
-DAYS_DEFAULT = [7, 15, 30, 60]
-
-REGIONS_TYPES = {
-    "BR": {
-        _("State"): {"type": "state", "country_code": "BR"},
-        _("Macro-region"): {
-            "type": "region",
-            "subtype": "macro-region",
-            "country_code": "BR",
-        },
-        # _("SUS macro-region"): {
-        #     "type": "region",
-        #     "subtype": "healthcare region",
-        #     "country_code": "BR",
-        # },
-    }
-}
-
-
-def get_column(
-    col: str,
-    day: int,
-    prev_day: int,
-    isolation: float,
-    models: dict,
-    duration: int,
-    regions: List[Region],
-):
-    data = {}
-    for r in regions:
-        model = models[r, isolation]
-        try:
-            values = model[col]
-        except KeyError:
-            value = getattr(model, col)
-        else:
-            initial = -(duration - prev_day)
-            final = -(duration - day)
-            value = values.iloc[initial:final].max()
-        data[r.id] = value
-
-    data = pd.Series(data)
-    data.name = col
-    data.index.name = "region"
-    return data
-
-
-@info.ttl_cache(key="app.projections_br", force_streamlit=True)
-def process_region(region, targets, duration):
-    data = info.get_seair_curves_for_region(region, use_deaths=True)
-    m = models.SEAIR(region=region, disease=covid19)
-    m.set_data(data)
-    m.initial_cases = info.get_cases_for_region(region)["cases"].iloc[0]
-
-    out = {}
-    for level in targets:
-        new = m.copy(name=_("Isolation {}").format(pc(level / 100)))
-        new.R0 *= 1 - level / 100
-        new.run(duration)
-        out[level] = new.clinical.overflow_model()
-
-    return MappingProxyType(out)
-
-
-@info.ttl_cache(key="app.projections_br", force_streamlit=True)
-def get_models(regions, targets, duration) -> dict:
-    models = {}
-    for region in regions:
-        with st.spinner(_("Processing {name}").format(name=region.name)):
-            result = process_region(region, targets, duration)
-            models.update({(region, k): v for k, v in result.items()})
-    return models
-
-
-@info.ttl_cache(key="app.projections_br", force_streamlit=True)
-def get_dataframe(regions, days, targets, columns, duration):
-    models = get_models(regions, targets, duration)
-    frames = []
-
-    prev_day = 0
-    for day in days:
-        for isolation in targets:
-            frame = pd.DataFrame(
-                {
-                    col: get_column(
-                        col, day, prev_day, isolation, models, duration, regions
-                    )
-                    for col in columns
-                }
-            ).astype(int)
-
-            names = ("days", "isolation", "data")
-            prepend = (
-                _("{n} days").format(n=day),
-                _("isolation {pc}").format(pc=pc(isolation / 100)),
-            )
-            cols = ((*prepend, c) for c in frame.columns)
-
-            frame.columns = pd.MultiIndex.from_tuples(cols, names=names)
-            frames.append(frame)
-        prev_day = day
-
-    df = pd.concat(frames, axis=1)
-    extra = df.mundi["numeric_code", "short_code", "name"]
-    extra = extra.astype(str)  # streamlit bug?
-    extra.columns = pd.MultiIndex.from_tuples(("info", x, "") for x in extra.columns)
-    df = pd.concat([extra, df], axis=1)
-    return df.sort_values(df.columns[0])
-
-
-def dataframe_download_link(df, name="data.{ext}", show_option=True):
-    """
-    Create a download link to dataframe.
-    """
-    opts = {
-        "show": _("Show in screen"),
-        "csv": _("Comma separated values"),
-        "xlsx": _("Excel"),
-    }
-    if not show_option:
-        del opts["show"]
-
-    opt = st.radio(_("How do you want your data?"), list(opts), format_func=opts.get)
-
-    if opt == "show":
-        st.write(df)
-    else:
-        st.html(data_anchor(df, name.format(ext=opt), type=opt))
-
-
-def data_anchor(
-    df: pd.DataFrame,
-    filename: str,
-    label: str = _("Right click link to download"),
-    type="csv",
-) -> str:
-    """
-    Create a string with a data URI that permits downloading the contents of a
-    a dataframe.
-    """
-    href = data_uri(df, type)
-    return f'<a href="{href}" download="{filename}">{label}</a>'
-
-
-def data_uri(df: pd.DataFrame, type: str, mime_type=None):
-    """
-    Returns only the href component of a data anchor.
-    """
-    if type == "csv":
-        fd = io.StringIO()
-        df.to_csv(fd)
-        data = fd.getvalue().encode("utf8")
-    elif type == "xlsx":
-        fd = io.BytesIO()
-        df.to_excel(fd)
-        data = fd.getvalue()
-    else:
-        raise ValueError(f"invalid output type: {type}")
-    data = base64.b64encode(data).decode("utf8")
-    mime_type = mime_type or MIMETYPES_MAP[type]
-    return f"data:{mime_type};base64,{data}"
+    return pd.concat(curves, axis=1).dropna()
 
 
 @st.cache
-def get_regions(**query):
-    """
-    Get all children in region that have the same values of the parameters passed
-    as keyword arguments.
-    """
-    return [mundi.region(id_) for id_ in mundi.regions(**query).index]
+def get_growths(refs, which="cases"):
+    data = []
+    curves = get_epidemic_curves(refs)
+    for ref in refs:
+        series = curves[ref, which]
+        sdiff = fit.smoothed_diff(series)[-30:]
+        data.append(fit.growth_factor(sdiff))
+    return pd.DataFrame(data, index=refs).sort_index()
 
 
-def collect_inputs(parent_region="BR", where=st.sidebar):
-    """
-    Collect input parameters for the app to run.
+@st.cache(allow_output_mutation=False)
+def run_models(refs, which):
+    growths = get_growths(refs, which)
+    R0s = []
+    ms = []
+    ms_bad = []
+    ms_good = []
+    for st_, (g, _) in growths.iterrows():
+        params = covid19.params(region=st_)
+        R0 = min(formulas.R0_from_K("SEAIR", params, K=np.log(g)), 2.5)
+        R0s.append(R0)
+        m = models.SEAIR(disease=covid19, region=st_, R0=R0)
+        m.set_data(info.get_seair_curves_for_region(st_))
+        base = m.copy()
 
-    Returns:
-        Dictionary with the following keys:
-            parent_region, regions, columns, targets, days
-    """
-    st = where
-    kind = st.selectbox(_("Select scenario"), list(REGIONS_TYPES[parent_region]))
-    query = REGIONS_TYPES[parent_region][kind]
+        m.run(120)
+        ms.append(m.clinical.overflow_model())
 
-    regions = get_regions(**query)
+        m = base.copy(R0=2.74)
+        m.run(120)
+        ms_bad.append(m.clinical.overflow_model())
 
-    msg = _("Columns")
-    columns = st.multiselect(msg, COLUMNS, default=COLUMNS_DEFAULT)
+        m = base.copy(R0=1.0)
+        m.run(120)
+        ms_good.append(m.clinical.overflow_model())
+    return map(tuple, [ms_good, ms, ms_bad])
 
-    msg = _("Isolation scores")
-    kwargs = {"default": TARGETS_DEFAULT, "format_func": lambda x: f"{x}%"}
-    targets = st.multiselect(msg, TARGETS, **kwargs)
 
-    msg = _("Show values for the given days")
-    days = st.multiselect(msg, DAYS, default=DAYS_DEFAULT)
+def collect_inputs(region="BR", where=st.sidebar):
+    states = mundi.regions(region, type="state")
+    highlight = where.selectbox(_("Select a state to highlight"), states.index)
+
+    msg = _("Which kind of curve to you want to analyze?")
+    which = where.selectbox(msg, ["cases", "deaths"])
 
     return {
-        "parent_region": parent_region,
-        "regions": regions,
-        "columns": columns,
-        "targets": targets,
-        "days": days,
+        "loc": highlight,
+        "idx": int(which == "deaths"),
+        "states": states,
+        "which": which,
     }
 
 
-def show_results(parent_region, regions, columns, targets, days, disease=covid19):
-    """
-    Show results from user input.
-    """
+def show_results(states, loc, idx, which, disease=covid19):
+    curves = get_epidemic_curves(states.index).fillna(0)
 
-    ui.cases_and_deaths_plot.from_region(parent_region, logy=True, grid=True)
-    if days and targets and columns:
-        df = get_dataframe(regions, tuple(days), tuple(targets), tuple(columns), 61)
+    # Acc cases
+    ax = curves.iloc[-30:, idx::2].plot(
+        logy=True, grid=True, ylim=(10, None), legend=False, color="0.5"
+    )
+    curves[loc, which].iloc[-30:].plot(
+        logy=True, grid=True, ylim=(10, None), legend=False, color="red", ax=ax
+    )
+    st.pyplot()
 
-        st.subheader(_("Download results"))
-        dataframe_download_link(df, name="report-brazil.{ext}")
+    # Daily cases
+    ax = (
+        curves.iloc[-30:, idx::2]
+        .diff()
+        .plot(logy=True, grid=True, ylim=(1, None), legend=False, color="0.5")
+    )
+    curves[loc, which].iloc[-30:].diff().plot(
+        logy=True, grid=True, ylim=(1, None), legend=False, color="red", ax=ax
+    )
+    st.pyplot()
+
+    # Growth factors
+    growths = get_growths(states.index, which)
+    ci = pd.DataFrame({"low": growths["value"] - growths["std"], "std": growths["std"]})
+
+    st.header("Growth factor +/- error")
+    ci.plot.bar(width=0.9, ylim=(0.8, 2), stacked=True, grid=True)
+    plt.plot(states.index, [1] * len(states), "k--")
+    st.pyplot()
+
+    # Duplication times
+    st.header("Duplication time")
+    (np.log(2) / np.log(growths["value"])).plot.bar(grid=True, ylim=(0, 30))
+    st.pyplot()
+
+    # R0
+    st.header("R0")
+    params = covid19.params(region=region)
+    (
+        np.log(growths["value"])
+        .apply(lambda K: formulas.R0_from_K("SEAIR", params, K=K))
+        .plot.bar(width=0.9, grid=True, ylim=(0, 4))
+    )
+    st.pyplot()
+
+    ms_good, ms_keep, ms_bad = run_models(states.index, which)
+
+    # ICU overflow
+    for ms, msg in [
+        (ms_keep, "keep trends"),
+        (ms_bad, "no distancing"),
+        (ms_good, "more distancing"),
+    ]:
+        st.header(f"Deaths and ICU overflow ({msg})")
+
+        deaths = pd.DataFrame({m.region.id: m["deaths:dates"] for m in ms})
+        deaths.plot(legend=False, color="0.5")
+        deaths.sum(1).plot(grid=True, logy=True, label="Soma")
+        deaths[loc].plot(grid=True, logy=True, legend=True)
+
+        st.cards({"Total de mortes": fmt(deaths.iloc[-1].sum())})
+        st.pyplot()
+
+        data = {}
+        for m in ms:
+            overflow = m.results["dates.icu_overflow"]
+            if overflow:
+                data[m.region.id] = (overflow - pd.to_datetime(today())).days
+        if data:
+            data = pd.Series(data)
+            data.plot.bar(width=0.9, grid=True)
+            st.pyplot()
 
 
 def main(embed=False, disease=covid19):
-    """
-    Main function for application.
-    """
-
     if not embed:
-        ui.css()
+        ui.css(keep_menu=True)
 
     if not embed:
         ui.logo(where=st.sidebar)
 
+    st.title(_("Projections for COVID-19 evolution in Brazil"))
     inputs = collect_inputs(where=st if embed else st.sidebar)
     show_results(disease=disease, **inputs)
 

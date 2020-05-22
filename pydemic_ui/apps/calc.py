@@ -10,6 +10,7 @@ in the near future.
 This app uses components from the Pydemic UI package.
 """
 import datetime
+import importlib
 import os
 
 from pydemic.diseases import covid19
@@ -59,7 +60,7 @@ CAPACITY = ["hospital_full_capacity", "icu_full_capacity"]
 
 
 def sidebar(
-    region="BR", disease=covid19, where=st.sidebar, secret_day=None, secret_function=None
+    region="BR", disease=covid19, where=st.sidebar, secret_date=None, secret_function=None
 ):
     """
     Calculator sidebar element.
@@ -70,9 +71,10 @@ def sidebar(
     st = where
     st.logo()
     region = st.select_region(region, healthcare_regions=True)
-    params = st.simulation_params(region, disease)
 
-    if secret_function and params["date"] == secret_day:
+    try:
+        params = st.simulation_params(region, disease, secret_date=secret_date)
+    except RuntimeError:
         st = globals()["st"]
         st.title(_("Secret area for beta testers"))
         secret_function()
@@ -139,13 +141,25 @@ def model(*, daily_cases, runner, period, disease, **kwargs):
     return m
 
 
+def easter_egg(disease=covid19):
+    apps = {
+        "scenarios_br": _("Hospital pressure in different epidemiological scenarios"),
+        "projections_br": _("Projections for Brazilian epidemiological evolution"),
+    }
+    msg = _("Select the secret application")
+    app = st.selectbox(msg, list(apps.keys()), format_func=apps.get)
+
+    mod = importlib.import_module(f"pydemic_ui.apps.{app}")
+    mod.main(embed=True, disease=disease)
+
+
 def main(region="BR", disease=covid19):
     st.css()
     params = sidebar(
         region=region,
         disease=disease,
-        secret_day=datetime.date(1904, 11, 10),
-        secret_function=lambda: secret(disease),
+        secret_date=datetime.date(1904, 11, 10),
+        secret_function=lambda: easter_egg(disease),
     )
     if params is None:  # Secret function was activated
         return
@@ -205,12 +219,6 @@ def main(region="BR", disease=covid19):
                 df = cm[DEATH_DISTRIBUTION_COLUMNS]
                 df.columns = [DEATH_DISTRIBUTION_COL_NAMES[k] for k in df.columns]
                 st.area_chart(df)
-
-
-def secret(disease=covid19):
-    from pydemic_ui.apps.projections_br import main
-
-    main(embed=True, disease=disease)
 
 
 # Start main script
