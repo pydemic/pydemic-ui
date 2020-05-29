@@ -1,4 +1,3 @@
-import mundi_healthcare as mhc
 from pydemic.diseases import covid19
 from pydemic.models import SEAIR
 from . import info

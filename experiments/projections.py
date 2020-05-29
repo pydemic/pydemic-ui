@@ -40,7 +40,7 @@ def progression_cards(deaths, color="st-blue"):
 def hospitalization_chart(model, shift=0):
     df = model[["severe", "critical"]]
     df.index = df.index - shift
-    df.plot(logy=logy, grid=grid)
+    df.plot(grid=grid)
     plt.mark_y(
         model.hospital_surge_capacity, "--", color=plt.color(2), label=_("Hospital beds")
     )
@@ -56,17 +56,17 @@ def plot_cases_and_projection(model, cases):
     cases = cases.reset_index(drop=True)
     cases.index = cases.index - len(cases)
     corrected = cases["cases"] / notification
-    cases["cases"].plot(style="o", alpha=0.25, label=_("Cases"))
-    cases["deaths"].plot(style="o", alpha=0.5, label=_("Deaths"))
-    corrected.plot(style="o", alpha=0.5, c=plt.color(2), label=_("Cases (corrected)"))
+    cases["cases"].plot()
+    cases["deaths"].plot()
+    corrected.plot()
 
     m_cases = model["cases"]
     m_cases.index = m_cases.index - len(cases)
-    m_cases.plot(color=plt.color(3), label=_("Cases (projected)"), lw=2)
+    m_cases.plot()
 
     m_deaths = model["deaths"]
     m_deaths.index = m_deaths.index - len(cases)
-    m_deaths.plot(color=plt.color(3), label=_("Deaths (projected)"), lw=2)
+    m_deaths.plot()
     plt.ylim(10, None)
     plt.mark_x(0, "k--")
     plt.tight_layout("x")
@@ -177,7 +177,7 @@ for m in ms:
 data = {col: get_column(col, ms) for col in columns}
 for k, df in data.items():
     st.subheader(k)
-    shift_index(df, n_cases).plot(logy=logy, grid=grid)
+    shift_index(df, n_cases).plot(grid=grid)
     plt.tight_layout("x")
     plt.mark_x(0, "k--", lw=2)
     st.pyplot()

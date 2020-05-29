@@ -47,9 +47,9 @@ m._initialized = True
 m.run(60)
 
 cm = m.clinical.overflow_model()
-ax = cases.plot(logy=True)
-ax = (cases["cases"] / notification).plot(logy=True, ax=ax)
-cm.plot(["cases:dates", "deaths:dates"], log=True, ax=ax)
+ax = cases.plot()
+ax = (cases["cases"] / notification).plot(ax=ax)
+cm.plot(["cases:dates", "deaths:dates"], ax=ax, logy=True)
 st.pyplot()
 
 df = pd.concat([cases.diff(), fit_infectious(cases)], axis=1)

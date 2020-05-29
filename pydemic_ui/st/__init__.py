@@ -1,7 +1,12 @@
+from typing import Union
+
+import sidekick as _sk
 import streamlit as _st
 
 from . import sidebar
 from .. import components as _components
+
+_self = _sk.import_later("pydemic_ui.st")
 
 #
 # Utilities
@@ -15,6 +20,7 @@ card = _components.card.bind(_st)
 cards = _components.cards.bind(_st)
 css = _components.css.bind(_st)
 dataframe_download = _components.dataframe_download.bind(_st)
+data_anchor = _components.data_anchor.bind(_st)
 footnote_disclaimer = _components.footnote_disclaimer.bind(_st)
 footnotes = _components.footnotes.bind(_st)
 html = _components.html.bind(_st)
@@ -86,7 +92,6 @@ spinner = _st.spinner
 subheader = _st.subheader
 subprocess = _st.subprocess
 success = _st.success
-table = _st.table
 text = _st.text
 text_area = _st.text_area
 text_input = _st.text_input
@@ -97,6 +102,57 @@ vega_lite_chart = _st.vega_lite_chart
 video = _st.video
 warning = _st.warning
 write = _st.write
+
+#
+# Overridden streamlit functions
+#
+streamlit_table = _st.table
+
+
+def table(data, link: Union[bool, str] = False, *, label: str = None, where=_self):
+    """
+    Display a static table.
+
+    This differs from `st.dataframe` in that the table in this case is
+    static: its entire contents are just laid out directly on the page.
+
+    This extends the default "st.table" function to include the possibility of
+    displaying a download link.
+
+    Args:
+        data (pandas.DataFrame, pandas.Styler, numpy.ndarray, Iterable, dict, or None)
+            The table data.
+        link (bool, str):
+            If True or a file name with a compatible extension such as csv, xls,
+            etc, it includes a download  link bellow data. The default file
+            format is csv.
+        label (str):
+            Override the default label in the anchor element.
+
+    Example
+    -------
+    >>> df = pd.DataFrame(
+    ...    np.random.randn(10, 5),
+    ...    columns=('col %d' % i for i in range(5)))
+    ...
+    >>> st.table(df, 'data.csv')
+
+    .. output::
+       https://share.streamlit.io/0.25.0-2JkNY/index.html?id=KfZvDMprL4JFKXbpjD3fpq
+       height: 480px
+
+    """
+    try:
+        fn = where.streamlit_table
+    except AttributeError:
+        fn = where.table
+        if fn is table:
+            fn = _st.table  # avoid infinite recursion
+    fn(data)
+    if link is True:
+        link = "data.csv"
+    if link:
+        data_anchor(data, link, label=label, where=where)
 
 
 def __getattr__(name):
