@@ -12,7 +12,7 @@ import mundi_healthcare as mhc
 from pydemic import cache
 from pydemic import fitting as fit
 from pydemic.diseases import covid19
-from pydemic.utils import coalesce, safe_int
+from pydemic.utils import coalesce, safe_int, to_json
 
 TTL_DURATION = 2 * 60 * 60
 
@@ -239,13 +239,14 @@ def get_seair_curves_for_region(
         # Obtain smoothed differences to avoid problems with datapoints in which
         # the daily number of new deaths is zero. We also force the accumulated
         # number of deaths to be the same in each case.
-        daily_deaths = fit.smoothed_diff(deaths)
+        daily_deaths = np.maximum(fit.smoothed_diff(deaths), 0.5)
         daily_deaths *= total_deaths / daily_deaths.sum()
 
         # Compute extrapolation and concatenate the series for deaths with
         # the extrapolation using data from the past 3 weeks
         delay = min(delay, len(deaths))
-        extrapolated = fit.exponential_extrapolation(daily_deaths[-21:], delay)
+        growth_factor, growth_std = fit.growth_factor(daily_deaths[-30:])
+        extrapolated = fit.exponential_extrapolation(daily_deaths[-30:], delay)
         extrapolated = np.add.accumulate(extrapolated) + total_deaths
 
         # Indexes
