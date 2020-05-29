@@ -41,6 +41,7 @@ dev = [
   "twine",
   "coverage~=5.0",
   "pytest~=5.0",
+  "pytest-cov~=2.8",
 ]
 
 [tool.black]

@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = pycountry_un/
+source = pydemic_ui/
 
 
 [report]

@@ -1,12 +1,13 @@
-import json
 import os
 import sys
-
+import click
 from invoke import task
 
 
 @task
-def run(ctx, app="calc", lang=None, debug=False, keep_cache=False, clear_cache_all=False):
+def run(
+    ctx, app="app_menu", lang=None, debug=False, keep_cache=False, clear_cache_all=False
+):
     """
     Run the selected app.
     """
@@ -68,3 +69,26 @@ def clear_cache(ctx, all=False):
     extra = ("pydemic",) if all else ()
     for dir in ("ui", "ui.info", "ui.app.calc", *extra):
         ctx.run(f"rm ~/.local/pydemic/cache/{dir} -rfv")
+
+
+@task
+def git(ctx, push=False):
+    """
+    Recommended git workflow
+    """
+
+    if not push:
+        res = ctx.run("git status", pty=True)
+
+        cmd = click.style("git add", fg="red", bold=True)
+        add = click.prompt("$ " + cmd, prompt_suffix=" ")
+
+        ctx.run(f"git add {add}", pty=True)
+
+        cmd = click.style("git commit -m", fg="red", bold=True)
+        msg = click.prompt("$ " + cmd, prompt_suffix=" ")
+
+        result = ctx.run(f'git commit -m "{msg}"', pty=True)
+        if result.exited != 0:
+            ctx.run(f"git add {add}", hide=True)
+            ctx.run(f'git commit -m "{msg}"', hide=True)
