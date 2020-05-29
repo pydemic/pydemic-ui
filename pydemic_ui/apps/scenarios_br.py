@@ -203,7 +203,9 @@ def show_results(parent_region, regions, columns, targets, days, disease=covid19
     Show results from user input.
     """
 
-    ui.cases_and_deaths_plot_from_region(parent_region, logy=True, grid=True)
+    parent_region = mundi.region(parent_region)
+    ax = parent_region.plot.cases_and_deaths(disease=disease, logy=True, grid=True)
+    st.pyplot(ax.get_figure())
     if days and targets and columns:
         df = get_dataframe(regions, tuple(days), tuple(targets), tuple(columns), 61)
 

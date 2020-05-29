@@ -1,7 +1,13 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+import mundi
 from pydemic import fitting as fit
 from pydemic import formulas
 from pydemic import models
-from pydemic.all import *
+from pydemic.diseases import covid19
+from pydemic.utils import fmt, today
 from pydemic_ui import components as ui
 from pydemic_ui import info
 from pydemic_ui import st
@@ -77,23 +83,13 @@ def show_results(states, loc, idx, which, disease=covid19):
     curves = get_epidemic_curves(states.index).fillna(0)
 
     # Acc cases
-    ax = curves.iloc[-30:, idx::2].plot(
-        logy=True, grid=True, ylim=(10, None), legend=False, color="0.5"
-    )
-    curves[loc, which].iloc[-30:].plot(
-        logy=True, grid=True, ylim=(10, None), legend=False, color="red", ax=ax
-    )
+    ax = curves.iloc[-30:, idx::2].plot(legend=False, grid=True)
+    curves[loc, which].iloc[-30:].plot(ax=ax, legend=False, grid=True)
     st.pyplot()
 
     # Daily cases
-    ax = (
-        curves.iloc[-30:, idx::2]
-        .diff()
-        .plot(logy=True, grid=True, ylim=(1, None), legend=False, color="0.5")
-    )
-    curves[loc, which].iloc[-30:].diff().plot(
-        logy=True, grid=True, ylim=(1, None), legend=False, color="red", ax=ax
-    )
+    ax = curves.iloc[-30:, idx::2]
+    curves[loc, which].iloc[-30:].diff().plot(ax=ax, legend=False, grid=True)
     st.pyplot()
 
     # Growth factors
@@ -112,7 +108,7 @@ def show_results(states, loc, idx, which, disease=covid19):
 
     # R0
     st.header("R0")
-    params = covid19.params(region=region)
+    params = covid19.params(region=loc)
     (
         np.log(growths["value"])
         .apply(lambda K: formulas.R0_from_K("SEAIR", params, K=K))
@@ -132,8 +128,8 @@ def show_results(states, loc, idx, which, disease=covid19):
 
         deaths = pd.DataFrame({m.region.id: m["deaths:dates"] for m in ms})
         deaths.plot(legend=False, color="0.5")
-        deaths.sum(1).plot(grid=True, logy=True, label="Soma")
-        deaths[loc].plot(grid=True, logy=True, legend=True)
+        deaths.sum(1).plot(grid=True)
+        deaths[loc].plot(legend=True, grid=True)
 
         st.cards({"Total de mortes": fmt(deaths.iloc[-1].sum())})
         st.pyplot()

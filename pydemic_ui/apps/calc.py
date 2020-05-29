@@ -114,7 +114,7 @@ def output(model, info, title=_("Hospital pressure calculator")):
     ui.healthcare_parameters(info)
 
     st.pause()
-    model.ui.ppe_demand()
+    model.ui.ppe_demand_table()
 
     st.pause()
     model.ui.epidemiological_parameters()
@@ -145,6 +145,7 @@ def easter_egg(disease=covid19):
     apps = {
         "scenarios_br": _("Hospital pressure in different epidemiological scenarios"),
         "projections_br": _("Projections for Brazilian epidemiological evolution"),
+        "components": _("Showcase Pydemic-UI components"),
     }
     msg = _("Select the secret application")
     app = st.selectbox(msg, list(apps.keys()), format_func=apps.get)
