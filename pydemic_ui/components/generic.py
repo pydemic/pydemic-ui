@@ -1,19 +1,20 @@
-__package__ = "pydemic_ui.components"
-
 import base64
 import html as _html
 import io
+import os
 from typing import Mapping, Optional, Any
 
 import pandas as pd
 import streamlit as st
 
+from pydemic.utils import file_type_display_name
 from .base import twin_component
+from .. import utils
 from ..i18n import _, __
 
 html_escape = _html.escape
 
-# Friently names to colors in the Streamlit palette
+# Friendly names to colors in the Streamlit palette
 # See https://pmbaumgartner.github.io/streamlitopedia/essentials.html
 COLOR_ALIASES = {
     # Main colors
@@ -116,6 +117,7 @@ def dataframe_download(
     show_option=True,
     title=__("How do you want your data?"),
     where=st,
+    **kwargs,
 ):
     """
     Create a download link to dataframe.
@@ -131,63 +133,76 @@ def dataframe_download(
     opt = st.radio(str(title), list(opts), format_func=opts.get)
 
     if opt == "show":
-        st.write(df)
+        st.write(df.astype(object))
     else:
-        html(dataframe_anchor(df, name.format(ext=opt), type=opt), where=where)
+        name = name.format(ext=opt)
+        data_anchor(df, name, where=where, **kwargs)
 
 
-def dataframe_anchor(
-    df: pd.DataFrame,
-    filename: str,
-    label: str = __("Right click link to download"),
-    type="csv",
-) -> str:
+@twin_component()
+def data_anchor(
+    data,
+    filename,
+    label=None,
+    style="display: block; text-align: right; margin-bottom: 2rem;",
+    where=st,
+    **kwargs,
+):
     """
-    Create a string with a data URI that permits downloading the contents of a
-    a dataframe.
+    Display a download link for the given data.
+
+    Args:
+        data:
+            Any object that can be converted to a dataframe using
+            :func:`pydemic.utils.data_to_dataframe`
+        filename:
+            Name of downloaded file with extension. By default, file type is
+            inferred from extension.
+        label:
+            Visible text inside the anchor element.
+
+    Keyword Args:
+        Additional keyword arguments are forwarded to the :func:`dataframe_uri`
+        function.
+
+    See Also:
+        :func:`dataframe_uri`
+        :func:`pydemic.utils.data_to_dataframe`
     """
 
-    href = dataframe_uri(df, type)
-    return f'<a href="{href}" download="{filename}">{label}</a>'
+    data = utils.data_to_dataframe(data)
+    _base, ext = os.path.splitext(filename)
+    ext = ext[1:]
+    if label is None:
+        label = _("Download as {kind}").format(kind=file_type_display_name(ext))
+
+    kwargs.setdefault("kind", ext)
+    href = dataframe_uri(data, **kwargs)
+    anchor = f'<a href="{href}" download="{filename}">{label}</a>'
+    div = f'<div style="{style}">{anchor}</div>'
+    html(div, where=where)
 
 
-def dataframe_uri(df: pd.DataFrame, type: str, mime_type=None):
+def dataframe_uri(df: pd.DataFrame, kind: str, mime_type=None, dates_format=None):
     """
     Returns only the href component of a data URI anchor that encodes a
     dataframe.
     """
-    if type == "csv":
+
+    if dates_format:
+        df.index = [d.strftime(dates_format) for d in df.index]
+
+    if kind == "csv":
         fd = io.StringIO()
         df.to_csv(fd)
         data = fd.getvalue().encode("utf8")
-    elif type == "xlsx":
+    elif kind == "xlsx":
         fd = io.BytesIO()
         df.to_excel(fd)
         data = fd.getvalue()
     else:
-        raise ValueError(f"invalid output type: {type}")
+        raise ValueError(f"invalid output type: {kind}")
+
     data = base64.b64encode(data).decode("utf8")
-    mime_type = mime_type or MIMETYPES_MAP[type]
+    mime_type = mime_type or MIMETYPES_MAP[kind]
     return f"data:{mime_type};base64,{data}"
-
-
-if __name__ == "__main__":
-    from .ui import css
-
-    css()
-    st.header("Components")
-
-    st.subheader("html()")
-    html("<div><pre>Raw HTML</pre></div>")
-
-    st.subheader("card()")
-    card("Card", "Card data")
-    card("Colored Card", "Card data", color="blue")
-
-    st.subheader("cards()")
-    cards({"Card 1": "Card 1 data", "Card 2": "Card 2 data"}, color="red")
-
-    st.subheader("md_description()")
-    md_description(
-        {"Entry 1": "Description for entry 1", "Entry 2": "Description for entry 2"}
-    )

@@ -80,20 +80,18 @@ def healthcare_params(region, title=__("Hospital capacity"), occupancy=0.75, whe
         total = where.number_input(
             _("Total capacity"), min_value=0, value=int(capacity), key=key + "_total"
         )
-        result = where.number_input(
-            _("Occupied"),
-            min_value=0,
-            max_value=total,
-            value=int(total * rate),
-            key=key + "_rate",
+        occupied = where.number_input(
+            _("Occupied"), min_value=0, value=int(capacity * rate), key=key + "_used"
         )
+        if occupied > total:
+            where.warning(_("Using more beds than total capacity"))
         msg = markdown(
             OCCUPANCY_MSG.format(
-                n=fmt(total - result), rate=pc(result / total), globalrate=pc(rate)
+                n=fmt(total - occupied), rate=pc(occupied / total), globalrate=pc(rate)
             )
         )
         html(f'<span style="font-size: smaller;">{msg}</span>', where=where)
-        return total - result
+        return max(total - occupied, 0)
 
     h_cap = safe_int(region.hospital_capacity)
     icu_cap = safe_int(region.icu_capacity)

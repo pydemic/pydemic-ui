@@ -23,12 +23,11 @@ def epidemiological_params(
     # Choose scenario
     where.header(str(title))
 
-    opts = [_("Standard"), _("Advanced")]
-    std, custom = scenarios = opts
-    scenario = where.selectbox(_("Scenario"), scenarios)
+    opts = {"std": _("Standard"), "custom": _("Advanced")}
+    scenario = where.selectbox(_("Scenario"), list(opts), format_func=opts.get)
 
     # Return simple scenarios
-    if scenario == std:
+    if scenario == "std":
         return {}
 
     params = disease.params(region=region)

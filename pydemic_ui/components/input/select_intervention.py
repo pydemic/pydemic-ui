@@ -31,13 +31,13 @@ def select_intervention(duration, title=__("Intervention"), where=st) -> runner.
 
     where.header(str(title))
 
-    baseline, social_distance = interventions = [_("None"), _("Social distancing")]
-    intervention = where.selectbox(_("Scenario"), interventions)
+    opts = {"baseline": _("None"), "distancing": _("Social distancing")}
+    intervention = where.selectbox(_("Scenario"), list(opts), format_func=opts.get)
 
-    if intervention == baseline:
+    if intervention == "baseline":
         return runner.simple_runner()
 
-    elif intervention == social_distance:
+    elif intervention == "distancing":
         step = 1
         html(f'<span style="font-size: smaller;">{INTERVENTION_TEXT}</span>', where=where)
 

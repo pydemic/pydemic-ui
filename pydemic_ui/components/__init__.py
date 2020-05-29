@@ -1,6 +1,7 @@
 from .base import twin_component, main_component, info_component, asset
 from .charts import pyramid_chart
-from .pyplot import cases_and_deaths_plot, cases_and_deaths_plot_from_region
+
+# from .pyplot import cases_and_deaths_plot, cases_and_deaths_plot_from_region
 from .generic import (
     html,
     card,
@@ -9,7 +10,7 @@ from .generic import (
     pause,
     line,
     dataframe_download,
-    dataframe_anchor,
+    data_anchor,
     dataframe_uri,
 )
 from .ui import css, logo, footnotes, footnote_disclaimer

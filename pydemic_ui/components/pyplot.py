@@ -1,6 +1,6 @@
 import streamlit as st
 
-import pydemic_ui.pyplot as plt
+import pydemic.plot as plt
 from pydemic.diseases import covid19
 from pydemic.utils import fmt
 from .base import main_component

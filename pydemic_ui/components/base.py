@@ -28,9 +28,8 @@ def twin_component():
 
             @wraps(fn)
             def bound(*args, **kwargs):
-                if "where" in kwargs:
-                    raise TypeError("cannot bind bound component!")
-                return fn(*args, where=where, **kwargs)
+                kwargs.setdefault("where", where)
+                return fn(*args, **kwargs)
 
             return bound
 
