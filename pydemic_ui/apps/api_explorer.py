@@ -112,7 +112,7 @@ def explore_object_attribute(name, obj, attrs=("ui", "plot", "pydemic"), where=s
     return explore_object(ref, child, where=where)
 
 
-def main(embed=False):
+def main(embed=False, disease=None):
     """
     Main interface of the API explorer.
     """

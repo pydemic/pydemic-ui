@@ -146,7 +146,7 @@ def easter_egg(disease=covid19):
         "api_explorer": _("Showcase Pydemic-UI components"),
         "scenarios1": _("Forecast for BR states in different scenarios (model 1)"),
         "scenarios2": _("Forecast for BR states in different scenarios (model 2)"),
-        # "projections_br": _("Projections for Brazilian epidemiological evolution"),
+        "projections": _("Epidemic forecasts"),
     }
     msg = _("Select the secret application")
     app = st.selectbox(msg, list(apps.keys()), format_func=apps.get)

@@ -60,6 +60,7 @@ def build(ctx, tag=None):
 
 @task
 def deploy_update(ctx, inventory="deploy-pydemic-ui/inventory.yml"):
+    ctx.run(f"git push")
     ctx.run(f"ansible-playbook -i {inventory} deploy-pydemic-ui/playbook-update.yml")
 
 
