@@ -19,22 +19,21 @@ CLINICAL_OPTS = (
     "hospital_surge_capacity",
 )
 RUN_OPTS = ("duration", "R0_list")
-TITLE = None
 
 
 def main(embed=False, disease=None):
     """
     Run application.
     """
-    global TITLE
-
     if not embed:
         st.css(keep_menu=True)
         st.sidebar.logo()
-        TITLE = st.empty()
-        TITLE.title(_("Covid risk factors"))
+        title = st.empty().title
+        title(_("Covid risk factors"))
+    else:
+        title = lambda *args: None
 
-    opts = sidebar(where=st if embed else st.sidebar, embed=embed, disease=disease)
+    opts = sidebar(title, where=st if embed else st.sidebar, embed=embed, disease=disease)
     show_opts = extract_keys(SHOW_OPTS, opts)
     clinical_opts = extract_keys(CLINICAL_OPTS, opts)
     run_opts = extract_keys(RUN_OPTS, opts)
@@ -52,14 +51,14 @@ def main(embed=False, disease=None):
     show_outputs(model, group, clinical_opts=clinical_opts, **opts, **show_opts)
 
 
-def sidebar(where=st.sidebar, embed=False, disease="covid-19"):
+def sidebar(title, where=st.sidebar, embed=False, disease="covid-19"):
     """
     Collect inputs in the sidebar or other location.
     """
 
     st = where
     region = st.region_input("BR", text=True)
-    TITLE.title(_("Covid risk factors ({name})").format(name=_(region.name)))
+    title(_("Covid risk factors ({name})").format(name=_(region.name)))
 
     # Scenarios
     model = start_model(region, disease)
