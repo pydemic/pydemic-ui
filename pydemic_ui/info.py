@@ -18,7 +18,12 @@ TTL_DURATION = 2 * 60 * 60
 
 
 def ttl_cache(
-    fn=None, ttl=TTL_DURATION, force_streamlit=False, force_joblib=False, key="ui.info"
+    fn=None,
+    ttl=TTL_DURATION,
+    force_streamlit=False,
+    force_joblib=False,
+    key="ui.info",
+    **kwargs,
 ):
     """
     Default time-to-live cache logic.
@@ -27,9 +32,9 @@ def ttl_cache(
         return lambda f: ttl_cache(f, ttl, force_streamlit, force_joblib)
 
     if force_streamlit:
-        return st.cache(ttl=ttl)(fn)
+        return st.cache(ttl=ttl, **kwargs)(fn)
     elif force_joblib:
-        return cache.ttl_cache(key, timeout=ttl)(fn)
+        return cache.ttl_cache(key, timeout=ttl, **kwargs)(fn)
 
     backend = os.environ.get("PYDEMIC_UI_CACHE_BACKEND", "joblib").lower()
     if backend == "joblib":
@@ -232,7 +237,6 @@ def get_seair_curves_for_region(
                 region=region,
                 disease=disease,
                 notification_rate=bias * notification_rate,
-                R0=R0,
                 use_deaths=False,
             )
 
@@ -257,7 +261,7 @@ def get_seair_curves_for_region(
     else:
         data = cases["cases"] / notification_rate
     try:
-        return fit.seair_curves(data, params, population=region.population, R0=R0)
+        return fit.seair_curves(data, params, population=region.population)
     except ValueError:
         region = region.to_dict("country_code", "parent_id")
         st.write(locals())

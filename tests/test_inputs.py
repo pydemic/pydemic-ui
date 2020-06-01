@@ -38,7 +38,7 @@ class TestInput:
                 ask.selectbox["*BR-1"](...),
             ]
         )
-        assert input.select_region("BR", where=st) == mundi.region("BR-1")
+        assert input.region_input("BR", where=st) == mundi.region("BR-1")
         assert st.is_empty()
 
     def test_simulation_params(self, en):

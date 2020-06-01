@@ -1,6 +1,7 @@
 from mundi import Region
 from pydemic.region import RegionProperty, RegionT
 from pydemic.utils import fmt
+from pydemic_ui.decorators import title
 from . import st
 from .i18n import _, __
 
@@ -46,20 +47,19 @@ class UiProperty(RegionProperty):
         st.cards({_("Cases*"): fmt(cases), _("Deaths"): fmt(deaths)}, color="st-red")
         st.html(_("&ast; As measured at {date}.").format(date=final.strftime("%x")))
 
-    def epidemic_curves(
-        self, disease=None, title=__("Cases and deaths"), where=st, **kwargs
-    ):
+    @title(__("Cases and deaths"))
+    def cases_and_deaths(self, disease=None, where=st, download=None, **kwargs):
         """
         Return epidemic curves for region.
         """
         st = where
         region = self.region
 
-        if title:
-            st.subheader(str(title))
-
         ax = region.plot.cases_and_deaths(disease, **kwargs)
         st.pyplot(ax.get_figure())
+        if download:
+            data = region.pydemic.epidemic_curve()
+            st.data_anchor(data, download)
 
     def weekday_rate(
         self, disease=None, title=__("Cases per weekday"), where=st, **kwargs
