@@ -50,6 +50,8 @@ PARAMS = [
 CLINICAL = [
     "hospitalization_period",
     "icu_period",
+    "severe_period",
+    "critical_period",
     "hospital_capacity",
     "icu_capacity",
     "prob_severe",
