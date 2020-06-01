@@ -11,14 +11,8 @@ from pathlib import Path
 import streamlit as st
 
 LOCALEDIR = Path(__file__).parent.parent / "locale"
-PYDEMIC_MODULES = (
-    "pydemic_ui",
-    "pydemic",
-    "mundi",
-    "mundi_demography",
-    "mundi_healthcare",
-    "sidekick",
-)
+BASEDIR = Path(__file__).parent.parent
+PYDEMIC_MODULES = ("pydemic_ui", "pydemic")
 
 
 @lru_cache(1)
@@ -28,9 +22,10 @@ def APP_LIST():
         "calc": _("Main epidemic calculator"),
         "api_explorer": _("Pydemic-UI API explorer"),
         "projections": _("Epidemic projections and forecast"),
-        "projections_br": _("BR projections"),
-        "scenarios_br": _("BR scenarios"),
+        "scenarios1": _("Epidemic scenarios (I)"),
+        "scenarios2": _("Epidemic scenarios (II)"),
         "model_info": _("Model info"),
+        "forecast": _("Forecast"),
     }
 
 
@@ -56,10 +51,14 @@ def select_app(where=st, exclude=(), force_reload=False, **kwargs):
         mod_path = f"pydemic_ui.apps.{app}"
         if force_reload:
             sys.modules.pop(mod_path, None)
+            if st.button(_("Force reload")):
+                for mod in PYDEMIC_MODULES:
+                    clear_module(mod, True)
 
         mod = importlib.import_module(mod_path)
         main = getattr(mod, "main")
         main(**kwargs)
+
     else:
         silly_animation(_("Doing nothing..."))
 
@@ -123,6 +122,20 @@ def configure_i18n():
     gettext.bindtextdomain("messages", localedir=LOCALEDIR)
 
 
+def patch_builtins():
+    """
+    Add some helper functions to builtins for quick and dirt debugging and app
+    development.
+    """
+
+    with open(BASEDIR / "builtins.py") as fd:
+        code = fd.read()
+        ns = {"__name__": "builtins_patch"}
+        exec(code, ns)
+        ns["main"]()
+
+
 if __name__ == "__main__":
     configure_i18n()
+    patch_builtins()
     select_app(force_reload=True)

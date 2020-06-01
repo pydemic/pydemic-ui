@@ -70,7 +70,7 @@ def sidebar(
     """
     st = where
     st.logo()
-    region = st.select_region(region, healthcare_regions=True)
+    region = st.region_input(region, sus_regions=True)
 
     try:
         params = st.simulation_params(region, disease, secret_date=secret_date)
@@ -143,9 +143,10 @@ def model(*, daily_cases, runner, period, disease, **kwargs):
 
 def easter_egg(disease=covid19):
     apps = {
-        "scenarios_br": _("Hospital pressure in different epidemiological scenarios"),
-        "projections_br": _("Projections for Brazilian epidemiological evolution"),
-        "components": _("Showcase Pydemic-UI components"),
+        "api_explorer": _("Showcase Pydemic-UI components"),
+        "scenarios1": _("Forecast for BR states in different scenarios (model 1)"),
+        "scenarios2": _("Forecast for BR states in different scenarios (model 2)"),
+        # "projections_br": _("Projections for Brazilian epidemiological evolution"),
     }
     msg = _("Select the secret application")
     app = st.selectbox(msg, list(apps.keys()), format_func=apps.get)

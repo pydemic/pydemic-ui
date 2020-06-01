@@ -1,358 +1,285 @@
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
-from statsmodels import api as sm
 
-from pydemic import fitting as fit
-from pydemic import formulas
 from pydemic.models import Model, SEAIR
 from pydemic.plot import mark_x, mark_y
 from pydemic.region import RegionT
-from pydemic.types import ValueStd
-from pydemic.utils import extract_keys, trim_zeros, fmt
+from pydemic.utils import extract_keys, fmt, pc
 from pydemic_ui import st
 from pydemic_ui.i18n import _
 
 pd = pd
 np = np
-SHOW_OPTS = ("show_cases_plot", "show_weekday_rate", "healthcare_available")
-START_OPTS = ("notification_rate",)
-RUN_OPTS = ("R0", "duration")
+SHOW_OPTS = ("show_cases_plot", "show_weekday_rate", "plot_opts")
+CLINICAL_OPTS = (
+    "icu_capacity",
+    "hospital_capacity",
+    "icu_surge_capacity",
+    "hospital_surge_capacity",
+)
+RUN_OPTS = ("duration", "R0_list")
+TITLE = None
 
 
 def main(embed=False):
     """
     Run application.
     """
+    global TITLE
+
     if not embed:
         st.css(keep_menu=True)
         st.sidebar.logo()
-        st.title(_("Epidemic projections"))
+        TITLE = st.empty()
+        TITLE.title(_("Covid risk factors"))
 
     opts = sidebar(where=st if embed else st.sidebar, embed=embed)
     show_opts = extract_keys(SHOW_OPTS, opts)
-    start_opts = extract_keys(START_OPTS, opts)
+    clinical_opts = extract_keys(CLINICAL_OPTS, opts)
     run_opts = extract_keys(RUN_OPTS, opts)
 
-    model = start_model(**opts, **start_opts)
-    model = run_model(model, **run_opts)
-    show_outputs(model, **opts, **show_opts)
+    # Start model with known R0
+    region = opts["region"]
+    plot_opts = show_opts["plot_opts"]
+
+    st.header(_("Cases and deaths"))
+    region.ui.epidemic_summary()
+    region.ui.cases_and_deaths(title=None, download=f"cases-{region.id}.csv", **plot_opts)
+
+    model = start_model(**opts)
+    group = start_group(model, **run_opts)
+    show_outputs(model, group, clinical_opts=clinical_opts, **opts, **show_opts)
 
 
-def sidebar(where=st.sidebar, embed=False):
+def sidebar(where=st.sidebar, embed=False, disease="covid-19"):
     """
     Collect inputs in the sidebar or other location.
     """
 
     st = where
-    region = st.select_region("BR")
+    region = st.region_input("BR", text=True)
+    TITLE.title(_("Covid risk factors ({name})").format(name=_(region.name)))
 
+    # Scenarios
+    model = start_model(region, disease)
+    R0 = model.R0
+
+    st.header(_("Forecast scenarios"))
+    subs = {"R0": fmt(R0), "place": _(region.name)}
+    st.markdown(
+        _(
+            """The computed value of R0 for {place} is **{R0}**. Let us
+    consider 3 different scenarios: the first progress with this value of R0, the
+    second increases social isolation to obtain a lower R0 and the third loosen
+    social isolation and correspond to a higher R0."""
+        ).format(**subs)
+    )
+
+    st.subheader("Scenario 1: more isolation")
+    msg = _("What is the new R0?")
+    R0_tight = st.slider(msg, 0.1, R0, R0 * 0.66)
+
+    st.subheader("Scenario 2: less isolation")
+    R0_loose = st.slider(msg, R0, max(2 * R0, 3.0), 1.33 * R0)
+    R0_list = (R0, R0_tight, R0_loose)
+
+    # Parameters
     st.header(_("Parameters"))
-    extra = {
-        "R0": st.slider(_("R0"), 0.0, 5.0, value=2.0),
-        "duration": st.slider(_("Duration (weeks)"), 1, 32, value=8) * 7,
-    }
-
-    # Notification rate
-    msg = _("How should we compute the ascertainment rate?")
-    opts = {"deaths": _("From deaths"), "value": _("Explicit value")}
-    opt = st.radio(msg, list(opts), format_func=opts.get)
-    if opt == "value":
-        msg = _("Notification rate")
-        extra["notification_rate"] = (st.slider(msg, 0.0, 100.0, value=10.0) / 100,)
-    else:
-        extra["notification_rate"] = "deaths"
-
     st.subheader(_("Healthcare system"))
-    msg = _("Percentage of ICU available to treat COVID")
-    extra["healthcare_available"] = st.slider(msg, 0, 100, value=25) / 100
+    if np.isnan(region.icu_capacity):
+        population = region.population
 
-    return {"region": region, **extra, **sidebar_options(st, embed)}
+        msg = _("Total ICU beds")
+        icu = int(population / 10_000)
+        icu = st.number_input(msg, min_value=0, value=icu)
 
+        msg = _("Total hospital beds")
+        hospital = int(population / 1_000)
+        hospital = st.number_input(msg, min_value=0, value=hospital)
 
-def start_model(region: RegionT, notification_rate: float, disease="covid-19"):
-    m = SEAIR(region=region, disease=disease)
-    m.set_cases(notification_rate=notification_rate, adjust_R0=True)
-    return m
+    else:
+        icu = region.icu_capacity
+        hospital = region.hospital_capacity
 
+    msg = _("Fraction of ICU beds that is occupied?")
+    rate = 1 - st.slider(msg, 0, 100, value=75) / 100
 
-def run_model(model: Model, R0, duration):
-    name1 = _("Projection (R0 = {R0})").format(R0=fmt(model.R0))
-    name2 = _("Selected R0 ({R0})").format(R0=R0)
-    models = model.split(R0=[model.R0, R0], name=[name1, name2])
-    models.run(duration)
-    return models
-
-
-def show_outputs(
-    models, region, show_cases_plot, show_weekday_rate, healthcare_available
-):
-    """
-    Show results from user input.
-    """
-
-    region.ui.epidemic_summary()
-    if show_cases_plot:
-        region.ui.epidemic_curve(logy=True, grid=True)
-    if show_weekday_rate:
-        region.ui.weekday_rate()
-
-    curves = region.pydemic.epidemic_curve()
-    simulation_date = models[0].info["observed.dates"][1]
-    notification_rate = models[0].info["cases.notification_rate"]
-
-    # Linear model for logs
-    Y = np.log(np.maximum(np.diff(curves["cases"], prepend=0), 0.5))
-    X = np.arange(len(Y))
-    ols = sm.OLS(Y, sm.add_constant(X), missing="drop")
-    res = ols.fit()
-    cte, K = res.params
-    st.line_chart(np.array([Y - cte, K * X]).T)
-    st.text(res.summary())
-
-    # Model with seasonal variance
-    w = 2 * np.pi / 7
-    Xcos = np.cos(w * X)
-    Xsin = np.sin(w * X)
-    exog = sm.add_constant(np.array([X, Xcos, Xsin]).T)
-    ols = sm.OLS(Y, exog, missing="drop")
-    res = ols.fit()
-    cte, K, a, b = res.params
-    seasonal = a * Xcos + b * Xsin
-    st.line_chart(np.array([Y - cte, K * X, K * X + a * Xcos + b * Xsin]).T)
-    st.line_chart(np.array([Y - cte - K * X, Y - cte - seasonal - K * X]).T)
-    st.text(res.summary())
-
-    # Rolling OLS
-    from statsmodels.regression.rolling import RollingOLS
-
-    ols = RollingOLS(Y - seasonal, sm.add_constant(X), window=14)
-    res = ols.fit()
-    df = pd.DataFrame(res.params, columns=["cte", "K"])
-    st.line_chart(formulas.R0_from_K("SEAIR", models[0], K=df["K"]))
-
-    st.header(_("Simulation results"))
-    st.subheader(_("Infectious curve"))
-
-    df = models["cases:dates"]
-    ax = curves["cases"].plot(label=_("Confirmed cases"))
-    (curves["cases"] / notification_rate).plot(ax=ax, label=_("Adjusted cases"))
-    df.plot(grid=True, logy=True, ax=ax, ylim=(max(10, min(df.iloc[0])), None))
-    mark_x(simulation_date, "k--")
-    plt.legend()
-    plt.title(_("Accumulated cases"))
-    st.pyplot()
-
-    df = models["infectious:dates"]
-    df.plot(grid=True, logy=True)
-    mark_x(simulation_date, "k--")
-    plt.legend()
-    plt.title(_("Infectious"))
-    st.pyplot()
-
-    st.subheader(_("Hospitalization"))
-    cm = models.clinical.overflow_model()
-    cm[["severe:dates", "critical:dates"]].plot(grid=True, logy=True, ylim=(10, None))
-    mark_y(region.icu_capacity * healthcare_available, "k:")
-    mark_y(region.hospital_capacity * healthcare_available, "k:")
-    mark_x(simulation_date, "k--")
-    st.pyplot()
-
-    ax = curves["deaths"].plot()
-    cm[["deaths:dates"]].plot(grid=True, logy=True, ylim=(10, None), ax=ax)
-    mark_x(simulation_date, "k--")
-    st.pyplot()
-
-
-#
-# Auxiliary methods
-#
-def sidebar_options(where=st, embed=False):
-    """
-    Auxiliary sidebar method.
-    """
-
-    st = where
-
+    # Options
     def ask(title, **kwargs):
         if embed:
             return True
         return st.checkbox(title, **kwargs)
 
     st.header(_("Options"))
-    st.subheader(_("Show elements"))
-    return {
-        "show_cases_plot": ask(_("Cases and deaths chart")),
+    st.subheader(_("Plotting options"))
+    options = {"logy": not ask(_("Linear scale")), "grid": not ask(_("Hide grid"))}
+    st.subheader(_("Advanced information"))
+    options = {
+        "plot_opts": options,
         "show_weekday_rate": ask(_("Notification per weekday")),
     }
 
+    return {
+        "region": region,
+        "icu_capacity": icu,
+        "hospital_capacity": hospital,
+        "icu_surge_capacity": rate * icu,
+        "hospital_surge_capacity": rate * hospital,
+        "R0_list": R0_list,
+        **options,
+    }
 
-def set_cases(
-    self: Model, cases=None, notification_rate=None, adjust_R0=False, save_cases=False
-):
+
+@st.cache(show_spinner=False)
+def start_model(region: RegionT, disease="covid-19"):
     """
-    Initialize model from a dataframe with the deaths and cases curve.
-
-    This curve is usually the output of disease.epidemic_curve(region), and is
-    automatically retrieved if not passed explicitly and the region of the model
-    is set.
-
-    Args:
-        cases:
-            Dataframe with cumulative ["cases", "deaths"] columns. If not given,
-            or None, fetches from disease.epidemic_curves(info)
-        notification_rate:
-            If given, controls the fraction of cases that where observed.
-        adjust_R0:
-            If true, adjust R0 from the observed cases.
-        save_cases:
-            If true, save the cases curves into the model.info["observed.cases"] key.
+    Start model with cases data for the given region.
     """
 
-    if cases is None:
-        if self.region is None or self.disease is None:
-            msg = 'must provide both "region" and "disease" or an explicit cases curve.'
-            raise ValueError(msg)
-        cases = self.region.pydemic.epidemic_curve(self.disease)
-
-    model = self._meta.model_name
-    if adjust_R0:
-        method = "OLS" if adjust_R0 is True else adjust_R0
-        Re, _ = value = adjust_R0_from_cases(model, cases, self, method=method)
-        assert np.isfinite(Re), f"invalid value for R0: {value}"
-
-        self.R0 = Re
-        self.info["stats.R0"] = value
-
-    # Select notification rate and save it in the info dictionary for reference
-    if notification_rate in ("deaths", "CFR", None):
-        CFR = self.disease_params.CFR
-        last = cases.iloc[-1]
-        empirical_CFR = last["deaths"] / last["cases"]
-        notification_rate = CFR / empirical_CFR
-    self.info["cases.notification_rate"] = notification_rate
-
-    # Save simulation state from data
-    curve = cases["cases"] / notification_rate
-    data = fit.epidemic_curve(model, curve, self)
-    self.set_data(data)
-    self.initial_cases = curve.iloc[0]
-
-    if adjust_R0:
-        self.R0 /= self["susceptible:final"] / self.population
-
-    # Optionally save cases curves into the info dictionary
-    if save_cases:
-        key = "observed.cases" if save_cases is True else save_cases
-        df = cases.copy()
-        df["cases"] = curve
-        df["cases_raw"] = cases["cases"]
-        self.info[key] = df
+    cases = region.pydemic.epidemic_curve(disease=disease, real=True, keep_observed=True)
+    m = SEAIR(region=region, disease=disease)
+    m.set_cases(cases, adjust_R0=True, save_cases=True)
+    m.info.save_event("simulation_start")
+    return m
 
 
-def adjust_R0_from_cases(model, cases, params, method="OLS") -> ValueStd:
+@st.cache(show_spinner=False)
+def start_group(model: Model, duration=60, R0_list=()):
     """
-    Read curve of cases and adjust the model R0 from cases.
+    Split into 4 models: a forecast model, one that tighten social distancing by
+    the given amount delta, one that loosen social distancing by the same ammount
+    and one that completely lift social distancing measures
     """
-    # Methods that infer the growth ratio between successive observations
-    if method.startswith("ratio-"):
-        r, dr = growth_ratio_from_cases(cases, method=method[6:])
-
-        R0 = formulas.R0_from_K(model, params, K=np.log(r))
-        R0_plus = formulas.R0_from_K(model, params, K=np.log(r - min(dr, 0.9 * r)))
-        R0_minus = formulas.R0_from_K(model, params, K=np.log(r + dr))
-
-    # Methods that infer the exponential growth factor
-    elif method in ("OLS",):
-        K, dK = growth_factor_from_cases(cases, method=method)
-
-        R0 = formulas.R0_from_K(model, params, K=K)
-        R0_plus = formulas.R0_from_K(model, params, K=K - dK)
-        R0_minus = formulas.R0_from_K(model, params, K=K + dK)
-
-    else:
-        raise ValueError(f"invalid method: {method!r}")
-
-    dR0 = abs(R0_plus - R0_minus) / 2
-    return ValueStd(R0, dR0)
+    models = model.split(R0=R0_list, name=["baseline", "isolate", "open"])
+    models.run(duration)
+    return models
 
 
-def growth_ratio_from_cases(curves, method="GGBayes", **kwargs) -> ValueStd:
+def show_outputs(base, group, region: RegionT, plot_opts, clinical_opts, **kwargs):
     """
-    Return the growth rate combining the "cases" and "deaths" columns of an
-    epidemic curve.
-
-    Args:
-        curves:
-            A DataFrame with "cases" and "deaths" columns.
-
-    Keyword Args:
-        Additional keyword arguments are passed to the smoothed_diff function.
-
-    See Also:
-        :func:`pydemic.fitting.smoothed_diff`
+    Show results from user input.
     """
+    cmodels = group.clinical.overflow_model(**clinical_opts)
+    cforecast = cmodels[0]
+    start = base.info["event.simulation_start"]
 
-    if method == "GGBayes":
-        fn = lambda col: clean_exponential(curves[col], diff=True, **kwargs)
-        cases, deaths = map(fn, curves.columns)
-        ratios = [fit.growth_factor(cases), fit.growth_factor(deaths)]
-        return fit.average_growth(ratios)
-    else:
-        raise ValueError
+    #
+    # Introduction
+    #
+    st.header(_("Introduction"))
+    st.markdown(report_intro(region))
+    st.cards(
+        {
+            _("Basic reproduction number"): fmt(base.R0),
+            _("Ascertainment rate"): pc(base.info["observed.notification_rate"]),
+        },
+        color="st-gray-900",
+    )
+
+    #
+    # Forecast
+    #
+    st.header(_("Forecasts"))
+    st.markdown(forecast_intro(region))
+
+    # Infectious curve
+    group["infectious:dates"].plot(**plot_opts)
+    mark_x(start.date, "k--")
+    plt.legend()
+    plt.title(_("Active cases"))
+    plt.tight_layout()
+    st.pyplot()
+
+    st.markdown("#### " + _("Download data"))
+    opts = ["critical", "severe", "infectious", "cases", "deaths"]
+    default_columns = ["critical", "severe", "cases", "deaths"]
+    columns = st.multiselect(_("Select columns"), opts, default=default_columns)
+
+    rename = dict(zip(range(len(columns)), columns))
+    columns = [c + ":dates" for c in columns]
+    data = pd.concat(
+        [cm[columns].rename(rename, axis=1) for cm in cmodels], axis=1, keys=cmodels.names
+    )
+    st.data_anchor(data.astype(int), f"data-{region.id}.csv")
+
+    #
+    # Reopening
+    #
+    st.header(_("When can we reopen?"))
+    st.markdown(reopening_intro(region))
+
+    st.subheader(_("Step 1: Controlling the curve"))
+    st.markdown(rt_intro(region))
+
+    st.subheader(_("Step 2: Testing"))
+    st.markdown(rt_intro(region))
+    if kwargs.get("show_weekday_rate"):
+        region.ui.weekday_rate()
+
+    st.subheader(_("Step 3: Hospital capacity"))
+    st.markdown(rt_intro(region))
+
+    # Hospitalization
+    cmodels["critical:dates"].plot(**plot_opts)
+    mark_x(start.date, "k--")
+    mark_y(cforecast.icu_surge_capacity, "k:")
+    plt.legend()
+    plt.title(_("Critical cases"))
+    plt.tight_layout()
+    st.pyplot()
 
 
-def growth_factor_from_cases(curves, method="OLS", **kwargs) -> ValueStd:
+@st.cache
+def report_intro(region):
+    name = _(region.name)
+    return _(
+        """{name} is in a **(good|bad|ugly)** state, yadda, yadda, yadda.
+
+The plot bellow shows the progression of cases and deaths.
+"""
+    ).format(**locals())
+
+
+@st.cache
+def forecast_intro(region):
+    name = _(region.name)
+    return _(
+        """Epidemic forecasting depends on good data, which is hard to find.
+Take it with a grain of salt.
+"""
+    ).format(**locals())
+
+
+@st.cache
+def reopening_intro(region):
+    name = _(region.name)
+    return _("""...""").format(**locals())
+
+
+@st.cache
+def rt_intro(region):
+    name = _(region.name)
+    return _("""...""").format(**locals())
+
+
+#
+# Auxiliary methods
+#
+def scenarios_table(group, col, t0=0, days=(7, 15, 30, 60), download=False):
     """
-    Return the growth rate combining the "cases" and "deaths" columns of an
-    epidemic curve.
-
-    Args:
-        curves:
-            A DataFrame with "cases" and "deaths" columns.
-
-    Keyword Args:
-        Additional keyword arguments are passed to the smoothed_diff function.
-
-    See Also:
-        :func:`pydemic.fitting.smoothed_diff`
+    Display a table showing some column for the given value in the requested days.
     """
+    steps = np.array(days)
+    times = t0 + steps
+    region = group[0].region
 
-    if method == "OLS":
+    data = group[col, times].astype(int).applymap(fmt)
+    dates = pd.DataFrame({_("Date"): group[0].to_dates(times)}, index=times)
+    data = pd.concat([dates, data], axis=1)
+    data = data.set_axis(steps)
+    st.table(data, link=f"{col}-table-{region.id}.csv" if download else None)
 
-        def stats(col):
-            data = curves[col]
-            data = clean_exponential(data, diff=True, **kwargs)
-            Y = np.log(data / data[0])
-            X = np.arange(len(Y))
-            ols = sm.OLS(Y, sm.add_constant(X))
-            res = ols.fit()
-            _, K = res.params
-            ci = res.conf_int()
-            dK = (ci[1, 1] - ci[1, 0]) / 2
-            return ValueStd(K, dK)
-
-        cases, deaths = map(stats, curves.columns)
-        return fit.average_growth([cases, deaths])
-    else:
-        raise ValueError
-
-
-def clean_exponential(curve, diff=False, smoothing_level=1 / 10, **kwargs):
-    """
-    Clean exponential curve removing outliers and initialization.
-    """
-    curve: np.ndarray = trim_zeros(curve)
-    if diff:
-        kwargs["smoothing_level"] = smoothing_level
-        curve = fit.smoothed_diff(curve, **kwargs)
-        curve = trim_zeros(curve)
-
-    curve = curve[-30:]
-    return curve
-
-
-Model.set_cases = set_cases
 
 if __name__ == "__main__":
     main()
