@@ -28,8 +28,7 @@ RUN mkdir pydemic_ui && \
     echo "README" > README.rst && \
     echo "'''pydemic-ui'''" >> pydemic_ui/__init__.py && \
     echo "__version__ = '0.0.0'" >> pydemic_ui/__init__.py && \
-    flit install -s --deps=production && \
-    pip install https://github.com/pydemic/pydemic/archive/master.zip
+    flit install -s --deps=production
 
 COPY pydemic_ui pydemic_ui
 COPY README.rst README.rst
