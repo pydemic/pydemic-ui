@@ -38,12 +38,7 @@ R0 = st.slider("R0", 0.1, 3.0, value=2.0)
 
 m = models.SEAIR(region=region, disease=covid19, R0=R0)
 data = seir_curves(cases["cases"] / notification, params, population=region.population)
-m.set_ic(state=data.iloc[0])
-m.data = data.reset_index(drop=True)
-m.time = len(m.data) - 1
-m.date = data.index[-1]
-m.state[:] = data.iloc[-1]
-m._initialized = True
+m.set_data(data)
 m.run(60)
 
 cm = m.clinical.overflow_model()
