@@ -1,5 +1,3 @@
-__package__ = "pydemic_ui.components.input"
-
 import re
 from functools import lru_cache
 
@@ -8,40 +6,53 @@ import streamlit as st
 import mundi
 from mundi import Region
 from ..base import twin_component
+from ...decorators import title
 from ...i18n import _, __
 
 COUNTRIES = {"BR": __("Brazil")}
-TEMPLATE_START = [(__("Region"), "region", "macro-region"), (__("State"), "state", None)]
-TEMPLATE_IBGE = [
+TEMPLATE_BR_START = [
+    (__("Region"), "region", "macro-region"),
+    (__("State"), "state", None),
+]
+TEMPLATE_BR_IBGE = [
     (__("Meso Region"), "region", "meso-region"),
     (__("Micro-Region"), "region", "micro-region"),
     (__("City"), "city", None),
 ]
-TEMPLATE_SUS = [(__("SUS macro region"), "region", "healthcare region")]
+TEMPLATE_BR_SUS = [(__("SUS macro region"), "region", "healthcare region")]
 
 
 @twin_component()
-def select_region(code, *, where=st, **kwargs) -> Region:
+@title(__("Location"))
+def region_input(
+    default: str, *, advanced=False, text=False, where=st, **kwargs
+) -> Region:
     """
     Select region or sub-region based on mundi code.
     """
+    st = where
     kwargs["where"] = where
-    region = mundi.region(code)
+    default = mundi.code(default)
+    if text or advanced and st.checkbox(_("Advanced selection"), value=False):
+        try:
+            code = st.text_input(_("Select mundi region"), value=default)
+            return mundi.region(code)
+        except LookupError:
+            st.error(_("Region not found!"))
+            return default
+    region = mundi.region(default)
 
     if region.id == "BR":
-        return select_br_region(**kwargs)
-    elif len(code) == 2:
-        title = kwargs.pop("title", _("Location"))
-        if title:
-            where.header(title)
-        return select_from_sub_regions(region, _("Location"), where=where)
+        return _br_region_input(**kwargs)
+    elif len(default) == 2:
+        return _from_sub_regions(region, _("Location"), where=where)
     else:
-        raise NotImplementedError(f"Cannot select {code!r}")
+        raise NotImplementedError(f"Cannot select {default!r}")
 
 
-def select_from_sub_regions(code, label, where=st, fastrack=False, **kwargs) -> Region:
+def _from_sub_regions(code, label, fastrack=False, where=st, **kwargs) -> Region:
     """
-    Select a region between a list that starts with the parent region and its
+    Select a region from a list that starts with the parent region and its
     children.
     """
     region = mundi.region(code)
@@ -54,19 +65,16 @@ def select_from_sub_regions(code, label, where=st, fastrack=False, **kwargs) -> 
     )
 
 
-def select_from_template(code, template, title=__("Location"), where=st) -> Region:
+def _from_template(code, template, where=st) -> Region:
     """
     Select a Brazilian region from country up to municipality.
     """
-    if title:
-        where.header(str(title))
-
     code = mundi.region(code)
     for label, type_, subtype in template:
         kwargs = {"type": type_}
         if subtype:
             kwargs["subtype"] = subtype
-        new_code = select_from_sub_regions(code, label, where=where, **kwargs)
+        new_code = _from_sub_regions(code, label, where=where, **kwargs)
         if new_code == code:
             return mundi.region(code)
         code = new_code
@@ -76,29 +84,27 @@ def select_from_template(code, template, title=__("Location"), where=st) -> Regi
 #
 # Country-specific selectors.
 #
-def select_br_region(
-    title=__("Location"), where=st, hide_cities=False, healthcare_regions=False
-) -> Region:
+def _br_region_input(hide_cities=False, sus_regions=False, where=st) -> Region:
     """
     Select a Brazilian region from country up to municipality.
     """
 
     # Select macro-region or the whole country
-    region = select_from_template("BR", TEMPLATE_START, title=title, where=where)
+    region = _from_template("BR", TEMPLATE_BR_START, where=where)
 
     if re.fullmatch(r"[A-Z]{2}(-[0-9])?", region.id):
         return region
 
     # Choose between IBGE hierarchy and SUS
-    if healthcare_regions:
+    if sus_regions:
         fmt = {"ibge": _("IBGE subdivisions"), "sus": _("SUS healthcare region")}
         kind = where.radio(_("Select"), ["ibge", "sus"], format_func=fmt.get)
     else:
         kind = "ibge"
 
     # Continue selection
-    template = TEMPLATE_IBGE if kind == "ibge" else TEMPLATE_SUS
-    region = select_from_template(region, template, title=None, where=where)
+    template = TEMPLATE_BR_IBGE if kind == "ibge" else TEMPLATE_BR_SUS
+    region = _from_template(region, template, where=where)
 
     if not hide_cities and kind == "sus" and "SUS:" in region.id:
         if where.checkbox(_("Show cities")):
@@ -146,9 +152,3 @@ def children(region, which="both"):
     Return a list of children for the given code.
     """
     return region.children(which=which)
-
-
-if __name__ == "__main__":
-    r1 = select_region("BR", healthcare_regions=st.checkbox("SUS?"))
-    st.write(select_region("RU", where=st.sidebar))
-    st.write(r1.to_series("name", "type", "subtype", "population"))

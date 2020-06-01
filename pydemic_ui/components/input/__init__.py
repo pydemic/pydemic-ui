@@ -1,4 +1,4 @@
-from .select_region import select_region
+from .region_input import region_input
 from .epidemiological_params import epidemiological_params
 from .select_intervention import select_intervention
 from .simulation_params import simulation_params, healthcare_params
