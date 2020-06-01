@@ -22,7 +22,7 @@ RUN_OPTS = ("duration", "R0_list")
 TITLE = None
 
 
-def main(embed=False):
+def main(embed=False, disease=None):
     """
     Run application.
     """
@@ -34,7 +34,7 @@ def main(embed=False):
         TITLE = st.empty()
         TITLE.title(_("Covid risk factors"))
 
-    opts = sidebar(where=st if embed else st.sidebar, embed=embed)
+    opts = sidebar(where=st if embed else st.sidebar, embed=embed, disease=disease)
     show_opts = extract_keys(SHOW_OPTS, opts)
     clinical_opts = extract_keys(CLINICAL_OPTS, opts)
     run_opts = extract_keys(RUN_OPTS, opts)
