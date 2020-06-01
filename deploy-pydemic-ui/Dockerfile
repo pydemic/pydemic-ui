@@ -36,4 +36,4 @@ COPY README.rst README.rst
 
 RUN inv i18n
 
-CMD [ "inv", "run" ]
+CMD [ "inv", "run-production" ]

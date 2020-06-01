@@ -1,5 +1,6 @@
 import os
 import sys
+
 import click
 from invoke import task
 
@@ -26,6 +27,14 @@ def run(
         }
     )
     main()
+
+
+@task
+def run_production(ctx):
+    """
+    Run calculator in production servers.
+    """
+    run(ctx, "calc")
 
 
 @task
