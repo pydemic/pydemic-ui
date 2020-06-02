@@ -32,7 +32,8 @@ requires = [
   "mundi-demography",
   "mundi-healthcare",
   "statsmodels",
-  "markdown"
+  "markdown",
+  "openpyxl"
 ]
 
 [tool.flit.metadata.requires-extra]
