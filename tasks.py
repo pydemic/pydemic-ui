@@ -47,10 +47,27 @@ def i18n(ctx, edit=False, lang="pt_BR"):
 
 
 @task
-def test(ctx):
-    ctx.run("pytest tests/ --cov")
+def test(ctx, all=False, report_xml=False, verbose=False, clear_cache=False):
+    if clear_cache:
+        ctx.run("rm -rf .pytest_cache")
+    suffix = " -vv " if verbose else ""
+    if not all:
+        ctx.run(f'pytest --maxfail=2 --lf -m "not slow" {suffix}', pty=True)
+    if all:
+        suffix += " --cov-report xml" if report_xml else ""
+        ctx.run(f"pytest --cov {suffix}", pty=True)
+        style(ctx)
+
+
+@task
+def style(ctx):
     ctx.run("black --check .")
-    ctx.run("pycodestyle")
+    ctx.run("flake8 pydemic")
+
+
+@task
+def cov(ctx, report=True):
+    ctx.run("pytest --cov --cov-report=html --cov-report=term", pty=True)
 
 
 @task
@@ -59,14 +76,12 @@ def build(ctx, tag=None):
 
 
 @task
-def deploy_update(ctx, inventory="deploy-pydemic-ui/inventory.yml"):
-    ctx.run(f"git push")
-    ctx.run(f"ansible-playbook -i {inventory} deploy-pydemic-ui/playbook-update.yml")
-
-
-@task
-def deploy_restart(ctx, inventory="deploy-pydemic-ui/inventory.yml"):
-    ctx.run(f"ansible-playbook -i {inventory} deploy-pydemic-ui/playbook-restart.yml")
+def deploy(ctx, inventory="deploy-pydemic-ui/inventory.yml", restart=False):
+    if restart:
+        ctx.run(f"ansible-playbook -i {inventory} deploy-pydemic-ui/playbook-restart.yml")
+    else:
+        ctx.run(f"git push")
+        ctx.run(f"ansible-playbook -i {inventory} deploy-pydemic-ui/playbook-update.yml")
 
 
 @task

@@ -86,8 +86,8 @@ class TestInput:
         )
         assert input.epidemiological_params(br, where=st) == {
             "R0": 2.0,
-            "hospitalization_period": 10,
-            "icu_period": 7,
+            "severe_period": 10,
+            "critical_period": 7,
             "incubation_period": 3.0,
             "infectious_period": 3.0,
             "prob_critical": 0.0125,
