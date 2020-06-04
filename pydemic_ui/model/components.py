@@ -1,11 +1,37 @@
 import os
 
-from pydemic.utils import pc, fmt
+import pandas as pd
+
+from pydemic.models import Model
+from pydemic.utils import fmt
+from pydemic.utils import pc
 from .. import info
 from .. import st
+from ..components import md_description
 from ..decorators import title
 from ..i18n import _, __
-from ..ui import natural_date, healthcare_equipment_resources
+from ..utils import natural_date, get_some_attr
+
+NO_ICU_MESSAGE = __(
+    """
+The location does not have any ICU beds. At peak demand, it needs to reserve {n}
+beds from neighboring cities.
+"""
+)
+
+ICU_OVERFLOW_MESSAGE = __(
+    """
+The location will **run out of ICU beds at {date}**. At peak demand, it will need **{n}
+new ICUs**. This demand corresponds to **{surge} times** the number of beds dedicated
+to COVID-19 and {total} of the total number of ICU beds.
+"""
+)
+
+GOOD_CAPACITY_MESSAGE = __(
+    """
+The number of ICU beds is sufficient for the expected demand in this scenario.
+"""
+)
 
 EQUIPMENT_MESSAGE = __(
     """
@@ -38,11 +64,11 @@ def summary_cards(model, where=st):
 
     # Print friendlier messages if region has no ICU or hospital beds
     if model.icu_capacity > 0:
-        icu_overflow = results["dates.icu_overflow"]
+        icu_overflow = model.info["event.icu_overflow"].date
     else:
         icu_overflow = _("No ICU beds!")
     if model.hospital_capacity > 0:
-        hospital_overflow = results["dates.hospital_overflow"]
+        hospital_overflow = model.info["event.hospital_overflow"].date
     else:
         hospital_overflow = _("No hospital beds!")
 
@@ -167,3 +193,71 @@ def summary_table(
 
         where.markdown(f"**{display_role.title()}**")
         where.table(df, role + ".csv")
+
+
+@title(__("Healthcare system"))
+def healthcare_parameters(model: Model, where=st):
+    """
+    Write base healthcare parameters.
+    """
+
+    icu_surge_capacity = get_some_attr(
+        model, "icu_surge_capacity", "region.icu_surge_capacity"
+    )
+    hospital_surge_capacity = get_some_attr(
+        model, "hospital_surge_capacity", "region.hospital_surge_capacity"
+    )
+    icu_capacity = get_some_attr(model, "icu_capacity", "region.icu_capacity")
+
+    icu_overflow_date = model.info["event.icu_overflow"].date
+    extra_icu = model["icu_overflow:max"]
+
+    md_description(
+        {
+            _("COVID/SARI ICUs"): fmt(int(icu_surge_capacity)),
+            _("COVID/SARI hospital beds"): fmt(int(hospital_surge_capacity)),
+        },
+        where=where,
+    )
+
+    if icu_capacity == 0:
+        msg = NO_ICU_MESSAGE.format(n=fmt(extra_icu))
+    elif icu_overflow_date:
+        peak_icu = extra_icu + icu_surge_capacity
+        msg = ICU_OVERFLOW_MESSAGE.format(
+            date=natural_date(icu_overflow_date),
+            n=fmt(int(peak_icu - icu_surge_capacity)),
+            surge=fmt(peak_icu / icu_surge_capacity),
+            total=fmt(peak_icu / icu_capacity),
+        )
+    else:
+        msg = str(GOOD_CAPACITY_MESSAGE)
+
+    where.markdown(msg)
+
+
+def healthcare_equipment_resources(hospital_days, icu_days):
+    """
+    Return the recommended usage of protection equipment by healthcare staff
+    from the number of hospitalization x days and ICU x days.
+    """
+
+    columns = [_("Quantity"), _("Total")]
+    tuples = zip([_("Patients/day"), ""], columns)
+
+    N = int(hospital_days + icu_days)
+    a = 1  # / 5
+    b = 1  # / 15
+    df = pd.DataFrame(
+        [
+            [_("Cirurgical masks"), 25, 25 * N],
+            [_("N95 mask"), a, a * N],
+            [_("Waterproof apron"), 25, 25 * N],
+            [_("Non-sterile glove"), 50, 50 * N],
+            [_("Faceshield"), b, b * N],
+        ]
+    ).set_index(0)
+
+    df.index.name = _("Name")
+    df.columns = pd.MultiIndex.from_tuples(tuples)
+    return df

@@ -30,4 +30,5 @@ class UIProperty(UIBaseProperty):
     summary_cards = bind_function(ui.summary_cards)
     summary_table = bind_function(ui.summary_table)
     epidemiological_parameters = bind_function(ui.epidemiological_parameters)
+    healthcare_parameters = bind_function(ui.healthcare_parameters)
     ppe_demand_table = bind_function(ui.ppe_demand_table)
