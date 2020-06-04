@@ -1,18 +1,15 @@
 import datetime
 import os
-from functools import lru_cache
 
 import numpy as np
 import pandas as pd
 import streamlit as st
 
 import mundi
-import mundi_demography as mdm
-import mundi_healthcare as mhc
 from pydemic import cache
 from pydemic import fitting as fit
 from pydemic.diseases import covid19
-from pydemic.utils import coalesce, safe_int, to_json
+from pydemic.utils import safe_int
 
 TTL_DURATION = 2 * 60 * 60
 
@@ -45,98 +42,9 @@ def ttl_cache(
         raise ValueError(f"invalid cache backend: {backend!r}")
 
 
-def model_info(model) -> dict:
-    """
-    Extract a dictionary of information about the model.
-    """
-
-    # Simple parameters
-    deaths = model["deaths:final"]
-    hospitalizations = model["hospitalized_cases:final"]
-    icu_overflow_date = model["icu-overflow:peak-date"]
-    hospital_overflow_date = model["hospital-overflow:peak-date"]
-    extra_icu = model["icu-overflow:max"]
-    extra_hospitals = model["hospital-overflow:max"]
-
-    # Time series
-    icu_ts = model["critical:dates"]
-    hospitalized_ts = model["severe:dates"]
-    death_rate_ts = model["death_rate:dates"]
-    deaths_ts = model["deaths:dates"]
-
-    # Healthcare and parameters
-    icu_capacity = model.icu_surge_capacity
-    hospital_capacity = model.hospital_surge_capacity
-    prob_symptoms = model.prob_symptoms
-
-    # Epidemiological
-    R0 = model["R0:final"]
-    mortality = model["deaths:final:pp"]
-    fatality = model["empirical-CFR:final"]
-    infected = model["infected:final:pp"]
-
-    # Create result from locals()
-    data = locals()
-    del data["model"]
-    data.update(getattr(model, "extra_info", {}))
-    return data
-
-
-@lru_cache(4096)
-def region_info(region: str, disease=covid19) -> dict:
-    """
-    Information about region and region-bound epidemiological parameters from
-    region code.
-    """
-    assert isinstance(region, str)
-
-    # Demography
-    age_pyramid = mdm.age_pyramid(region, infer=True)
-    age_distribution = age_pyramid.sum(1)
-
-    population = int(age_distribution.sum())
-    seniors_population = int(age_distribution.loc[60:].sum())
-
-    # Hospital capacity
-    icu_capacity = safe_int(mhc.icu_capacity(region))
-    hospital_capacity = safe_int(mhc.hospital_capacity(region))
-
-    # Epidemiology
-    R0 = get_R0_estimate_for_region(region, disease)
-
-    # Cases and deaths
-    cases_ts, deaths_ts = load_cases_deaths(region)
-
-    out = locals()
-    out.update()
-    return {**disease.to_dict(age_distribution=age_distribution), **out}
-
-
-def full_info(model, disease=None):
-    """
-    Construct full information dictionary
-    """
-
-    disease = coalesce(disease, model.disease, covid19)
-    return {**region_info(model.region.id, disease=disease), **model_info(model)}
-
-
 #
 # Cache
 #
-def population(code):
-    try:
-        return int(mdm.population(code))
-    except ValueError:
-        return 1_000_000
-
-
-@lru_cache(1024)
-def load_cases_deaths(code):
-    data = covid19.epidemic_curve(code).dropna().max()
-    return data["cases"], data["deaths"]
-
-
 @ttl_cache()
 def get_R0_estimate_for_region(region, disease=covid19):
     # In the future we might infer R0 from epidemic curves
@@ -148,7 +56,8 @@ def get_cases_for_region(region, disease=covid19) -> pd.DataFrame:
     """
     A cached function that return a list of cases from region.
     """
-    return disease.epidemic_curve(region).fillna(method="bfill")
+    region = mundi.region(region)
+    return region.pydemic.epidemic_curve(disease).fillna(method="bfill")
 
 
 @ttl_cache()
@@ -174,7 +83,8 @@ def get_confirmed_daily_cases_for_region(region, disease=covid19) -> int:
     """
     Return the number of newly confirmed cases per day.
     """
-    df = disease.epidemic_curve(region)
+    region = mundi.region(region)
+    df = region.pydemic.epidemic_curve(disease)
     return safe_int(df["cases"].diff().iloc[-7:].mean())
 
 
@@ -184,7 +94,8 @@ def get_notification_estimate_for_region(region, disease=covid19) -> float:
     Return an estimate on the notification rate for disease in the given
     region.
     """
-    df = disease.epidemic_curve(region)
+    region = mundi.region(region)
+    df = region.pydemic.epidemic_curve(disease)
     deaths = df["deaths"].diff().iloc[-7:].mean()
 
     IFR = disease.IFR(region=region)
