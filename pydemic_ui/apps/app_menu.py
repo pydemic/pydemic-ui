@@ -26,6 +26,7 @@ def APP_LIST():
         "scenarios2": _("Epidemic scenarios (II)"),
         "model_info": _("Model info"),
         "forecast": _("Forecast"),
+        "playground": _("Playground"),
     }
 
 

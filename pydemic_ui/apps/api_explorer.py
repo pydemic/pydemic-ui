@@ -64,7 +64,16 @@ def select_arguments(fn, where=st):
         if show_title:
             st.subheader(_("Arguments"))
             show_title = False
-        st.text(k)
+        if v.annotation == str:
+            kwargs[k] = st.text_input(k)
+        elif v.annotation == bool:
+            kwargs[k] = st.checkbox(k)
+        elif v.annotation == float:
+            kwargs[k] = st.number_input(k)
+        elif v.annotation == int:
+            kwargs[k] = st.number_input(k)
+        else:
+            st.text(k)
 
     return args, kwargs
 
@@ -97,7 +106,9 @@ def explore_object(name, obj, where=st):
             st.write(result)
 
 
-def explore_object_attribute(name, obj, attrs=("ui", "plot", "pydemic"), where=st):
+def explore_object_attribute(
+    name, obj, attrs=("ui", "plot", "pydemic", "input"), where=st
+):
     """
     Instead of inspecting methods of object, query for the selected attribute
     from attrs and explore it.
@@ -131,7 +142,11 @@ def main(embed=False, disease=None):
         where.error("Invalid mundi region code.")
         return
 
-    opts = {"model": _("A Pydemic Model"), "region": _("A Mundi Region")}
+    opts = {
+        "model": _("A Pydemic Model"),
+        "region": _("A Mundi Region"),
+        "components": _("Input components"),
+    }
     msg = _("What do you want to explore?")
     opt = where.radio(msg, list(opts), format_func=opts.get)
 
@@ -139,8 +154,10 @@ def main(embed=False, disease=None):
         model = SEAIR(region=region, disease="covid-19")
         model.run(180)
         obj = model.clinical.overflow_model()
-    else:
+    elif opt == "region":
         obj = region
+    else:
+        import pydemic_ui.components as obj
 
     explore_object_attribute(opt, obj, where=where)
 

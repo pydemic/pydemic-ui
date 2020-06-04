@@ -16,7 +16,6 @@ import os
 from pydemic.diseases import covid19
 from pydemic.models import SEAIR
 from pydemic.utils import extract_keys
-from pydemic_ui import info
 from pydemic_ui import st
 from pydemic_ui import ui
 from pydemic_ui.i18n import _
@@ -72,7 +71,7 @@ def sidebar(
     """
     st = where
     st.logo()
-    region = st.region_input(region, sus_regions=True)
+    region = st.region_input(region, sus_regions=True, arbitrary=True)
 
     try:
         params = st.simulation_params(region, disease, secret_date=secret_date)
@@ -87,11 +86,11 @@ def sidebar(
         **params,
         **st.healthcare_params(region),
         **st.epidemiological_params(region, disease),
-        **{"runner": st.select_intervention(params["period"])},
+        **{"runner": st.intervention_runner_input(params["period"])},
     }
 
 
-def output(model, info, title=_("Hospital pressure calculator")):
+def output(model, title=_("Hospital pressure calculator")):
     """
     Create default output from model.
     """
@@ -107,13 +106,13 @@ def output(model, info, title=_("Hospital pressure calculator")):
     model.ui.available_beds_chart()
 
     st.line()
-    ui.population_info_chart(info["age_pyramid"])
+    ui.population_info_chart(model.age_pyramid)
 
     st.pause()
     model.ui.deaths_chart()
 
     st.line()
-    ui.healthcare_parameters(info)
+    model.ui.healthcare_parameters()
 
     st.pause()
     model.ui.ppe_demand_table()
@@ -191,9 +190,7 @@ def main(region="BR", disease=covid19):
         m = model(disease=disease, **epidemiology)
         cm = m.clinical.overflow_model(icu_occupancy=0, hospital_occupancy=0, **clinical)
         cm.extra_info = params
-        results = info.full_info(cm)
-        results["model"] = cm
-        output(cm, results)
+        output(cm)
 
     finally:
         if debug:
