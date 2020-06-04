@@ -15,7 +15,7 @@ from .generic import (
 )
 from .ui import css, logo, footnotes, footnote_disclaimer
 from .input import (
-    select_intervention,
+    intervention_runner_input,
     region_input,
     simulation_params,
     epidemiological_params,

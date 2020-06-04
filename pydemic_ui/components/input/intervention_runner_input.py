@@ -21,7 +21,9 @@ of many non-pharmacological measures.
 
 
 @twin_component()
-def select_intervention(duration, title=__("Intervention"), where=st) -> runner.Runner:
+def intervention_runner_input(
+    duration, title=__("Intervention"), where=st
+) -> runner.Runner:
     """
     Return a dictionary with intervention parameters.
 
@@ -100,4 +102,4 @@ def select_intervention(duration, title=__("Intervention"), where=st) -> runner.
 
 
 if __name__ == "__main__":
-    st.write(select_intervention(120))
+    st.write(intervention_runner_input(120))

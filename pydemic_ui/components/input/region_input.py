@@ -5,10 +5,12 @@ import streamlit as st
 
 import mundi
 from mundi import Region
+from pydemic.region.multi_region import CompositeRegion
 from ..base import twin_component
 from ...decorators import title
 from ...i18n import _, __
 
+COMMA = re.compile(r"\s*[,;\s]\s*")
 COUNTRIES = {"BR": __("Brazil")}
 TEMPLATE_BR_START = [
     (__("Region"), "region", "macro-region"),
@@ -84,7 +86,9 @@ def _from_template(code, template, where=st) -> Region:
 #
 # Country-specific selectors.
 #
-def _br_region_input(hide_cities=False, sus_regions=False, where=st) -> Region:
+def _br_region_input(
+    hide_cities=False, sus_regions=False, arbitrary=False, where=st
+) -> Region:
     """
     Select a Brazilian region from country up to municipality.
     """
@@ -96,15 +100,28 @@ def _br_region_input(hide_cities=False, sus_regions=False, where=st) -> Region:
         return region
 
     # Choose between IBGE hierarchy and SUS
+    choices = {"ibge": _("IBGE subdivisions")}
     if sus_regions:
-        fmt = {"ibge": _("IBGE subdivisions"), "sus": _("SUS healthcare region")}
-        kind = where.radio(_("Select"), ["ibge", "sus"], format_func=fmt.get)
+        choices.update(sus=_("SUS healthcare region"))
+    if arbitrary:
+        choices.update(arbitrary=_("List of IBGE city codes"))
+
+    if choices:
+        kind = where.radio(_("Select"), [*choices], format_func=choices.get)
     else:
         kind = "ibge"
 
     # Continue selection
-    template = TEMPLATE_BR_IBGE if kind == "ibge" else TEMPLATE_BR_SUS
-    region = _from_template(region, template, where=where)
+    if kind == "arbitrary":
+        codes = where.text_area(_("List of IBGE city codes"))
+        codes = set(COMMA.split(codes))
+        codes.discard("")
+        if not codes:
+            return region
+        return _from_ibge_city_codes(codes, region, where=where)
+    else:
+        template = TEMPLATE_BR_IBGE if kind == "ibge" else TEMPLATE_BR_SUS
+        region = _from_template(region, template, where=where)
 
     if not hide_cities and kind == "sus" and "SUS:" in region.id:
         if where.checkbox(_("Show cities")):
@@ -115,6 +132,16 @@ def _br_region_input(hide_cities=False, sus_regions=False, where=st) -> Region:
             ]
             where.markdown("\n".join(lines))
     return region
+
+
+def _from_ibge_city_codes(codes, parent, where=st):
+    state_code = parent.numeric_code
+    cities = tuple(map(ibge_city, codes))
+    for city in cities:
+        if city.type == "city" and city.numeric_code[:2] != state_code:
+            msg = _("{city} is not in {state}!").format(city=city.name, state=parent.name)
+            where.warning(msg)
+    return CompositeRegion(cities, name=_("Arbitrary region"))
 
 
 #
@@ -152,3 +179,14 @@ def children(region, which="both"):
     Return a list of children for the given code.
     """
     return region.children(which=which)
+
+
+@lru_cache(2048)
+def ibge_city(code):
+    if code.isdigit():
+        if len(code) == 7:
+            code = code[:-1]
+        elif len(code) != 6:
+            raise ValueError(_(f"invalid city code: {code}"))
+        return mundi.region(country_code="BR", type="city", short_code=code)
+    return mundi.region(code)
