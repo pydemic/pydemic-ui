@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-20 19:52-0300\n"
-"PO-Revision-Date: 2020-05-20 19:52-0300\n"
+"POT-Creation-Date: 2020-06-04 17:36-0300\n"
+"PO-Revision-Date: 2020-06-04 17:51-0300\n"
 "Last-Translator: Fábio Mendes <fabiomacedomendes@gmail.com>\n"
 "Language: pt_BR\n"
 "Language-Team: pt_BR <LL@li.org>\n"
@@ -18,302 +18,568 @@ msgstr ""
 "Generated-By: Babel 2.8.0\n"
 "X-Generator: Poedit 2.3\n"
 
+#: pydemic_ui/builtins.py:74
+msgid "Debugging {obj} instance"
+msgstr "Depurando instancia de {obj}"
+
+#: pydemic_ui/builtins.py:77
+msgid "Chart"
+msgstr "Gráfico"
+
+#: pydemic_ui/builtins.py:77
+msgid "Table"
+msgstr "Tabela"
+
+#: pydemic_ui/builtins.py:78
+msgid "Debug"
+msgstr "Depuração"
+
+#: pydemic_ui/region.py:25
+msgid "Basic information"
+msgstr "Informações básicas"
+
+#: pydemic_ui/components/input/simulation_params.py:102 pydemic_ui/region.py:29
+msgid "ICU beds"
+msgstr "Leitos UTI"
+
+#: pydemic_ui/region.py:31
+msgid "Hospital beds"
+msgstr "Leitos clínicos"
+
+#: pydemic_ui/region.py:33 pydemic_ui/ui/output_charts.py:26
+msgid "Population"
+msgstr "População"
+
+#: pydemic_ui/region.py:47
+msgid "Cases*"
+msgstr "Casos*"
+
+#: pydemic_ui/apps/scenarios1.py:46 pydemic_ui/apps/scenarios2.py:49
+#: pydemic_ui/components/pyplot.py:35 pydemic_ui/model/components.py:96
+#: pydemic_ui/model/plotting.py:22 pydemic_ui/region.py:47
+msgid "Deaths"
+msgstr "Mortes"
+
+#: pydemic_ui/region.py:48
+msgid "&ast; As measured at {date}."
+msgstr "&ast; Medido em {date}."
+
+#: pydemic_ui/apps/projections.py:45 pydemic_ui/region.py:50
+msgid "Cases and deaths"
+msgstr "Casos e óbitos"
+
+#: pydemic_ui/region.py:65
+msgid "Cases per weekday"
+msgstr "Casos por dia da semana"
+
 #: pydemic_ui/runner.py:124
 msgid "Intervention starts prior to simulation"
 msgstr "Intervenção inicia antes da simulação"
 
-#: pydemic_ui/apps/calc.py:36
-msgid "Natural"
-msgstr "Natural"
+#: pydemic_ui/utils.py:43
+msgid "Not soon..."
+msgstr "Não por agora..."
 
-#: pydemic_ui/apps/calc.py:37
-msgid "Lack of hospital beds"
-msgstr "Falta de leitos clínicos"
+#: pydemic_ui/apps/api_explorer.py:13
+msgid "\n"
+"Region UI components can be accessed from the region.ui attribute of Mundi\n"
+"regions. They display information about some region, which is **not** tied to\n"
+"any  simulation.\n"
+"\n"
+"The currently selected Mundi region is **{region.id}**. Change your selection\n"
+"in the  sidebar to see how each component would be displayed for different\n"
+"regions.\n"
+msgstr ""
 
-#: pydemic_ui/apps/calc.py:38
-msgid "Lack of ICUs"
-msgstr "Falta de UTIs"
+#: pydemic_ui/apps/api_explorer.py:44
+msgid "Select method"
+msgstr "Selecione um método"
 
-#: pydemic_ui/apps/calc.py:85
-msgid "Hospital pressure calculator"
-msgstr "Calculadora de pressão hospitalar"
+#: pydemic_ui/apps/api_explorer.py:65
+msgid "Arguments"
+msgstr "Argumentos"
 
-#: pydemic_ui/apps/calc.py:142
-msgid "Enable debug"
-msgstr "Habilitar depuração"
+#: pydemic_ui/apps/api_explorer.py:92
+msgid "Method executed in {} seconds."
+msgstr "Método executou em {} segundos"
 
-#: pydemic_ui/apps/calc.py:143
-msgid "Running in debug mode!"
-msgstr "Executando em modo de depuração!"
+#: pydemic_ui/apps/api_explorer.py:95
+msgid "Method help and signature"
+msgstr "Ajuda e assinatura do método"
 
-#: pydemic_ui/apps/calc.py:149
-msgid "Debug section!"
-msgstr "Seção de depuração!"
+#: pydemic_ui/apps/api_explorer.py:100
+msgid "Function output"
+msgstr "Saída da função"
 
-#: pydemic_ui/apps/calc.py:155
-msgid "Secret area for beta testers"
-msgstr "Área secreta para beta-testers"
+#: pydemic_ui/apps/api_explorer.py:103
+msgid "Function returned a matplotlib **ax** object. Showing it..."
+msgstr ""
 
-#: pydemic_ui/apps/calc.py:175
-msgid "Debug information"
-msgstr "Informação de depuração"
+#: pydemic_ui/apps/api_explorer.py:117
+msgid "Which aspect of the API do you want to explore?"
+msgstr "Quais aspectos da API você deseja explorar?"
 
-#: pydemic_ui/apps/calc.py:177
-msgid "Generic parameters"
-msgstr "Parâmetros genéricos"
+#: pydemic_ui/apps/api_explorer.py:135 pydemic_ui/apps/app_menu.py:23
+msgid "Pydemic-UI API explorer"
+msgstr ""
 
-#: pydemic_ui/apps/calc.py:180
-#: pydemic_ui/components/input/epidemiological_params.py:37
-msgid "Epidemiological parameters"
-msgstr "Parâmetros epidemiológicos"
-
-#: pydemic_ui/apps/calc.py:183
-#: pydemic_ui/components/input/epidemiological_params.py:56
-msgid "Clinical parameters"
-msgstr "Parâmetros clínicos"
-
-#: pydemic_ui/apps/calc.py:186
-msgid "Output"
-msgstr "Saída"
-
-#: pydemic_ui/apps/calc.py:195
-msgid "Distribution of deaths"
-msgstr "Distribuição de óbitos"
-
-#: pydemic_ui/apps/calc.py:203
-msgid "Select state"
-msgstr "Selecione o estado"
-
-#: pydemic_ui/apps/calc.py:205 pydemic_ui/apps/projections_br.py:229
-msgid "Isolation scores"
-msgstr "Scores de isolamento"
-
-#: pydemic_ui/apps/calc.py:210
-msgid "Duration"
-msgstr "Duraçãio"
-
-#: pydemic_ui/apps/calc.py:236
-#: pydemic_ui/components/input/simulation_params.py:102
-msgid "ICU beds"
-msgstr "Leitos UTI"
-
-#: pydemic_ui/apps/calc.py:239 pydemic_ui/apps/projections.py:45
-msgid "Hospital beds"
-msgstr "Leitos clínicos"
-
-#: pydemic_ui/apps/calc.py:242 pydemic_ui/apps/projections.py:59
-#: pydemic_ui/apps/projections_br.py:46
-#: pydemic_ui/components/input/simulation_params.py:48
-#: pydemic_ui/components/pyplot.py:35 pydemic_ui/pyplot/pydemic.py:26
-msgid "Cases"
-msgstr "Casos"
-
-#: pydemic_ui/apps/calc.py:245 pydemic_ui/apps/projections.py:60
-#: pydemic_ui/apps/projections_br.py:48 pydemic_ui/components/pyplot.py:35
-#: pydemic_ui/pyplot/pydemic.py:26 pydemic_ui/ui/output_charts.py:27
-#: pydemic_ui/ui/output_components.py:104
-msgid "Deaths"
-msgstr "Mortes"
-
-#: pydemic_ui/apps/projections.py:31
-msgid "7 days"
-msgstr "7 dias"
-
-#: pydemic_ui/apps/projections.py:32
-msgid "15 days"
-msgstr "15 dias"
-
-#: pydemic_ui/apps/projections.py:33
-msgid "30 days"
-msgstr "30 dias"
-
-#: pydemic_ui/apps/projections.py:34
-msgid "60 days"
-msgstr "60 dias"
-
-#: pydemic_ui/apps/projections.py:47 pydemic_ui/apps/projections_br.py:44
-#: pydemic_ui/ui/output_charts.py:54
-msgid "ICU"
-msgstr "UTI"
-
-#: pydemic_ui/apps/projections.py:61
-msgid "Cases (corrected)"
-msgstr "Casos (corrigido)"
-
-#: pydemic_ui/apps/projections.py:65
-msgid "Cases (projected)"
-msgstr "Casos (projetado)"
-
-#: pydemic_ui/apps/projections.py:69
-msgid "Deaths (projected)"
-msgstr "Óbitos (previsto)"
-
-#: pydemic_ui/apps/projections.py:102
-msgid "Parameters"
-msgstr "Parâmetros"
-
-#: pydemic_ui/apps/projections.py:104
-msgid "Ascertainment ratio"
-msgstr "Taxa de notificação"
-
-#: pydemic_ui/apps/projections.py:105
-msgid "R0"
-msgstr "R0"
-
-#: pydemic_ui/apps/projections.py:107
+#: pydemic_ui/apps/api_explorer.py:136 pydemic_ui/apps/projections.py:113
 msgid "Options"
 msgstr "Opções"
 
-#: pydemic_ui/apps/projections.py:108
+#: pydemic_ui/apps/api_explorer.py:138
+msgid "Mundi region code"
+msgstr "Código de região Mundi"
+
+#: pydemic_ui/apps/api_explorer.py:146
+msgid "A Pydemic Model"
+msgstr "Um modelo Pydemic"
+
+#: pydemic_ui/apps/api_explorer.py:147
+msgid "A Mundi Region"
+msgstr "Uma região Mundi"
+
+#: pydemic_ui/apps/api_explorer.py:148
+msgid "Input components"
+msgstr "Componentes de entrada"
+
+#: pydemic_ui/apps/api_explorer.py:150
+msgid "What do you want to explore?"
+msgstr "O que você deseja explorar?"
+
+#: pydemic_ui/apps/app_menu.py:21
+msgid "Do not run anything"
+msgstr "Não execute nada"
+
+#: pydemic_ui/apps/app_menu.py:22
+msgid "Main epidemic calculator"
+msgstr "Calculadora epidemiológica"
+
+#: pydemic_ui/apps/app_menu.py:24
+msgid "Epidemic projections and forecast"
+msgstr "Projeções epidemiológicas"
+
+#: pydemic_ui/apps/app_menu.py:25
+msgid "Epidemic scenarios (I)"
+msgstr "Cenários epidemiológicos (I)"
+
+#: pydemic_ui/apps/app_menu.py:26
+msgid "Epidemic scenarios (II)"
+msgstr "Cenários Epidemiológicos (II)"
+
+#: pydemic_ui/apps/app_menu.py:27
+msgid "Model info"
+msgstr "Informação sobre o modelo"
+
+#: pydemic_ui/apps/app_menu.py:28
+msgid "Forecast"
+msgstr "Projeção"
+
+#: pydemic_ui/apps/app_menu.py:29
+msgid "Playground"
+msgstr "Playground"
+
+#: pydemic_ui/apps/app_menu.py:42
+msgid "Force reload of all python modules"
+msgstr "Forçar recarregar todos módulos Python"
+
+#: pydemic_ui/apps/app_menu.py:44
+msgid "Which app do you want to run?"
+msgstr "Qual aplicativo você quer executar?"
+
+#: pydemic_ui/apps/app_menu.py:50
+msgid "Done!"
+msgstr "Feito!"
+
+#: pydemic_ui/apps/app_menu.py:55
+msgid "Force reload"
+msgstr "Forçar recarregamento"
+
+#: pydemic_ui/apps/app_menu.py:64
+msgid "Doing nothing..."
+msgstr "Fazendo nada..."
+
+#: pydemic_ui/apps/app_menu.py:95
+msgid "Unloading module: {mod}"
+msgstr "Removendo o módulo: {mod}"
+
+#: pydemic_ui/apps/calc.py:32
+msgid "Natural"
+msgstr "Natural"
+
+#: pydemic_ui/apps/calc.py:33
+msgid "Lack of hospital beds"
+msgstr "Falta de leitos clínicos"
+
+#: pydemic_ui/apps/calc.py:34
+msgid "Lack of ICUs"
+msgstr "Falta de UTIs"
+
+#: pydemic_ui/apps/calc.py:80
+msgid "Secret area for beta testers"
+msgstr "Área secreta para beta-testers"
+
+#: pydemic_ui/apps/calc.py:93
+msgid "Hospital pressure calculator"
+msgstr "Calculadora de pressão hospitalar"
+
+#: pydemic_ui/apps/calc.py:147
+msgid "Showcase Pydemic-UI components"
+msgstr "Mostra os componentes do Pydemic-UI"
+
+#: pydemic_ui/apps/calc.py:148
+msgid "Forecast for BR states in different scenarios (model 1)"
+msgstr ""
+
+#: pydemic_ui/apps/calc.py:149
+msgid "Forecast for BR states in different scenarios (model 2)"
+msgstr ""
+
+#: pydemic_ui/apps/calc.py:150
+msgid "Epidemic forecasts"
+msgstr "Projeções epidemiológicas"
+
+#: pydemic_ui/apps/calc.py:152
+msgid "Select the secret application"
+msgstr "Selecione uma aplicação secreta"
+
+#: pydemic_ui/apps/calc.py:172
+msgid "Enable debug"
+msgstr "Habilitar depuração"
+
+#: pydemic_ui/apps/calc.py:173
+msgid "Running in debug mode!"
+msgstr "Executando em modo de depuração!"
+
+#: pydemic_ui/apps/calc.py:179
+msgid "Debug section!"
+msgstr "Seção de depuração!"
+
+#: pydemic_ui/apps/calc.py:199
+msgid "Debug information"
+msgstr "Informação de depuração"
+
+#: pydemic_ui/apps/calc.py:201
+msgid "Generic parameters"
+msgstr "Parâmetros genéricos"
+
+#: pydemic_ui/apps/calc.py:204
+#: pydemic_ui/components/input/epidemiological_params.py:36
+msgid "Epidemiological parameters"
+msgstr "Parâmetros epidemiológicos"
+
+#: pydemic_ui/apps/calc.py:207
+#: pydemic_ui/components/input/epidemiological_params.py:55
+msgid "Clinical parameters"
+msgstr "Parâmetros clínicos"
+
+#: pydemic_ui/apps/calc.py:210
+msgid "Output"
+msgstr "Saída"
+
+#: pydemic_ui/apps/calc.py:219
+msgid "Distribution of deaths"
+msgstr "Distribuição de óbitos"
+
+#: pydemic_ui/apps/model_info.py:13
+msgid "Clinical model"
+msgstr "Modelo clínico"
+
+#: pydemic_ui/apps/model_info.py:17
+msgid "Parameters table"
+msgstr "Tabela de parâmetros"
+
+#: pydemic_ui/apps/projections.py:32
+msgid "Covid risk factors"
+msgstr "Fatores de risco para COVID "
+
+#: pydemic_ui/apps/projections.py:61
+msgid "Covid risk factors ({name})"
+msgstr "Fatores de risco para COVID ({name})"
+
+#: pydemic_ui/apps/projections.py:67
+msgid "Forecast scenarios"
+msgstr ""
+
+#: pydemic_ui/apps/projections.py:70
+msgid "The computed value of R0 for {place} is **{R0}**. Let us\n"
+"    consider 3 different scenarios: the first progress with this value of R0, the\n"
+"    second increases social isolation to obtain a lower R0 and the third loosen\n"
+"    social isolation and correspond to a higher R0."
+msgstr "O valor de R0 calculado para {place} é **{R0}**. Vamos considerar \n"
+"3 diferentes cenários: o primeiro progride com este valor de R0; o segundo\n"
+"aumenta o nível de isolamento social para obter um R0 mais baixo e o terceiro \n"
+"diminui o isolamento e corresponde ao maior valor de R0."
+
+#: pydemic_ui/apps/projections.py:79
+msgid "What is the new R0?"
+msgstr "Qual é o novo valor de R0?"
+
+#: pydemic_ui/apps/projections.py:87
+msgid "Parameters"
+msgstr "Parâmetros"
+
+#: pydemic_ui/apps/projections.py:88 pydemic_ui/model/components.py:198
+msgid "Healthcare system"
+msgstr "Sistema de saúde"
+
+#: pydemic_ui/apps/projections.py:92
+msgid "Total ICU beds"
+msgstr "Total de leitos UTI"
+
+#: pydemic_ui/apps/projections.py:96
+msgid "Total hospital beds"
+msgstr "Total de leitos clínicos"
+
+#: pydemic_ui/apps/projections.py:104
+msgid "Fraction of ICU beds that is occupied?"
+msgstr "Qual fração dos leitos UTI está ocupada?"
+
+#: pydemic_ui/apps/projections.py:114
+msgid "Plotting options"
+msgstr "Opções de gráficos"
+
+#: pydemic_ui/apps/projections.py:115
 msgid "Linear scale"
 msgstr "Escala linear"
 
-#: pydemic_ui/apps/projections.py:109
+#: pydemic_ui/apps/projections.py:115
 msgid "Hide grid"
 msgstr "Esconder grade"
 
-#: pydemic_ui/apps/projections.py:139
-msgid "New deaths"
-msgstr "Novos óbitos"
+#: pydemic_ui/apps/projections.py:116
+msgid "Advanced information"
+msgstr "Informação avançada"
 
-#: pydemic_ui/apps/projections.py:142
-msgid "New cases"
-msgstr "Novos casos"
+#: pydemic_ui/apps/projections.py:119
+msgid "Notification per weekday"
+msgstr "Notificação por dia de semana"
 
-#: pydemic_ui/apps/projections.py:143
-msgid "Estimated"
-msgstr "Estimado"
+#: pydemic_ui/apps/projections.py:169
+msgid "Introduction"
+msgstr "Introdução"
 
-#: pydemic_ui/apps/projections.py:143
-msgid "Reported"
-msgstr "Reportado"
+#: pydemic_ui/apps/projections.py:173
+msgid "Basic reproduction number"
+msgstr "Número básico de reprodução"
 
-#: pydemic_ui/apps/projections.py:144
-msgid "Reporting"
-msgstr "Reportando"
+#: pydemic_ui/apps/projections.py:174
+msgid "Ascertainment rate"
+msgstr "Taxa de notificação"
 
-#: pydemic_ui/apps/projections.py:148 pydemic_ui/ui/output_components.py:105
-msgid "Hospitalizations"
-msgstr "Hospitalizações"
-
-#: pydemic_ui/apps/projections.py:151
-msgid "Projections"
+#: pydemic_ui/apps/projections.py:182
+msgid "Forecasts"
 msgstr "Projeções"
 
-#: pydemic_ui/apps/projections.py:159
-msgid "Isolation score"
-msgstr "Score de isolamento"
+#: pydemic_ui/apps/projections.py:189
+msgid "Active cases"
+msgstr "Casos ativos"
 
-#: pydemic_ui/apps/projections.py:164 pydemic_ui/apps/projections_br.py:226
-msgid "Columns"
-msgstr "Colunas"
+#: pydemic_ui/apps/projections.py:193
+msgid "Download data"
+msgstr "Baixar dados"
 
-#: pydemic_ui/apps/projections.py:185
-msgid "Dataset"
-msgstr "Conjunto de dados"
+#: pydemic_ui/apps/projections.py:196
+msgid "Select columns"
+msgstr "Selecione colunas"
 
-#: pydemic_ui/apps/projections.py:187 pydemic_ui/apps/projections_br.py:158
-msgid "Show in screen"
-msgstr "Mostrar na tela"
+#: pydemic_ui/apps/projections.py:208
+msgid "When can we reopen?"
+msgstr "Quando podemos reabrir?"
 
-#: pydemic_ui/apps/projections.py:188 pydemic_ui/apps/projections_br.py:159
-msgid "Comma separated values"
-msgstr "Valores separados por vírgulas (CSV)"
+#: pydemic_ui/apps/projections.py:211
+msgid "Step 1: Controlling the curve"
+msgstr "Passo 1: Controlar a curva"
 
-#: pydemic_ui/apps/projections.py:189 pydemic_ui/apps/projections_br.py:160
-msgid "Excel"
-msgstr "Excel"
+#: pydemic_ui/apps/projections.py:214
+msgid "Step 2: Testing"
+msgstr "Passo 2: Testagem"
 
-#: pydemic_ui/apps/projections.py:193 pydemic_ui/apps/projections_br.py:165
-msgid "How do you want your data?"
-msgstr "Como você deseja os dados?"
+#: pydemic_ui/apps/projections.py:219
+msgid "Step 3: Hospital capacity"
+msgstr "Passo 3: Capacidade hospitalar"
 
-#: pydemic_ui/apps/projections.py:198
-msgid "Keep observed period"
-msgstr "Manter período observado"
+#: pydemic_ui/apps/projections.py:227
+msgid "Critical cases"
+msgstr "Casos críticos"
 
-#: pydemic_ui/apps/projections.py:215 pydemic_ui/apps/projections_br.py:176
-msgid "Right click link to download"
-msgstr "Clique com o botão direito para baixar"
+#: pydemic_ui/apps/projections.py:235
+msgid "{name} is in a **(good|bad|ugly)** state, yadda, yadda, yadda.\n"
+"\n"
+"The plot bellow shows the progression of cases and deaths.\n"
+msgstr ""
 
-#: pydemic_ui/apps/projections_br.py:45
+#: pydemic_ui/apps/projections.py:246
+msgid "Epidemic forecasting depends on good data, which is hard to find.\n"
+"Take it with a grain of salt.\n"
+msgstr ""
+
+#: pydemic_ui/apps/projections.py:256 pydemic_ui/apps/projections.py:262
+msgid "..."
+msgstr "..."
+
+#: pydemic_ui/apps/projections.py:277
+msgid "Date"
+msgstr "Data"
+
+#: pydemic_ui/apps/projections_br.py:69
+msgid "Select a state to highlight"
+msgstr "Selecione um estado para destacar"
+
+#: pydemic_ui/apps/projections_br.py:71
+msgid "Which kind of curve to you want to analyze?"
+msgstr "Qual o tipo de curva que você deseja analisar?"
+
+#: pydemic_ui/apps/projections_br.py:155
+msgid "Projections for COVID-19 evolution in Brazil"
+msgstr "Projeções para a evolução da COVID-19 no Brasil"
+
+#: pydemic_ui/apps/scenarios1.py:42 pydemic_ui/apps/scenarios2.py:45
+#: pydemic_ui/model/plotting.py:46
+msgid "ICU"
+msgstr "UTI"
+
+#: pydemic_ui/apps/scenarios1.py:43 pydemic_ui/apps/scenarios2.py:46
 msgid "Clinical"
 msgstr "Clínico"
 
-#: pydemic_ui/apps/projections_br.py:47
+#: pydemic_ui/apps/scenarios1.py:44 pydemic_ui/apps/scenarios2.py:47
+#: pydemic_ui/components/input/simulation_params.py:50
+#: pydemic_ui/components/pyplot.py:35
+msgid "Cases"
+msgstr "Casos"
+
+#: pydemic_ui/apps/scenarios1.py:45 pydemic_ui/apps/scenarios2.py:48
 msgid "Infected"
 msgstr "Infectados"
 
-#: pydemic_ui/apps/projections_br.py:56
-#: pydemic_ui/components/input/select_region.py:14
+#: pydemic_ui/apps/scenarios1.py:54
+#: pydemic_ui/components/input/region_input.py:17
 msgid "State"
 msgstr "Estado"
 
-#: pydemic_ui/apps/projections_br.py:57
+#: pydemic_ui/apps/scenarios1.py:55
 msgid "Macro-region"
 msgstr "Macro-região"
 
-#: pydemic_ui/apps/projections_br.py:62
-msgid "SUS macro-region"
-msgstr "Macro-região SUS"
-
-#: pydemic_ui/apps/projections_br.py:102
+#: pydemic_ui/apps/scenarios1.py:106 pydemic_ui/apps/scenarios2.py:173
 msgid "Isolation {}"
 msgstr "Isolamento {}"
 
-#: pydemic_ui/apps/projections_br.py:114
+#: pydemic_ui/apps/scenarios1.py:118
 msgid "Processing {name}"
 msgstr "Processando {name}"
 
-#: pydemic_ui/apps/projections_br.py:137
+#: pydemic_ui/apps/scenarios1.py:142
 msgid "{n} days"
 msgstr "{n} dias"
 
-#: pydemic_ui/apps/projections_br.py:138
+#: pydemic_ui/apps/scenarios1.py:143
 msgid "isolation {pc}"
 msgstr "isolamento {pc}"
 
-#: pydemic_ui/apps/projections_br.py:219
+#: pydemic_ui/apps/scenarios1.py:177 pydemic_ui/apps/scenarios2.py:103
 msgid "Select scenario"
 msgstr "Selecione o cenário"
 
-#: pydemic_ui/apps/projections_br.py:222
-msgid "Trim days"
-msgstr "Cortar dias"
+#: pydemic_ui/apps/scenarios1.py:182 pydemic_ui/apps/scenarios2.py:107
+msgid "Columns"
+msgstr "Colunas"
 
-#: pydemic_ui/apps/projections_br.py:233
+#: pydemic_ui/apps/scenarios1.py:185 pydemic_ui/apps/scenarios2.py:110
+msgid "Isolation scores"
+msgstr "Scores de isolamento"
+
+#: pydemic_ui/apps/scenarios1.py:189 pydemic_ui/apps/scenarios2.py:114
 msgid "Show values for the given days"
 msgstr "Mostrar valores para os dias dados"
 
-#: pydemic_ui/apps/projections_br.py:241
+#: pydemic_ui/apps/scenarios1.py:212 pydemic_ui/apps/scenarios2.py:153
 msgid "Download results"
 msgstr "Baixar resultados"
+
+#: pydemic_ui/apps/scenarios1.py:227 pydemic_ui/apps/scenarios2.py:89
+msgid "Scenarios for COVID-19 evolution in Brazil"
+msgstr "Cenários para a evolução da COVID-19 no Brasil"
+
+#: pydemic_ui/apps/scenarios2.py:57
+msgid "All Brazilian states"
+msgstr "Todos estados brasileiros"
+
+#: pydemic_ui/apps/scenarios2.py:60 pydemic_ui/apps/scenarios2.py:67
+msgid "Numeric code"
+msgstr "Código numérico"
+
+#: pydemic_ui/apps/scenarios2.py:61
+msgid "UF"
+msgstr "UF"
+
+#: pydemic_ui/apps/scenarios2.py:62 pydemic_ui/apps/scenarios2.py:67
+#: pydemic_ui/model/components.py:261
+msgid "Name"
+msgstr "Nome"
+
+#: pydemic_ui/apps/scenarios2.py:65
+msgid "Brazilian macro-regions"
+msgstr "Macro-regiões brasileiras"
+
+#: pydemic_ui/apps/scenarios2.py:190
+msgid "Running simulations"
+msgstr "Executando simulações"
+
+#: pydemic_ui/apps/scenarios2.py:204
+msgid "{} days"
+msgstr "{} dias"
+
+#: pydemic_ui/apps/scenarios2.py:214
+msgid "days"
+msgstr "dias"
+
+#: pydemic_ui/components/generic.py:118
+msgid "How do you want your data?"
+msgstr "Como você deseja os dados?"
+
+#: pydemic_ui/components/generic.py:126
+msgid "Show in screen"
+msgstr "Mostrar na tela"
+
+#: pydemic_ui/components/generic.py:127
+msgid "Comma separated values"
+msgstr "Valores separados por vírgulas (CSV)"
+
+#: pydemic_ui/components/generic.py:128
+msgid "Excel"
+msgstr "Excel"
+
+#: pydemic_ui/components/generic.py:177
+msgid "Download as {kind}"
+msgstr "Baixar como {kind}"
 
 #: pydemic_ui/components/pyplot.py:34
 msgid "Observed daily cases and deaths"
 msgstr "Número de novos casos diários e óbitos"
 
-#: pydemic_ui/components/ui.py:17
+#: pydemic_ui/components/ui.py:19
 msgid "COVID-19"
 msgstr "COVID-19"
 
-#: pydemic_ui/components/ui.py:17
+#: pydemic_ui/components/ui.py:19
 msgid "Epidemic Calculator"
 msgstr "Calculadora Epidêmica"
 
-#: pydemic_ui/components/ui.py:45
+#: pydemic_ui/components/ui.py:47
 msgid "https://www.paho.org/hq/index.php?lang=en"
 msgstr "https://www.paho.org/hq/index.php?lang=en"
 
-#: pydemic_ui/components/ui.py:48
+#: pydemic_ui/components/ui.py:50
 msgid "PAHO"
 msgstr "OPAS"
 
-#: pydemic_ui/components/ui.py:58
+#: pydemic_ui/components/ui.py:60
 msgid "Support: {institutions}"
 msgstr "Suporte: {institutions}"
 
-#: pydemic_ui/components/ui.py:62
+#: pydemic_ui/components/ui.py:64
 msgid "Acknowledgements: {institutions}"
 msgstr "Agradecimentos: {institutions}"
 
@@ -329,44 +595,44 @@ msgstr "Padrão"
 msgid "Advanced"
 msgstr "Avançado"
 
-#: pydemic_ui/components/input/epidemiological_params.py:28
-#: pydemic_ui/components/input/select_intervention.py:35
+#: pydemic_ui/components/input/epidemiological_params.py:27
+#: pydemic_ui/components/input/intervention_runner_input.py:37
 msgid "Scenario"
 msgstr "Cenário"
 
-#: pydemic_ui/components/input/epidemiological_params.py:38
+#: pydemic_ui/components/input/epidemiological_params.py:37
 msgid "Basic reproduction number (R0)"
 msgstr "Número de reprodução básico"
 
-#: pydemic_ui/components/input/epidemiological_params.py:41
+#: pydemic_ui/components/input/epidemiological_params.py:40
 msgid "Virus incubation period"
 msgstr "Período de incubação do vírus"
 
-#: pydemic_ui/components/input/epidemiological_params.py:46
+#: pydemic_ui/components/input/epidemiological_params.py:45
 msgid "Infectious period"
 msgstr "Período infeccioso"
 
-#: pydemic_ui/components/input/epidemiological_params.py:51
+#: pydemic_ui/components/input/epidemiological_params.py:50
 msgid "Fraction of symptomatic cases"
 msgstr "Fração de casos sintomáticos"
 
-#: pydemic_ui/components/input/epidemiological_params.py:58
+#: pydemic_ui/components/input/epidemiological_params.py:57
 msgid "Fraction of hospitalized cases"
 msgstr "Fração de casos hospitalizados"
 
-#: pydemic_ui/components/input/epidemiological_params.py:62
+#: pydemic_ui/components/input/epidemiological_params.py:61
 msgid "Need for ICU in hospitalized cases"
 msgstr "Precisa de UTI nos casos hospitalizados"
 
-#: pydemic_ui/components/input/epidemiological_params.py:67
+#: pydemic_ui/components/input/epidemiological_params.py:66
 msgid "Hospitalization period (days)"
 msgstr "Período de hospitalização (dias)"
 
-#: pydemic_ui/components/input/epidemiological_params.py:72
+#: pydemic_ui/components/input/epidemiological_params.py:71
 msgid "Hospitalization period for ICU patients (days)"
 msgstr "Período de hospitalização (UTI)"
 
-#: pydemic_ui/components/input/select_intervention.py:13
+#: pydemic_ui/components/input/intervention_runner_input.py:13
 msgid "\n"
 "This intervention simulates a situation in which everyone reduces\n"
 "the average number of contacts throughout the day. Small reductions (~15%) are\n"
@@ -377,112 +643,139 @@ msgstr "\n"
 "ao longo do dia. Pequenas reduções (~15%) são possíveis por pequenas mudanças comportamentais. \n"
 "Reduções maiores exigem a implementação de várias medidas não farmacológicas.\n"
 
-#: pydemic_ui/components/input/select_intervention.py:24
+#: pydemic_ui/components/input/intervention_runner_input.py:25
 msgid "Intervention"
 msgstr "Intervenção"
 
-#: pydemic_ui/components/input/select_intervention.py:34
+#: pydemic_ui/components/input/intervention_runner_input.py:36
 msgid "None"
 msgstr "Nenhum"
 
-#: pydemic_ui/components/input/select_intervention.py:34
+#: pydemic_ui/components/input/intervention_runner_input.py:36
 msgid "Social distancing"
 msgstr "Redução de contato social"
 
-#: pydemic_ui/components/input/select_intervention.py:44
+#: pydemic_ui/components/input/intervention_runner_input.py:46
 msgid "Duration of intervention (days)"
 msgstr "Duração da intervenção (dias)"
 
-#: pydemic_ui/components/input/select_intervention.py:45
+#: pydemic_ui/components/input/intervention_runner_input.py:47
 msgid "Intervention starts at day {} of simulation"
 msgstr "Intervenção começa no dia {} da simulação"
 
-#: pydemic_ui/components/input/select_intervention.py:46
+#: pydemic_ui/components/input/intervention_runner_input.py:48
 msgid "Expected social isolation (0{pc} represents no isolation)"
 msgstr "Distanciamento social previsto (0{pc} significa ausência de distanciamento social)"
 
-#: pydemic_ui/components/input/select_intervention.py:47
+#: pydemic_ui/components/input/intervention_runner_input.py:49
 msgid "Initial social isolation (0{pc} represents no isolation)"
 msgstr "Isolamento inicial (0{pc} representa ausência de isolamento)"
 
-#: pydemic_ui/components/input/select_intervention.py:54
-msgid "Start intervention immediately"
-msgstr "Começar intervenção imediatamente"
-
-#: pydemic_ui/components/input/select_intervention.py:56
-msgid "How many days before intervention start?"
-msgstr "Quantos dias antes de começar a intervenção?"
-
-#: pydemic_ui/components/input/select_intervention.py:64
+#: pydemic_ui/components/input/intervention_runner_input.py:55
 msgid "First intervention"
 msgstr "Primeira intervenção"
 
-#: pydemic_ui/components/input/select_intervention.py:78
+#: pydemic_ui/components/input/intervention_runner_input.py:58
+msgid "Start intervention immediately"
+msgstr "Começar intervenção imediatamente"
+
+#: pydemic_ui/components/input/intervention_runner_input.py:60
+msgid "How many days before intervention start?"
+msgstr "Quantos dias antes de começar a intervenção?"
+
+#: pydemic_ui/components/input/intervention_runner_input.py:80
 msgid "Add more stages"
 msgstr "Acrescentar etapa"
 
-#: pydemic_ui/components/input/select_intervention.py:83
+#: pydemic_ui/components/input/intervention_runner_input.py:85
 msgid "Intervention {n}"
 msgstr "Intervenção {n}"
 
-#: pydemic_ui/components/input/select_region.py:13
+#: pydemic_ui/components/input/region_input.py:14
 msgid "Brazil"
 msgstr "Brasil"
 
-#: pydemic_ui/components/input/select_region.py:14
+#: pydemic_ui/components/input/region_input.py:16
 msgid "Region"
 msgstr "Região"
 
-#: pydemic_ui/components/input/select_region.py:16
+#: pydemic_ui/components/input/region_input.py:20
 msgid "Meso Region"
 msgstr "Meso-região"
 
-#: pydemic_ui/components/input/select_region.py:17
+#: pydemic_ui/components/input/region_input.py:21
 msgid "Micro-Region"
 msgstr "Micro-região"
 
-#: pydemic_ui/components/input/select_region.py:18
+#: pydemic_ui/components/input/region_input.py:22
 msgid "City"
 msgstr "Cidade"
 
-#: pydemic_ui/components/input/select_region.py:20
+#: pydemic_ui/components/input/region_input.py:24
 msgid "SUS macro region"
 msgstr "Macro-região SUS"
 
-#: pydemic_ui/components/input/select_region.py:34
-#: pydemic_ui/components/input/select_region.py:37
-#: pydemic_ui/components/input/select_region.py:57
-#: pydemic_ui/components/input/select_region.py:80
+#: pydemic_ui/components/input/region_input.py:28
+#: pydemic_ui/components/input/region_input.py:50
 msgid "Location"
 msgstr "Localidade"
 
-#: pydemic_ui/components/input/select_region.py:94
+#: pydemic_ui/components/input/region_input.py:38
+msgid "Advanced selection"
+msgstr "Seleção avançada"
+
+#: pydemic_ui/components/input/region_input.py:40
+msgid "Select mundi region"
+msgstr "Selecione uma região mundi"
+
+#: pydemic_ui/components/input/region_input.py:43
+msgid "Region not found!"
+msgstr "Região não encontrada!"
+
+#: pydemic_ui/components/input/region_input.py:103
 msgid "IBGE subdivisions"
 msgstr "Sub-divisões IBGE"
 
-#: pydemic_ui/components/input/select_region.py:94
+#: pydemic_ui/components/input/region_input.py:105
 msgid "SUS healthcare region"
 msgstr "Região de saúde SUS"
 
-#: pydemic_ui/components/input/select_region.py:95
+#: pydemic_ui/components/input/region_input.py:107
+#: pydemic_ui/components/input/region_input.py:116
+msgid "List of IBGE city codes"
+msgstr "Lista de códigos IBGE"
+
+#: pydemic_ui/components/input/region_input.py:110
 msgid "Select"
 msgstr "Selecione"
 
-#: pydemic_ui/components/input/select_region.py:104
+#: pydemic_ui/components/input/region_input.py:127
 msgid "Show cities"
 msgstr "Lista de cidades"
 
-#: pydemic_ui/components/input/select_region.py:106
+#: pydemic_ui/components/input/region_input.py:129
 msgid "List of cities"
 msgstr "Lista de cidades"
 
-#: pydemic_ui/components/input/select_region.py:122
+#: pydemic_ui/components/input/region_input.py:142
+msgid "{city} is not in {state}!"
+msgstr "{city} não está em {state}!"
+
+#: pydemic_ui/components/input/region_input.py:144
+msgid "Arbitrary region"
+msgstr "Região arbitrária"
+
+#: pydemic_ui/components/input/region_input.py:155
 msgid "{name} (everything)"
 msgstr "{name} (tudo)"
 
-#: pydemic_ui/components/input/select_region.py:125
+#: pydemic_ui/components/input/region_input.py:158
 msgid "name"
 msgstr "nome"
+
+#: pydemic_ui/components/input/region_input.py:190
+msgid "invalid city code: {code}"
+msgstr "Código de cidade inválido: {code}"
 
 #: pydemic_ui/components/input/simulation_params.py:17
 msgid "\n"
@@ -491,6 +784,7 @@ msgid "\n"
 "   "
 msgstr "\n"
 "A taxa de ocupação de leitos no Brasil é tradicionalmente maior que **{globalrate}**. Os parâmetros de entrada assumem uma taxa de ocupação de **{rate}**  e **{n}** leitos disponíveis.\n"
+" "
 
 #: pydemic_ui/components/input/simulation_params.py:27
 msgid "Simulation options"
@@ -504,103 +798,35 @@ msgstr "Duração (semanas)"
 msgid "Simulation date"
 msgstr "Início da simulação"
 
-#: pydemic_ui/components/input/simulation_params.py:49
+#: pydemic_ui/components/input/simulation_params.py:51
 msgid "Average new confirmed COVID-19 cases per day"
 msgstr "Média de casos confirmados de COVID-19 por dia"
 
-#: pydemic_ui/components/input/simulation_params.py:53
+#: pydemic_ui/components/input/simulation_params.py:55
 msgid "Notification rate (%)"
 msgstr "Taxa de notificação (%)"
 
-#: pydemic_ui/components/input/simulation_params.py:61
+#: pydemic_ui/components/input/simulation_params.py:63
 msgid "Hospital capacity"
 msgstr "Capacidade hospitalar"
 
-#: pydemic_ui/components/input/simulation_params.py:79
+#: pydemic_ui/components/input/simulation_params.py:81
 msgid "Total capacity"
 msgstr "Capacidade total"
 
-#: pydemic_ui/components/input/simulation_params.py:82
+#: pydemic_ui/components/input/simulation_params.py:84
 msgid "Occupied"
 msgstr "Ocupado"
+
+#: pydemic_ui/components/input/simulation_params.py:87
+msgid "Using more beds than total capacity"
+msgstr "Utilizando mais leitos que a capacidade total"
 
 #: pydemic_ui/components/input/simulation_params.py:103
 msgid "Clinical beds"
 msgstr "Leitos clínicos"
 
-#: pydemic_ui/pyplot/pydemic.py:32 pydemic_ui/pyplot/pydemic.py:33
-msgid "{} (smooth)"
-msgstr "{} (suavizada)"
-
-#: pydemic_ui/ui/output_charts.py:13
-msgid "Hospital demand"
-msgstr "Demanda hospitalar"
-
-#: pydemic_ui/ui/output_charts.py:28
-msgid "Required hospital beds"
-msgstr "Leitos clínicos necessários"
-
-#: pydemic_ui/ui/output_charts.py:29
-msgid "Required ICU beds"
-msgstr "Leitos UTI necessários"
-
-#: pydemic_ui/ui/output_charts.py:36
-msgid "Available hospital beds"
-msgstr "Leitos clínicos disponíveis"
-
-#: pydemic_ui/ui/output_charts.py:54
-msgid "Regular"
-msgstr "Regular"
-
-#: pydemic_ui/ui/output_charts.py:70
-msgid "Anticipated age distribution of COVID deaths by age"
-msgstr "Distribuição prevista de mortes por COVID por faixa etária"
-
-#: pydemic_ui/ui/output_charts.py:86
-msgid "**Total cases**"
-msgstr "**Total de casos**"
-
-#: pydemic_ui/ui/output_charts.py:89
-msgid "**Mortality per 100k**"
-msgstr "**Mortalidade por 100.000**"
-
-#: pydemic_ui/ui/output_charts.py:107
-msgid "Population"
-msgstr "População"
-
-#: pydemic_ui/ui/output_charts.py:110 pydemic_ui/ui/output_components.py:222
-msgid "Total"
-msgstr "Total"
-
-#: pydemic_ui/ui/output_charts.py:111
-msgid "Age 60+"
-msgstr "Idade 60+"
-
-#: pydemic_ui/ui/output_charts.py:119
-msgid "Population pyramid"
-msgstr "Pirâmide populacional"
-
-#: pydemic_ui/ui/output_charts.py:135
-msgid "Female"
-msgstr "Mulher"
-
-#: pydemic_ui/ui/output_charts.py:135
-msgid "Male"
-msgstr "Homem"
-
-#: pydemic_ui/ui/output_charts.py:137
-msgid "\n"
-"FREIRE, F.H.M.A; GONZAGA, M.R; QUEIROZ, B.L. Projeção populacional municipal\n"
-"com estimadores bayesianos, Brasil 2010 - 2030, 2019\n"
-msgstr "\n"
-"FREIRE, F.H.M.A; GONZAGA, M.R; QUEIROZ, B.L. Projeção populacional municipal\n"
-"com estimadores bayesianos, Brasil 2010 - 2030, 2019\n"
-
-#: pydemic_ui/ui/output_charts.py:143
-msgid "Source"
-msgstr "Fonte"
-
-#: pydemic_ui/ui/output_components.py:24
+#: pydemic_ui/model/components.py:15
 msgid "\n"
 "The location does not have any ICU beds. At peak demand, it needs to reserve {n}\n"
 "beds from neighboring cities.\n"
@@ -608,7 +834,7 @@ msgstr "\n"
 "A localidade não possui leitos de UTI. No auge da demanda, é necessário reservar {n}\n"
 "leitos de cidades vizinhas.\n"
 
-#: pydemic_ui/ui/output_components.py:31
+#: pydemic_ui/model/components.py:22
 msgid "\n"
 "The location will **run out of ICU beds at {date}**. At peak demand, it will need **{n}\n"
 "new ICUs**. This demand corresponds to **{surge} times** the number of beds dedicated\n"
@@ -618,13 +844,13 @@ msgstr "\n"
 "UTIs. Esta demanda corresponde a **{surge} vezes** o número de leitos de UTI dedicados ao COVID-19 e \n"
 "{total} vezes o número total de UTIs instaladas na região.\n"
 
-#: pydemic_ui/ui/output_components.py:39
+#: pydemic_ui/model/components.py:30
 msgid "\n"
 "The number of ICU beds is sufficient for the expected demand in this scenario.\n"
 msgstr "\n"
 "O número de UTIs é suficiente para a expectativa de demanda do cenário.\n"
 
-#: pydemic_ui/ui/output_components.py:45
+#: pydemic_ui/model/components.py:36
 msgid "\n"
 "The table bellow show the recommended usage of PPE by healthcare workers\n"
 "during the period of simulation.\n"
@@ -632,129 +858,189 @@ msgstr "\n"
 "A tabela abaixo mostra o uso recomendado de EPIs por profissionais da saúde \n"
 "durante o período da simulação.\n"
 
-#: pydemic_ui/ui/output_components.py:77
+#: pydemic_ui/model/components.py:69
 msgid "No ICU beds!"
 msgstr "Sem UTIs!"
 
-#: pydemic_ui/ui/output_components.py:81
+#: pydemic_ui/model/components.py:73
 msgid "No hospital beds!"
 msgstr "Sem leitos!"
 
-#: pydemic_ui/ui/output_components.py:87
+#: pydemic_ui/model/components.py:79
 msgid "Still coming..."
 msgstr "Ainda por vir..."
 
-#: pydemic_ui/ui/output_components.py:91
+#: pydemic_ui/model/components.py:83
 msgid "Confirmed cases*"
 msgstr "Casos confirmados*"
 
-#: pydemic_ui/ui/output_components.py:92
+#: pydemic_ui/model/components.py:84
 msgid "Confirmed deaths*"
 msgstr "Óbitos confirmados*"
 
-#: pydemic_ui/ui/output_components.py:106
+#: pydemic_ui/model/components.py:97
+msgid "Hospitalizations"
+msgstr "Hospitalizações"
+
+#: pydemic_ui/model/components.py:98
 msgid "Required extra ICU beds"
 msgstr "UTIs adicionais necessárias"
 
-#: pydemic_ui/ui/output_components.py:107
+#: pydemic_ui/model/components.py:99
 msgid "Required extra hospital beds"
 msgstr "Leitos clínicos adicionais necessários"
 
-#: pydemic_ui/ui/output_components.py:108
+#: pydemic_ui/model/components.py:100
 msgid "No more ICU beds available by"
 msgstr "UTIs lotam em"
 
-#: pydemic_ui/ui/output_components.py:109
+#: pydemic_ui/model/components.py:101
 msgid "No more hospital beds available by"
 msgstr "O leitos clínicos lotam em"
 
-#: pydemic_ui/ui/output_components.py:110
+#: pydemic_ui/model/components.py:102
 msgid "Estimated date for the peak"
 msgstr "Data estimada para o pico"
 
-#: pydemic_ui/ui/output_components.py:111
+#: pydemic_ui/model/components.py:103
 msgid "Cumulative attack rate"
 msgstr "Taxa de ataque acumulada"
 
-#: pydemic_ui/ui/output_components.py:114
+#: pydemic_ui/model/components.py:106
 msgid "&ast; Compiled from local Healthcare Secretaries"
 msgstr "&ast; Compilado de dados de Secretarias Estaduais de Saúde"
 
-#: pydemic_ui/ui/output_components.py:129
-msgid "Healthcare system"
-msgstr "Sistema de saúde"
-
-#: pydemic_ui/ui/output_components.py:133
-msgid "COVID/SARI ICUs"
-msgstr "UTIs COVID/SRAG"
-
-#: pydemic_ui/ui/output_components.py:134
-msgid "COVID/SARI hospital beds"
-msgstr "Leitos clínicos COVID/SRAG"
-
-#: pydemic_ui/ui/output_components.py:166
+#: pydemic_ui/model/components.py:109
 msgid "Advanced epidemiological information"
 msgstr "Informações avançadas de epidemiologia"
 
-#: pydemic_ui/ui/output_components.py:175
+#: pydemic_ui/model/components.py:130
 msgid "Number of cases generated by a single case"
 msgstr "Número de casos gerado por cada caso"
 
-#: pydemic_ui/ui/output_components.py:176
+#: pydemic_ui/model/components.py:131
 msgid "Mortality (deaths per 100k population)"
 msgstr "Mortalidade (mortes por 100.000 hab)"
 
-#: pydemic_ui/ui/output_components.py:177
+#: pydemic_ui/model/components.py:132
 msgid "Letality ({pc} of deaths among the ill)"
 msgstr "Letalidade ({pc} de mortes entre os doentes)"
 
-#: pydemic_ui/ui/output_components.py:193
+#: pydemic_ui/model/components.py:144
 msgid "Personal protection equipment"
 msgstr "Equipamento de proteção individual"
 
-#: pydemic_ui/ui/output_components.py:208
+#: pydemic_ui/model/components.py:166
 msgid "M = million"
 msgstr "M = milhão"
 
-#: pydemic_ui/ui/output_components.py:210
+#: pydemic_ui/model/components.py:168
 msgid "B = billion"
 msgstr "B = bilhão"
 
-#: pydemic_ui/ui/output_components.py:222
+#: pydemic_ui/model/components.py:174
+msgid "Summary of model attributes and constants"
+msgstr "Sumário de atributos e constantes do modelo"
+
+#: pydemic_ui/model/components.py:217
+msgid "COVID/SARI ICUs"
+msgstr "UTIs COVID/SRAG"
+
+#: pydemic_ui/model/components.py:218
+msgid "COVID/SARI hospital beds"
+msgstr "Leitos clínicos COVID/SRAG"
+
+#: pydemic_ui/model/components.py:245
 msgid "Quantity"
 msgstr "Quantidade"
 
-#: pydemic_ui/ui/output_components.py:223
+#: pydemic_ui/model/components.py:245 pydemic_ui/ui/output_charts.py:29
+msgid "Total"
+msgstr "Total"
+
+#: pydemic_ui/model/components.py:246
 msgid "Patients/day"
 msgstr "Pacientes/dia"
 
-#: pydemic_ui/ui/output_components.py:230
+#: pydemic_ui/model/components.py:253
 msgid "Cirurgical masks"
 msgstr "Máscaras cirúrgicas"
 
-#: pydemic_ui/ui/output_components.py:231
+#: pydemic_ui/model/components.py:254
 msgid "N95 mask"
 msgstr "Máscara N95"
 
-#: pydemic_ui/ui/output_components.py:232
+#: pydemic_ui/model/components.py:255
 msgid "Waterproof apron"
 msgstr "Avental impermeável"
 
-#: pydemic_ui/ui/output_components.py:233
+#: pydemic_ui/model/components.py:256
 msgid "Non-sterile glove"
 msgstr "Luvas não estéreis"
 
-#: pydemic_ui/ui/output_components.py:234
+#: pydemic_ui/model/components.py:257
 msgid "Faceshield"
 msgstr "Faceshield"
 
-#: pydemic_ui/ui/output_components.py:238
-msgid "Name"
-msgstr "Nome"
+#: pydemic_ui/model/plotting.py:9
+msgid "Hospital demand"
+msgstr "Demanda hospitalar"
 
-#: pydemic_ui/ui/output_components.py:252
-msgid "Not soon..."
-msgstr "Não por agora..."
+#: pydemic_ui/model/plotting.py:23
+msgid "Required hospital beds"
+msgstr "Leitos clínicos necessários"
+
+#: pydemic_ui/model/plotting.py:24
+msgid "Required ICU beds"
+msgstr "Leitos UTI necessários"
+
+#: pydemic_ui/model/plotting.py:30
+msgid "Available hospital beds"
+msgstr "Leitos clínicos disponíveis"
+
+#: pydemic_ui/model/plotting.py:46
+msgid "Regular"
+msgstr "Regular"
+
+#: pydemic_ui/model/plotting.py:50
+msgid "Anticipated age distribution of COVID deaths by age"
+msgstr "Distribuição prevista de mortes por COVID por faixa etária"
+
+#: pydemic_ui/model/plotting.py:78
+msgid "**Total cases**"
+msgstr "**Total de casos**"
+
+#: pydemic_ui/model/plotting.py:81
+msgid "**Mortality per 100k**"
+msgstr "**Mortalidade por 100.000**"
+
+#: pydemic_ui/ui/output_charts.py:30
+msgid "Age 60+"
+msgstr "Idade 60+"
+
+#: pydemic_ui/ui/output_charts.py:38
+msgid "Population pyramid"
+msgstr "Pirâmide populacional"
+
+#: pydemic_ui/ui/output_charts.py:54
+msgid "Female"
+msgstr "Mulher"
+
+#: pydemic_ui/ui/output_charts.py:54
+msgid "Male"
+msgstr "Homem"
+
+#: pydemic_ui/ui/output_charts.py:56
+msgid "\n"
+"FREIRE, F.H.M.A; GONZAGA, M.R; QUEIROZ, B.L. Projeção populacional municipal\n"
+"com estimadores bayesianos, Brasil 2010 - 2030, 2019\n"
+msgstr "\n"
+"FREIRE, F.H.M.A; GONZAGA, M.R; QUEIROZ, B.L. Projeção populacional municipal\n"
+"com estimadores bayesianos, Brasil 2010 - 2030, 2019\n"
+
+#: pydemic_ui/ui/output_charts.py:62
+msgid "Source"
+msgstr "Fonte"
 
 #~ msgid "COVID-19 assistance pressure"
 #~ msgstr "Pressão assistencial devido à COVID-19"
@@ -1391,3 +1677,75 @@ msgstr "Não por agora..."
 
 #~ msgid "Start simulation without intervention"
 #~ msgstr "Iniciar a simulação sem intervenção"
+
+#~ msgid "Select state"
+#~ msgstr "Selecione o estado"
+
+#~ msgid "Duration"
+#~ msgstr "Duraçãio"
+
+#~ msgid "7 days"
+#~ msgstr "7 dias"
+
+#~ msgid "15 days"
+#~ msgstr "15 dias"
+
+#~ msgid "30 days"
+#~ msgstr "30 dias"
+
+#~ msgid "60 days"
+#~ msgstr "60 dias"
+
+#~ msgid "Cases (corrected)"
+#~ msgstr "Casos (corrigido)"
+
+#~ msgid "Cases (projected)"
+#~ msgstr "Casos (projetado)"
+
+#~ msgid "Deaths (projected)"
+#~ msgstr "Óbitos (previsto)"
+
+#~ msgid "Ascertainment ratio"
+#~ msgstr "Taxa de notificação"
+
+#~ msgid "R0"
+#~ msgstr "R0"
+
+#~ msgid "New deaths"
+#~ msgstr "Novos óbitos"
+
+#~ msgid "New cases"
+#~ msgstr "Novos casos"
+
+#~ msgid "Estimated"
+#~ msgstr "Estimado"
+
+#~ msgid "Reported"
+#~ msgstr "Reportado"
+
+#~ msgid "Reporting"
+#~ msgstr "Reportando"
+
+#~ msgid "Projections"
+#~ msgstr "Projeções"
+
+#~ msgid "Isolation score"
+#~ msgstr "Score de isolamento"
+
+#~ msgid "Dataset"
+#~ msgstr "Conjunto de dados"
+
+#~ msgid "Keep observed period"
+#~ msgstr "Manter período observado"
+
+#~ msgid "Right click link to download"
+#~ msgstr "Clique com o botão direito para baixar"
+
+#~ msgid "SUS macro-region"
+#~ msgstr "Macro-região SUS"
+
+#~ msgid "Trim days"
+#~ msgstr "Cortar dias"
+
+#~ msgid "{} (smooth)"
+#~ msgstr "{} (suavizada)"

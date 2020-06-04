@@ -99,5 +99,5 @@ class TestInput:
     def test_select_intervention_simple(self, en):
         br = mundi.region("BR")
         st = Driver([out.header("Intervention"), ask.selectbox["baseline"](...)])
-        assert input.select_intervention(br, where=st) == simple_runner()
+        assert input.intervention_runner_input(br, where=st) == simple_runner()
         assert st.is_empty()

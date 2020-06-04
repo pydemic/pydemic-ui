@@ -41,7 +41,7 @@ def region_input(
             return mundi.region(code)
         except LookupError:
             st.error(_("Region not found!"))
-            return default
+            return mundi.region(default)
     region = mundi.region(default)
 
     if region.id == "BR":
@@ -187,6 +187,6 @@ def ibge_city(code):
         if len(code) == 7:
             code = code[:-1]
         elif len(code) != 6:
-            raise ValueError(_(f"invalid city code: {code}"))
+            raise ValueError(_("invalid city code: {code}").format(code=code))
         return mundi.region(country_code="BR", type="city", short_code=code)
     return mundi.region(code)

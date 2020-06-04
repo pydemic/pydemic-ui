@@ -27,7 +27,7 @@ pause = _components.pause.bind(_st.sidebar)
 #
 epidemiological_params = _components.epidemiological_params.bind(_st.sidebar)
 healthcare_params = _components.healthcare_params.bind(_st.sidebar)
-select_intervention = _components.select_intervention.bind(_st.sidebar)
+intervention_runner_input = _components.intervention_runner_input.bind(_st.sidebar)
 region_input = _components.region_input.bind(_st.sidebar)
 simulation_params = _components.simulation_params.bind(_st.sidebar)
 

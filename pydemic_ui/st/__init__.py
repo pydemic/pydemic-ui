@@ -37,7 +37,7 @@ pyramid_chart = _components.pyramid_chart.bind(_st)
 #
 epidemiological_params = _components.epidemiological_params.bind(_st)
 healthcare_params = _components.healthcare_params.bind(_st)
-select_intervention = _components.select_intervention.bind(_st)
+intervention_runner_input = _components.intervention_runner_input.bind(_st)
 region_input = _components.region_input.bind(_st)
 simulation_params = _components.simulation_params.bind(_st)
 
