@@ -36,6 +36,8 @@ requires = [
   "openpyxl",
   "xlrd",
   "geopandas",
+  "descartes",
+  "mapclassify",
 ]
 
 [tool.flit.metadata.requires-extra]
