@@ -112,7 +112,7 @@ def main(embed=False, where=st, **kwargs):
         st.sidebar.logo()
         st.title(_("Epidemic situation dashboard (Brazil)"))
 
-    options = sidebar(where=st if embed else st.sidebar)
+    options = sidebar(where=st.sidebar)
     kwargs = extract_keys(("cmap", "static_table"), options)
     kwargs["where"] = where
 
@@ -122,7 +122,7 @@ def main(embed=False, where=st, **kwargs):
     for opt, show in options.items():
         if show:
             section = SECTIONS[opt]
-            section.show(data)
+            section.show(data, **kwargs)
 
 
 def sidebar(where=st.sidebar) -> dict:
@@ -793,7 +793,7 @@ class Section(sk.Record):
         super().__init__(name, title, columns, description)
 
     @timed
-    def show(self, data, static_table=False, download=True, where=st):
+    def show(self, data, static_table=False, download=True, where=st, **kwargs):
         """
         Render section in streamlit.
         """
@@ -807,7 +807,7 @@ class Section(sk.Record):
 
         for col in self.columns:
             if not col.skip_choropleth:
-                col.show_choropleth(data, where=st)
+                col.show_choropleth(data, where=st, **kwargs)
         display = self.display_data(data)
         st.subheader(_("Raw data"))
         st.html('<div id="raw-data"></div>')
