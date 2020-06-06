@@ -8,7 +8,7 @@ ENV PYTHONUNBUFFERED=1 \
 COPY assets/locale.gen /etc/locale.gen
 
 RUN apt-get update && \
-    apt-get install -y locales && \
+    apt-get install -y locales python3-geopandas && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
