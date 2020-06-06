@@ -66,11 +66,14 @@ REGIONS_TYPES = {
             "query": {"type": "region", "subtype": "macro-region", "country_code": "BR"},
             "info": {"numeric_code": _("Numeric code"), "name": _("Name")},
         },
-        # _("SUS macro-region"): {
-        #     "type": "region",
-        #     "subtype": "healthcare region",
-        #     "country_code": "BR",
-        # },
+        _("SUS macro-region"): {
+            "query": {
+                "type": "region",
+                "subtype": "healthcare region",
+                "country_code": "BR",
+            },
+            "info": {"numeric_code": _("Numeric code"), "name": _("Name")},
+        },
     }
 }
 

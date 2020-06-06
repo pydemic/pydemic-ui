@@ -2,6 +2,7 @@ from functools import singledispatch
 
 import pandas as pd
 from babel.dates import format_date
+from pandas.io.formats.style import Styler
 
 from pydemic_ui.i18n import _
 
@@ -24,6 +25,11 @@ def _(data):
 @data_to_dataframe.register(pd.Series)
 def _(data):
     return pd.DataFrame({"data": data})
+
+
+@data_to_dataframe.register(Styler)
+def _(data):
+    return data_to_dataframe(data.data)
 
 
 @data_to_dataframe.register(type(None))

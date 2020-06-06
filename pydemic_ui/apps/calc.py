@@ -148,6 +148,7 @@ def easter_egg(disease=covid19):
         "scenarios1": _("Forecast for BR states in different scenarios (model 1)"),
         "scenarios2": _("Forecast for BR states in different scenarios (model 2)"),
         "projections": _("Epidemic forecasts"),
+        "dashboard_br": _("Dashboard with epidemic information (Brazil)"),
     }
     msg = _("Select the secret application")
     app = st.selectbox(msg, list(apps.keys()), format_func=apps.get)

@@ -5,12 +5,17 @@ import sidekick as sk
 from pydemic_ui import builtins
 
 builtins.main()
-reload("pydemic.models")
+builtins.reload("pydemic.models")
 
 import mundi
 from pydemic.models import Model, SEAIR
 from pydemic.utils import as_seq
 from pydemic_ui import st
+
+
+# references:
+# https://farolcovid.coronacidades.org/
+# https://covidactnow.org/?s=38532
 
 
 @sk.fn.curry(1)

@@ -6,6 +6,7 @@ from typing import Mapping, Optional, Any
 
 import pandas as pd
 import streamlit as st
+from pandas.io.formats.style import Styler
 
 from pydemic.utils import file_type_display_name
 from .base import twin_component
