@@ -55,14 +55,6 @@ def backcasting(
     of this method, the model is just a function that receives an epidemic curve
     dataframe and a list of time windows and return the forecasts for cases and
     deaths for the specified times.
-
-    Args:
-        cases:
-        fn:
-        window:
-
-    Returns:
-
     """
     windows = np.array(as_seq(windows))
     min_window = windows.min(initial=len(curves))

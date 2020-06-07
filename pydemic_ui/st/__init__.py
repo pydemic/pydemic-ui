@@ -1,10 +1,15 @@
-from typing import Union
+from typing import Union, TYPE_CHECKING
 
 import sidekick as _sk
 import streamlit as _st
 
 from . import sidebar
 from .. import components as _components
+
+if TYPE_CHECKING:
+    import numpy as np
+    import pandas as pd
+    import streamlit as st
 
 _self = _sk.import_later("pydemic_ui.st")
 
@@ -133,8 +138,7 @@ def table(data, link: Union[bool, str] = False, *, label: str = None, where=_sel
     -------
     >>> df = pd.DataFrame(
     ...    np.random.randn(10, 5),
-    ...    columns=('col %d' % i for i in range(5)))
-    ...
+    ...    columns=['A', 'B', 'C', 'D', 'E'])
     >>> st.table(df, 'data.csv')
 
     .. output::

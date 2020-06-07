@@ -78,12 +78,10 @@ def build(ctx, tag=None):
 @task
 def deploy(ctx, inventory="deploy-pydemic-ui/inventory.yml", restart=False):
     if restart:
-        ctx.run(
-            f"ansible-playbook -vi {inventory} deploy-pydemic-ui/playbook-restart.yml"
-        )
+        ctx.run(f"ansible-playbook -i {inventory} deploy-pydemic-ui/playbook-restart.yml")
     else:
         ctx.run(f"git push")
-        ctx.run(f"ansible-playbook -vi {inventory} deploy-pydemic-ui/playbook-update.yml")
+        ctx.run(f"ansible-playbook -i {inventory} deploy-pydemic-ui/playbook-update.yml")
 
 
 @task
