@@ -1,0 +1,10 @@
+<div class="Column" id="choropleth-{{ column.name }}">
+    <h3>{{ column.title }}</h3>
+    {% if column.description %}
+        {{ column.description|markdown }}
+    {% endif %}
+    {{ column.render_choropleth(data, cmap|default("BuPu"), 'img') }}
+    {% if section %}
+        <a href="#section-{{ section }}" style="display: block; text-align: right;">^ Back</a>'
+    {% endif %}
+</div>

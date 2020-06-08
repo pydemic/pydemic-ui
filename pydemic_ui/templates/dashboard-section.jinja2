@@ -1,0 +1,15 @@
+<div class="Section" id="section-{{ section.name }}">
+    <h2>{{ section.title }}</h2>
+    {% if section.description %}
+        {{ section.description|markdown }}
+    {% endif %}
+    {{ section.render_index() }}
+    {% for column in section.columns %}
+        {% if not column.skip_choropleth %}
+            {{ render("dashboard-column", data=data, column=column, cmap=cmap, section=section.name) }}
+        {% endif %}
+    {% endfor %}
+
+    <h3 id="raw-data">Raw data</h3>
+    {{ section.display_data(data)._repr_html_() }}
+</div>
