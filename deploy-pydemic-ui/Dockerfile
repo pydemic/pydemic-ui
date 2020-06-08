@@ -8,7 +8,7 @@ ENV PYTHONUNBUFFERED=1 \
 COPY assets/locale.gen /etc/locale.gen
 
 RUN apt-get update && \
-    apt-get install -y locales python3-geopandas python3-cairocffi libpango python3-cairosvg && \
+    apt-get install -y locales python3-geopandas python3-cairo python3-cairocffi python3-cairosvg libpango-1.0-0 && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
