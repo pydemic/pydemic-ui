@@ -2,11 +2,10 @@ import base64
 import html as _html
 import io
 import os
-from typing import Mapping, Optional, Any
+from typing import Mapping, Optional, Any, Union
 
 import pandas as pd
 import streamlit as st
-from pandas.io.formats.style import Styler
 
 from pydemic.utils import file_type_display_name
 from .base import twin_component
@@ -34,8 +33,74 @@ COLOR_ALIASES = {
     "st-gray-900": "#262730",
 }
 
-# Mimetypes for downloads
-MIMETYPES_MAP = {"csv": "text/csv", "xlsx": "application/vnd.ms-excel"}
+# MIME types
+# https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+MIMETYPES_MAP = {
+    "aac": "audio/aac",
+    "abw": "application/x-abiword",
+    "arc": "application/octet-stream",
+    "avi": "video/x-msvideo",
+    "azw": "application/vnd.amazon.ebook",
+    "bin": "application/octet-stream",
+    "bz": "application/x-bzip",
+    "bz2": "application/x-bzip2",
+    "csh": "application/x-csh",
+    "css": "text/css",
+    "csv": "text/csv",
+    "doc": "application/msword",
+    "eot": "application/vnd.ms-fontobject",
+    "epub": "application/epub+zip",
+    "gif": "image/gif",
+    "htm": "text/html",
+    "html": "text/html",
+    "ico": "image/x-icon",
+    "ics": "text/calendar",
+    "jar": "application/java-archive",
+    "jpg": "image/jpeg",
+    "jpeg": "image/jpeg",
+    "js": "application/javascript",
+    "json": "application/json",
+    "mid": "audio/midi",
+    "midi": "audio/midi",
+    "mpeg": "video/mpeg",
+    "mpkg": "application/vnd.apple.installer+xml",
+    "odp": "application/vnd.oasis.opendocument.presentation",
+    "ods": "application/vnd.oasis.opendocument.spreadsheet",
+    "odt": "application/vnd.oasis.opendocument.text",
+    "oga": "audio/ogg",
+    "ogv": "video/ogg",
+    "ogx": "application/ogg",
+    "otf": "font/otf",
+    "png": "image/png",
+    "pdf": "application/pdf",
+    "ppt": "application/vnd.ms-powerpoint",
+    "rar": "application/x-rar-compressed",
+    "rtf": "application/rtf",
+    "sh": "application/x-sh",
+    "svg": "image/svg+xml",
+    "swf": "application/x-shockwave-flash",
+    "tar": "application/x-tar",
+    "tiff": "image/tiff",
+    "tif": "image/tiff",
+    "ts": "application/typescript",
+    "ttf": "font/ttf",
+    "vsd": "application/vnd.visio",
+    "wav": "audio/x-wav",
+    "weba": "audio/webm",
+    "webm": "video/webm",
+    "webp": "image/webp",
+    "woff": "font/woff",
+    "woff2": "font/woff2",
+    "xhtml": "application/xhtml+xml",
+    "xls": "application/vnd.ms-excel",
+    "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "xml": "application/xml",
+    "xul": "application/vnd.mozilla.xul+xml",
+    "zip": "application/zip",
+    "3gp": "audio/3gpp",
+    "3g2": "video/3gpp2",
+    "7z": "application/x-7z-compressed",
+}
 
 
 @twin_component()
@@ -154,7 +219,7 @@ def data_anchor(
 
     Args:
         data:
-            Any object that can be converted to a dataframe using
+            String, bytes or any object that can be converted to a dataframe using
             :func:`pydemic.utils.data_to_dataframe`
         filename:
             Name of downloaded file with extension. By default, file type is
@@ -171,20 +236,23 @@ def data_anchor(
         :func:`pydemic.utils.data_to_dataframe`
     """
 
-    data = utils.data_to_dataframe(data)
-    _base, ext = os.path.splitext(filename)
-    ext = ext[1:]
+    ext = os.path.splitext(filename)[1][1:]
     if label is None:
         label = _("Download as {kind}").format(kind=file_type_display_name(ext))
 
-    kwargs.setdefault("kind", ext)
-    href = dataframe_uri(data, **kwargs)
+    kwargs.setdefault("ext", ext)
+    if isinstance(data, (str, bytes)):
+        href = data_uri(data, **kwargs)
+    else:
+        data = utils.data_to_dataframe(data)
+        href = dataframe_uri(data, **kwargs)
+
     anchor = f'<a href="{href}" download="{filename}">{label}</a>'
     div = f'<div style="{style}">{anchor}</div>'
     html(div, where=where)
 
 
-def dataframe_uri(df: pd.DataFrame, kind: str, mime_type=None, dates_format=None):
+def dataframe_uri(df: pd.DataFrame, ext: str, mime_type=None, dates_format=None):
     """
     Returns only the href component of a data URI anchor that encodes a
     dataframe.
@@ -193,17 +261,55 @@ def dataframe_uri(df: pd.DataFrame, kind: str, mime_type=None, dates_format=None
     if dates_format:
         df.index = [d.strftime(dates_format) for d in df.index]
 
-    if kind == "csv":
+    if ext == "csv":
         fd = io.StringIO()
         df.to_csv(fd)
         data = fd.getvalue().encode("utf8")
-    elif kind == "xlsx":
+    elif ext == "xlsx":
         fd = io.BytesIO()
         df.to_excel(fd)
         data = fd.getvalue()
     else:
-        raise ValueError(f"invalid output type: {kind}")
+        raise ValueError(f"invalid output type: {ext}")
+
+    return data_uri(data, ext=ext, mime_type=mime_type)
+
+
+def data_uri(data: Union[str, bytes], *, ext=None, mime_type=None) -> str:
+    """
+    Create a Base64 encoded data URI for the given raw data string and mime type
+    or extension.
+
+    Args:
+        data:
+            String or bytes with data content.
+        mime_type:
+            Data mime-type. If not given, it is inferred from extension.
+        ext:
+            Extension of data file. Used to infer MIME  type, if not given. The
+            default mime_type for string content is "text/plain". If raw data is
+            bytes, it assumes "application/octet-stream".
+
+    Returns:
+        A string with the contents that can be attached into the href attribute
+        of an anchor element.
+    """
+    if isinstance(data, str):
+        data = data.encode("utf8")
+        ext = "txt" if ext is None else ext
+
+    if mime_type is None:
+        try:
+            mime_type = MIMETYPES_MAP[ext]
+        except KeyError:
+            mime_type = "application/octet-stream"
 
     data = base64.b64encode(data).decode("utf8")
-    mime_type = mime_type or MIMETYPES_MAP[kind]
     return f"data:{mime_type};base64,{data}"
+
+
+def render_svg(svg: str) -> str:
+    """Renders the given svg string as an img tag."""
+
+    b64 = base64.b64encode(svg.encode("utf-8")).decode("utf-8")
+    return r'<img src="data:image/svg+xml;base64,%s"/>' % b64

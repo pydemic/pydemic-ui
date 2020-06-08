@@ -40,6 +40,7 @@ requires = [
   "mapclassify",
   "markdown",
   "jinja2",
+  "weasyprint",
 ]
 
 [tool.flit.metadata.requires-extra]

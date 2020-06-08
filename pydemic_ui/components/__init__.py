@@ -12,6 +12,7 @@ from .generic import (
     dataframe_download,
     data_anchor,
     dataframe_uri,
+    render_svg,
 )
 from .ui import css, logo, footnotes, footnote_disclaimer
 from .input import (
