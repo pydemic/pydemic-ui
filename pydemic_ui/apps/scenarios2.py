@@ -1,12 +1,14 @@
 import itertools
+import re
 from typing import Tuple, Sequence
 
 import numpy as np
 import pandas as pd
-import sidekick as sk
 
 import mundi
+import sidekick as sk
 from pydemic import models, ModelGroup
+from pydemic.cache import ttl_cache
 from pydemic.diseases import covid19
 from pydemic.diseases import disease as get_disease
 from pydemic.models import Model
@@ -17,6 +19,7 @@ from pydemic_ui import st
 from pydemic_ui.i18n import _
 
 _r.patch_region()
+NUMBER = re.compile(r"(\d+)")
 TARGETS = list(range(90, 10, -10))
 TARGETS_DEFAULT = [TARGETS[2], TARGETS[4], TARGETS[6]]
 
@@ -49,13 +52,34 @@ COL_NAMES = {
     "deaths": _("Deaths"),
 }
 
-DAYS = [1, 5, 7, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 75, 90]
+DAYS = [
+    _("all (15 days)"),
+    _("all (30 days)"),
+    _("all (60 days)"),
+    _("all (90 days)"),
+    1,
+    5,
+    7,
+    10,
+    15,
+    20,
+    25,
+    30,
+    35,
+    40,
+    45,
+    50,
+    55,
+    60,
+    75,
+    90,
+]
 DAYS_DEFAULT = [7, 15, 30, 60]
 
 REGIONS_TYPES = {
     "BR": {
         _("All Brazilian states"): {
-            "query": {"type": "state", "country_code": "BR"},
+            "query": {"type": "state", "country_id": "BR"},
             "info": {
                 "numeric_code": _("Numeric code"),
                 "short_code": _("UF"),
@@ -63,16 +87,20 @@ REGIONS_TYPES = {
             },
         },
         _("Brazilian macro-regions"): {
-            "query": {"type": "region", "subtype": "macro-region", "country_code": "BR"},
+            "query": {"type": "region", "subtype": "macro-region", "country_id": "BR"},
             "info": {"numeric_code": _("Numeric code"), "name": _("Name")},
         },
         _("SUS macro-region"): {
             "query": {
                 "type": "region",
                 "subtype": "healthcare region",
-                "country_code": "BR",
+                "country_id": "BR",
             },
-            "info": {"numeric_code": _("Numeric code"), "name": _("Name")},
+            "filter": {
+                "parent_id": _("Select state"),
+                "format_func": lambda x: mundi.region(x).name,
+            },
+            "info": {"numeric_code": _("ref"), "name": _("Name"), "parent_id": _("UF")},
         },
     }
 }
@@ -107,6 +135,24 @@ def sidebar(parent_region="BR", where=st.sidebar):
     scenario = REGIONS_TYPES[parent_region][kind]
     regions = get_regions(**scenario["query"])
 
+    if "filter" in scenario:
+        filtering = scenario["filter"]
+        format_func = filtering.pop("format_func", None)
+        if format_func is not None:
+            fn = format_func
+
+            def format_func(x):
+                if x == "all":
+                    return _("All")
+                return fn(x)
+
+        field, msg = filtering.popitem()
+        groups = sk.group_by(lambda x: getattr(x, field), regions)
+
+        key = st.selectbox(msg, ["all", *groups], format_func=format_func)
+        if key != "all":
+            regions = groups[key]
+
     msg = _("Columns")
     columns = st.multiselect(msg, COLUMNS, default=COLUMNS_DEFAULT)
 
@@ -116,6 +162,17 @@ def sidebar(parent_region="BR", where=st.sidebar):
 
     msg = _("Show values for the given days")
     days = st.multiselect(msg, DAYS, default=DAYS_DEFAULT)
+    if any(not isinstance(d, int) for d in days):
+        day_max = sk.pipe(
+            days,
+            sk.remove(lambda d: isinstance(d, int)),
+            sk.map(lambda d: int(NUMBER.search(d).groups()[0])),
+            max,
+        )
+        days = list(range(1, day_max + 1))
+
+    msg = _("Transpose data")
+    transpose = st.checkbox(msg, value=False)
 
     return {
         "parent_region": parent_region,
@@ -124,34 +181,39 @@ def sidebar(parent_region="BR", where=st.sidebar):
         "targets": targets,
         "days": days,
         "scenario": scenario,
+        "transpose": transpose,
     }
 
 
 def show_results(
-    parent_region, regions, columns, targets, days, scenario, disease=covid19
+    parent_region,
+    regions,
+    columns,
+    targets,
+    days,
+    scenario,
+    disease=covid19,
+    transpose=False,
 ):
     """
     Show results from user input.
     """
 
     parent_region = mundi.region(parent_region)
-    parent_region.ui.cases_and_deaths(disease=disease, grid=True)
+    parent_region.ui.cases_and_deaths(disease=disease, grid=True, logy=True)
 
     if days and targets and columns:
         info = scenario["info"]
         info_cols = tuple(info)
         df = get_dataframe(
-            regions,
-            tuple(days),
-            tuple(targets),
-            tuple(columns),
-            duration=60,
-            info_cols=info_cols,
+            regions, tuple(days), tuple(targets), tuple(columns), info_cols=info_cols
         )
         get = {**COL_NAMES, **info}.get
         df.columns = pd.MultiIndex.from_tuples(
             [tuple(_(get(x, x) for x in t)) for t in df.columns.to_list()]
         )
+        if transpose:
+            df = df.T
 
         st.subheader(_("Download results"))
         st.dataframe_download(df, name="report-brazil.{ext}")
@@ -162,13 +224,14 @@ def cases(region, disease):
     return disease.epidemic_curve(region, real=True, keep_observed=True)
 
 
-@st.cache(ttl=2 * 3600, show_spinner=False, allow_output_mutation=True)
+# @ttl_cache("app-scenarios", timeout=2 * 3600)
+@st.cache(ttl=2 * 3600, show_spinner=False)
 def simulations(
     region, targets: Sequence[int], duration, disease
 ) -> Tuple[Model, ModelGroup]:
     disease = get_disease(disease)
     base = models.SEAIR(region=region, disease=disease, name=region.id)
-    base.set_cases(cases(region, disease), save_cases=True)
+    base.set_cases(cases(region, disease), save_observed=True)
 
     names = []
     R0s = []
@@ -182,10 +245,9 @@ def simulations(
 
 
 @st.cache(suppress_st_warning=True, ttl=2 * 3600, show_spinner=False)
-def get_dataframe(
-    regions, days, targets, columns, duration=60, disease="covid-19", info_cols=()
-):
+def get_dataframe(regions, days, targets, columns, disease="covid-19", info_cols=()):
     steps = len(regions)
+    duration = max(days)
     days_ranges = np.array([0, *days])
     columns = list(columns)
 

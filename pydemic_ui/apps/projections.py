@@ -138,7 +138,7 @@ def start_model(region: RegionT, disease="covid-19"):
 
     cases = region.pydemic.epidemic_curve(disease=disease, real=True, keep_observed=True)
     m = SEAIR(region=region, disease=disease)
-    m.set_cases(cases, adjust_R0=True, save_cases=True)
+    m.set_cases(cases, adjust_R0=True, save_observed=True)
     m.info.save_event("simulation_start")
     return m
 

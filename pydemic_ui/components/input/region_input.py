@@ -165,7 +165,7 @@ def sub_regions(code, **kwargs):
     sub-regions queried from the given arguments.
     """
     if len(code) == 2:
-        kwargs["country_code"] = code
+        kwargs["country_id"] = code
     else:
         kwargs["parent_id"] = code
 
@@ -188,5 +188,5 @@ def ibge_city(code):
             code = code[:-1]
         elif len(code) != 6:
             raise ValueError(_("invalid city code: {code}").format(code=code))
-        return mundi.region(country_code="BR", type="city", short_code=code)
+        return mundi.region(country_id="BR", type="city", short_code=code)
     return mundi.region(code)

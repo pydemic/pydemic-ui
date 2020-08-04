@@ -174,7 +174,7 @@ def get_seair_curves_for_region(
     try:
         return fit.seair_curves(data, params, population=region.population)
     except ValueError:
-        region = region.to_dict("country_code", "parent_id")
+        region = region.to_dict("country_id", "parent_id")
         st.write(locals())
         st.line_chart(data)
         st.write(data)

@@ -7,8 +7,7 @@ from pydemic.cache import ttl_cache
 from pydemic.utils import timed
 
 # Originally at
-# "https://docs.google.com/spreadsheets/d/1go3gYrgKsMmlGpHv9XGAACdk2T7XHSf7lOKDyfRfFak
-# /export?format=xlsx"
+# "https://docs.google.com/spreadsheets/d/1go3gYrgKsMmlGpHv9XGAACdk2T7XHSf7lOKDyfRfFak/export?format=xlsx"
 PAHO_DATABASE_URL = "https://github.com/pydemic/databases/raw/master/paho_info.xlsx"
 
 

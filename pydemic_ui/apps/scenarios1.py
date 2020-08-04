@@ -51,16 +51,16 @@ DAYS_DEFAULT = [7, 15, 30, 60]
 
 REGIONS_TYPES = {
     "BR": {
-        _("State"): {"type": "state", "country_code": "BR"},
+        _("State"): {"type": "state", "country_id": "BR"},
         _("Macro-region"): {
             "type": "region",
             "subtype": "macro-region",
-            "country_code": "BR",
+            "country_id": "BR",
         },
         # _("SUS macro-region"): {
         #     "type": "region",
         #     "subtype": "healthcare region",
-        #     "country_code": "BR",
+        #     "country_id": "BR",
         # },
     }
 }

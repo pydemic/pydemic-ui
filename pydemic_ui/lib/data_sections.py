@@ -70,7 +70,7 @@ class Section(sk.Record):
         fmt = {col.name: col.fmt for col in self.columns if col.fmt}
         return (
             data[columns]
-            .style.format(fmt, na_rep="-")
+            .style_dataframe.format(fmt, na_rep="-")
             .highlight_max(color="red")
             .highlight_min(color="green")
         )
