@@ -129,7 +129,7 @@ def region_data(region: RegionT):
     Collect data from region.
     """
     data = dict(epidemic_data(region))
-    if region.country_id == "BR" and region.type == "state":
+    if region.country_code == "BR" and region.type == "state":
         paho = sk.record(paho_br_state_data(region))
 
         data.update(

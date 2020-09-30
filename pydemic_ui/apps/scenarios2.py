@@ -79,7 +79,7 @@ DAYS_DEFAULT = [7, 15, 30, 60]
 REGIONS_TYPES = {
     "BR": {
         _("All Brazilian states"): {
-            "query": {"type": "state", "country_id": "BR"},
+            "query": {"type": "state", "country_code": "BR"},
             "info": {
                 "numeric_code": _("Numeric code"),
                 "short_code": _("UF"),
@@ -87,14 +87,14 @@ REGIONS_TYPES = {
             },
         },
         _("Brazilian macro-regions"): {
-            "query": {"type": "region", "subtype": "macro-region", "country_id": "BR"},
+            "query": {"type": "region", "subtype": "macro-region", "country_code": "BR"},
             "info": {"numeric_code": _("Numeric code"), "name": _("Name")},
         },
         _("SUS macro-region"): {
             "query": {
                 "type": "region",
                 "subtype": "healthcare region",
-                "country_id": "BR",
+                "country_code": "BR",
             },
             "filter": {
                 "parent_id": _("Select state"),
