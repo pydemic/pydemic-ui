@@ -37,7 +37,7 @@ The highest increase in the mortality rate in the last 14 days was observed in t
 """
     )
 
-    mundi_query = {"country_id": "BR", "type": "state"}
+    mundi_query = {"country_code": "BR", "type": "state"}
 
     @sk.lazy
     def regions(self) -> List[Region]:

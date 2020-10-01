@@ -35,7 +35,7 @@ def abstract_str(top=10, kind=_("Federal Units"), date=None):
     Create a markdown string with an abstract to the dashboard.
     """
 
-    children_refs = mundi.regions(country_id="BR", type="state").index
+    children_refs = mundi.regions(country_code="BR", type="state").index
     children = [mundi.region(ref) for ref in children_refs]
     n_children = len(children)
 
