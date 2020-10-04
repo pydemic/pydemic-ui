@@ -8,7 +8,7 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  suite:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -21,4 +21,4 @@ jobs:
           docker-compose exec -T pydemic-ui pycodestyle
       - name: Test with pytest
         run: |
-          docker-compose exec pydemic-ui pytest
+          docker-compose exec -T pydemic-ui pytest
