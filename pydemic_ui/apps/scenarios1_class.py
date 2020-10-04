@@ -71,7 +71,6 @@ class Scenarios1(SimpleApp):
     def __init__(self):
         super().__init__()
 
-
     @st.cache
     def get_regions(self, **query):
         """
@@ -80,7 +79,6 @@ class Scenarios1(SimpleApp):
         """
 
         return [mundi.region(id_) for id_ in mundi.regions(**query).index]
-
 
     def ask(self, parent_region="BR", where=st.sidebar):
         """
@@ -116,7 +114,6 @@ class Scenarios1(SimpleApp):
             "disease": "covid-19"
         }
 
-
     def show(self):
         """
         Show results from user input.
@@ -127,7 +124,7 @@ class Scenarios1(SimpleApp):
         columns = self.user_inputs["columns"]
         targets = self.user_inputs["targets"]
         days = self.user_inputs["days"]
-        disease= self.user_inputs["disease"]
+        disease = self.user_inputs["disease"]
 
         parent_region = mundi.region(parent_region)
         ax = parent_region.plot.cases_and_deaths(disease=disease, logy=True, grid=True)
@@ -137,7 +134,6 @@ class Scenarios1(SimpleApp):
 
             st.subheader(_("Download results"))
             st.dataframe_download(df, name="report-brazil.{ext}")
-
 
     @info.ttl_cache(key="app.projections_br", force_streamlit=True)
     def get_dataframe(self, regions, days, targets, columns, duration):
@@ -173,7 +169,6 @@ class Scenarios1(SimpleApp):
         df = pd.concat([extra, df], axis=1)
         return df.sort_values(df.columns[0])
 
-
     @info.ttl_cache(key="app.projections_br", force_streamlit=True)
     def get_models(self, regions, targets, duration) -> dict:
         models = {}
@@ -182,7 +177,6 @@ class Scenarios1(SimpleApp):
                 result = self.process_region(region, targets, duration)
                 models.update({(region, k): v for k, v in result.items()})
         return models
-
 
     @info.ttl_cache(key="app.projections_br", force_streamlit=True)
     def process_region(self, region, targets, duration):
@@ -199,7 +193,6 @@ class Scenarios1(SimpleApp):
             out[level] = new.clinical.overflow_model()
 
         return MappingProxyType(out)
-
 
     def get_column(
         self,
@@ -228,7 +221,6 @@ class Scenarios1(SimpleApp):
         data.name = col
         data.index.name = "region"
         return data
-
 
     def main(self):
         self.run()

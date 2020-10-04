@@ -4,6 +4,7 @@ from pydemic.models import SEAIR
 from pydemic_ui import st
 from pydemic_ui.i18n import _
 
+
 class ModelInfo(SimpleApp):
     title = "Model Info"
 
@@ -18,18 +19,20 @@ class ModelInfo(SimpleApp):
 
     def show(self):
         pass
-        
+
     def run(self):
         super().run()
         models = ["crude", "delay", "overflow"]
         kind = st.sidebar.selectbox(_("Clinical model"), models)
-        m = SEAIR(region="BR", disease=covid19) 
+        m = SEAIR(region="BR", disease=covid19)
         cm = m.clinical(kind)
         cm.ui.summary_table(subheader=_("Parameters table"))
+
 
 def main():
     classe_model_info = ModelInfo()
     classe_model_info.main()
+
 
 if __name__ == "__main__":
     main()
