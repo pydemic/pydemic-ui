@@ -1,0 +1,24 @@
+name: Pydemic CI
+
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches: [master]
+
+jobs:
+  suite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Service
+        run: |
+          docker-compose up -d pydemic-ui
+
+      - name: Lint with pycodestyle
+        run: |
+          docker-compose exec -T pydemic-ui pycodestyle
+      - name: Test with pytest
+        run: |
+          docker-compose exec -T pydemic-ui pytest
