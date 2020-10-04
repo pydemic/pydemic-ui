@@ -18,7 +18,7 @@ jobs:
 
       - name: Lint with pycodestyle
         run: |
-          docker-compose exec pydemic-ui pycodestyle
+          docker-compose exec -T pydemic-ui pycodestyle
       - name: Test with pytest
         run: |
           docker-compose exec pydemic-ui pytest
