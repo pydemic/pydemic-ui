@@ -194,7 +194,7 @@ class Scenarios2(SimpleApp):
         if days and targets and columns:
             info = scenario["info"]
             info_cols = tuple(info)
-            df = get_dataframe(
+            df = self.get_dataframe(
                 regions, tuple(days), tuple(targets), tuple(columns), info_cols=info_cols
             )
             get = {**COL_NAMES, **info}.get
@@ -215,6 +215,76 @@ class Scenarios2(SimpleApp):
         """
 
         return tuple(mundi.region(id_) for id_ in mundi.regions(**query).index)
+
+    @st.cache(ttl=2 * 3600, show_spinner=False)
+    def cases(self, region, disease):
+        return disease.epidemic_curve(region, real=True, keep_observed=True)
+
+    # @ttl_cache("app-scenarios", timeout=2 * 3600)
+    @st.cache(ttl=2 * 3600, show_spinner=False)
+    def simulations(
+        self, region, targets: Sequence[int], duration, disease
+    ) -> Tuple[Model, ModelGroup]:
+        disease = get_disease(disease)
+        base = models.SEAIR(region=region, disease=disease, name=region.id)
+        base.set_cases(self.cases(region, disease), save_observed=True)
+
+        names = []
+        R0s = []
+        for target in targets:
+            names.append(_("Isolation {}").format(pc(target / 100)))
+            R0s.append(base.R0 * (1 - target / 100))
+
+        group = base.split(name=names, R0=R0s)
+        group.run(duration)
+        return base, group.clinical.overflow_model()
+
+    @st.cache(suppress_st_warning=True, ttl=2 * 3600, show_spinner=False)
+    def get_dataframe(self, regions, days, targets, columns, disease="covid-19", info_cols=()):
+        steps = len(self.user_inputs["regions"])
+        duration = max(days)
+        days_ranges = np.array([0, *days])
+        columns = list(columns)
+
+        bar = st.progress(0)
+        with st.spinner(_("Running simulations")):
+
+            rows = {}
+            for i, region in enumerate(regions):
+                base, group = self.simulations(region, targets, duration, disease=disease)
+                bar.progress(int(100 * i / steps))
+
+                cols = {}
+                for a, b in sk.window(2, days_ranges):
+                    day = b
+                    a += base.time + 1
+                    b += a - 1
+                    renames = dict(zip(itertools.count(), columns))
+
+                    name = _("{} days").format(day)
+                    cols[name] = (
+                        pd.DataFrame(group[columns, a:b].max(0))
+                        .T.rename(columns=renames)
+                        .rename(index={0: region.id})
+                        .astype(int)
+                    )
+
+                keys = [*cols]
+                data = [*cols.values()]
+                rows[region.id] = pd.concat(data, axis=1, names=[_("days")], keys=keys)
+
+        bar.empty()
+        data = pd.concat(list(rows.values()))
+        data.index = rows.keys()
+
+        if info_cols:
+            extra = data.mundi[info_cols]
+            extra = extra.astype(object)  # streamlit bug?
+            extra.columns = pd.MultiIndex.from_tuples(("", "info", x) for x in extra.columns)
+            data = pd.concat([extra, data], axis=1)
+            return data.sort_values(data.columns[0])
+        else:
+            return data.sort_index()
 
     def main(self):
         self.run()
