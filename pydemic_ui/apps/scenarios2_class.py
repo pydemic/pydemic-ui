@@ -106,6 +106,7 @@ REGIONS_TYPES = {
     }
 }
 
+
 class Scenarios2(SimpleApp):
     title = "Scenarios for COVID-19 evolution in Brazil"
 
@@ -174,7 +175,7 @@ class Scenarios2(SimpleApp):
             "transpose": transpose,
             "disease": "covid-19"
         }
-    
+
     def show(self):
         """
         Show results from user input.
@@ -289,12 +290,14 @@ class Scenarios2(SimpleApp):
     def main(self):
         self.run()
 
+
 def main(disease=covid19):
     """
     Main function for application.
     """
     scenarios_2 = Scenarios2()
     scenarios_2.main()
+
 
 if __name__ == "__main__":
     main()
