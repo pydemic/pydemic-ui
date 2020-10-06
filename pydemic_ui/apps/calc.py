@@ -131,13 +131,13 @@ def model(*, daily_cases, runner, period, disease, **kwargs):
     """
     m = SEAIR(disease=disease, **kwargs)
 
-    R = 0.0
-    E = daily_cases * m.incubation_period
-    I = daily_cases * m.infectious_period * m.Qs
-    A = daily_cases * m.infectious_period * (1 - m.Qs)
-    S = m.population - E - A - I - R
+    recovered = 0.0
+    exposed = daily_cases * m.incubation_period
+    infectious = daily_cases * m.infectious_period * m.Qs
+    asymptomatic = daily_cases * m.infectious_period * (1 - m.Qs)
+    susceptible = m.population - exposed - asymptomatic - infectious - recovered
 
-    m.set_ic(state=(S, E, A, I, R))
+    m.set_ic(state=(susceptible, exposed, asymptomatic, infectious, recovered))
     m = runner(m, period)
     return m
 
