@@ -23,7 +23,7 @@ classifiers = [
 
 description-file = "README.rst"
 requires = [
-  "streamlit==0.62.1",
+  "streamlit",
   "babel",
   "altair",
   "sidekick==0.8.1",
