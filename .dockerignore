@@ -5,8 +5,14 @@ dist/
 notebooks/.ipynb_checkpoints/
 Untitled.ipynb
 cache
+.git
+*.pyc
+*.pyo
+*.pyd
+deploy-pydemic-ui/
 
-# docker-compose
+# docker
+Dockerfile
 docker-compose*
 
 # vscode

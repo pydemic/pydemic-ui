@@ -1,17 +1,13 @@
+import mundi
 import numpy as np
 import pandas as pd
 import sidekick as sk
-
-from pydemic_ui import builtins
+from pydemic.models import Model, SEAIR
+from pydemic.utils import as_seq
+from pydemic_ui import st, builtins
 
 builtins.main()
 builtins.reload("pydemic.models")
-
-import mundi
-from pydemic.models import Model, SEAIR
-from pydemic.utils import as_seq
-from pydemic_ui import st
-
 
 # references:
 # https://farolcovid.coronacidades.org/

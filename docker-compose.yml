@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  pydemic-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      LANG: pt_BR.UTF-8
+      STREAMLIT_SERVER_ADDRESS: 0.0.0.0
+      STREAMLIT_SERVER_ENABLE_CORS: "false"
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app

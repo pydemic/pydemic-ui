@@ -1,7 +1,12 @@
 ==========
 Pydemic UI
 ==========
+|Build Badge|
 
+.. |Build Badge|  image:: https://img.shields.io/github/workflow/status/GCES-Pydemic/pydemic-ui/Pydemic%20CI?logo=github&style=flat-square   
+        :alt: GitHub Workflow Status
+        
+        
 A set of streamlit apps and utilities used in creating the UI for Pydemic apps.
 
 Usage
