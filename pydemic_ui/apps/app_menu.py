@@ -29,7 +29,8 @@ def APP_LIST():
         "playground": _("Playground"),
         "model_info_class": ("Classe model info"),
         "scenarios1_class": ("Classe Epidemic Scenarios (I)"),
-        "scenarios2_class": ("Classe Epidemic Scenarios (II)")
+        "scenarios2_class": ("Classe Epidemic Scenarios (II)"),
+        "api_explorer_class": ("Classe Pydemic-UI API explorer"),
     }
 
 
