@@ -23,6 +23,7 @@ regions.
 """
 )
 
+
 class ApiExplorer(SimpleApp):
     title = "Pydemic-UI API explorer"
 
@@ -31,7 +32,6 @@ class ApiExplorer(SimpleApp):
         self.logo = True
         self.css = st.css(keep_menu=True) if not embed else False
         self.where = st if self.embed else st.sidebar
-
 
     def ask(self):
         """
@@ -65,7 +65,6 @@ class ApiExplorer(SimpleApp):
 
         self.option = opt
         self.object = obj
-
 
     def show(self):
         """
@@ -168,9 +167,11 @@ class ApiExplorer(SimpleApp):
 
         return args, kwargs
 
+
 def main():
     api_explorer = ApiExplorer()
     api_explorer.main()
+
 
 if __name__ == '__main__':
     main()
