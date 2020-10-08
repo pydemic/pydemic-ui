@@ -29,3 +29,14 @@ specifying the desired app::
 
 Currently, only the calc app is available, but other apps should arrive soon. For more
 options, execute it with the "--help" flag.
+
+Development Usage
+=====
+
+Install the dependencies using  the command bellow. More details are available on flit documentation(https://flit.readthedocs.io/en/latest/cmdline.html).
+
+    $ flit install -s --user
+
+After the installation is completed, run streamlit apps using invoke
+    
+    $ inv run
