@@ -31,12 +31,30 @@ Currently, only the calc app is available, but other apps should arrive soon. Fo
 options, execute it with the "--help" flag.
 
 Development Usage
-=====
+=================
 
-Install the dependencies using  the command bellow. More details are available on flit documentation(https://flit.readthedocs.io/en/latest/cmdline.html).
+Install the dependencies using the command bellow. More details are available on flit documentation(https://flit.readthedocs.io/en/latest/cmdline.html)::
 
     $ flit install -s --user
 
-After the installation is completed, run streamlit apps using invoke
+After the installation is completed, run streamlit apps using invoke::
     
     $ inv run
+
+Development in Docker
+=====================
+
+The project has been containerized in Docker in order to speed up the setup of the development environment. You can run the containers using the methods below:
+
+Docker Compose
+--------------
+
+You can run the project using Docker Compose by having it installed and running the following command::
+
+    $ docker-compose up pydemic_ui
+
+VSCode Remote - Containers
+--------------------------
+
+The project has a ``devcontainer.json``, so you can open it inside a container using Visual Studio Code by having the "Remote - Containers" ``ms-vscode-remote.remote-containers`` extension installed.
+
