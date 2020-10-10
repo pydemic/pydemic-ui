@@ -14,6 +14,7 @@ from pydemic_ui import st
 from pydemic_ui.i18n import _
 from pydemic_ui.app import SimpleApp, Timer
 
+
 class ProjectionsBR(SimpleApp):
     title = "Projections for COVID-19 evolution in Brazil"
 
@@ -49,7 +50,10 @@ class ProjectionsBR(SimpleApp):
 
         # Daily cases
         # ax = curves.iloc[-30:, self.user_inputs['idx']::2]
-        # curves[self.user_inputs['loc'], self.user_inputs['which']].iloc[-30:].diff().plot(ax=ax, legend=False, grid=True)
+        # curves[self.user_inputs['loc'], self.user_inputs['which']] \
+        #     .iloc[-30:] \
+        #     .diff() \
+        #     .plot(ax=ax, legend=False, grid=True)
         # st.pyplot()
 
         # # Growth factors
@@ -154,9 +158,11 @@ class ProjectionsBR(SimpleApp):
     def main(self):
         self.run()
 
+
 def main():
     projections_br = ProjectionsBR()
     projections_br.main()
+
 
 if __name__ == '__main__':
     main()
