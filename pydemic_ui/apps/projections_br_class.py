@@ -78,31 +78,31 @@ class ProjectionsBR(SimpleApp):
 
         ms_good, ms_keep, ms_bad = self.run_models(self.user_inputs['states'].index, self.user_inputs['which'])
 
-        # # ICU overflow
-        # for ms, msg in [
-        #     (ms_keep, "keep trends"),
-        #     (ms_bad, "no distancing"),
-        #     (ms_good, "more distancing"),
-        # ]:
-        #     st.header(f"Deaths and ICU overflow ({msg})")
+        # ICU overflow
+        for ms, msg in [
+            (ms_keep, "keep trends"),
+            (ms_bad, "no distancing"),
+            (ms_good, "more distancing"),
+        ]:
+            st.header(f"Deaths and ICU overflow ({msg})")
 
-        #     deaths = pd.DataFrame({m.region.id: m["deaths:dates"] for m in ms})
-        #     deaths.plot(legend=False, color="0.5")
-        #     deaths.sum(1).plot(grid=True)
-        #     deaths[loc].plot(legend=True, grid=True)
+            deaths = pd.DataFrame({m.region.id: m["deaths:dates"] for m in ms})
+            deaths.plot(legend=False, color="0.5")
+            deaths.sum(1).plot(grid=True)
+            deaths[self.user_inputs['loc']].plot(legend=True, grid=True)
 
-        #     st.cards({"Total de mortes": fmt(deaths.iloc[-1].sum())})
-        #     st.pyplot()
+            st.cards({"Total de mortes": fmt(deaths.iloc[-1].sum())})
+            st.pyplot()
 
-        #     data = {}
-        #     for m in ms:
-        #         overflow = m.results["dates.icu_overflow"]
-        #         if overflow:
-        #             data[m.region.id] = (overflow - pd.to_datetime(today())).days
-        #     if data:
-        #         data = pd.Series(data)
-        #         data.plot.bar(width=0.9, grid=True)
-        #         st.pyplot()
+            data = {}
+            for m in ms:
+                overflow = m.results["dates.icu_overflow"]
+                if overflow:
+                    data[m.region.id] = (overflow - pd.to_datetime(today())).days
+            if data:
+                data = pd.Series(data)
+                data.plot.bar(width=0.9, grid=True)
+                st.pyplot()
 
     @st.cache
     def get_epidemic_curves(self, refs: list):
