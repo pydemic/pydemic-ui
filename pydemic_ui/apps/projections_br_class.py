@@ -47,19 +47,19 @@ class ProjectionsBR(SimpleApp):
         curves[self.user_inputs['loc'], self.user_inputs['which']].iloc[-30:].plot(ax=ax, legend=False, grid=True)
         st.pyplot()
 
-        # # Daily cases
-        # ax = curves.iloc[-30:, idx::2]
+        # Daily cases
+        # ax = curves.iloc[-30:, self.user_inputs['idx']::2]
         # curves[self.user_inputs['loc'], self.user_inputs['which']].iloc[-30:].diff().plot(ax=ax, legend=False, grid=True)
         # st.pyplot()
 
         # # Growth factors
-        # growths = get_growths(self.user_inputs['states'].index, self.user_inputs['which'])
-        # ci = pd.DataFrame({"low": growths["value"] - growths["std"], "std": growths["std"]})
+        growths = self.get_growths(self.user_inputs['states'].index, self.user_inputs['which'])
+        ci = pd.DataFrame({"low": growths["value"] - growths["std"], "std": growths["std"]})
 
-        # st.header("Growth factor +/- error")
-        # ci.plot.bar(width=0.9, ylim=(0.8, 2), stacked=True, grid=True)
-        # plt.plot(states.index, [1] * len(states), "k--")
-        # st.pyplot()
+        st.header("Growth factor +/- error")
+        ci.plot.bar(width=0.9, ylim=(0.8, 2), stacked=True, grid=True)
+        plt.plot(self.user_inputs['states'].index, [1] * len(self.user_inputs['states']), "k--")
+        st.pyplot()
 
         # # Duplication times
         # st.header("Duplication time")
@@ -113,6 +113,16 @@ class ProjectionsBR(SimpleApp):
             curves.append(curve)
 
         return pd.concat(curves, axis=1).dropna()
+
+    @st.cache
+    def get_growths(self, refs, which="cases"):
+        data = []
+        curves = self.get_epidemic_curves(refs)
+        for ref in refs:
+            series = curves[ref, which]
+            sdiff = fit.smoothed_diff(series)[-30:]
+            data.append(fit.growth_factor(sdiff))
+        return pd.DataFrame(data, index=refs).sort_index()
 
     def main(self):
         self.run()
