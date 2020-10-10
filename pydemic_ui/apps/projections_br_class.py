@@ -62,21 +62,21 @@ class ProjectionsBR(SimpleApp):
         st.pyplot()
 
         # # Duplication times
-        # st.header("Duplication time")
-        # (np.log(2) / np.log(growths["value"])).plot.bar(grid=True, ylim=(0, 30))
-        # st.pyplot()
+        st.header("Duplication time")
+        (np.log(2) / np.log(growths["value"])).plot.bar(grid=True, ylim=(0, 30))
+        st.pyplot()
 
-        # # R0
-        # st.header("R0")
-        # params = covid19.params(region=loc)
-        # (
-        #     np.log(growths["value"])
-        #     .apply(lambda K: formulas.R0_from_K("SEAIR", params, K=K))
-        #     .plot.bar(width=0.9, grid=True, ylim=(0, 4))
-        # )
-        # st.pyplot()
+        # R0
+        st.header("R0")
+        params = covid19.params(region=self.user_inputs['loc'])
+        (
+            np.log(growths["value"])
+            .apply(lambda K: formulas.R0_from_K("SEAIR", params, K=K))
+            .plot.bar(width=0.9, grid=True, ylim=(0, 4))
+        )
+        st.pyplot()
 
-        # ms_good, ms_keep, ms_bad = run_models(states.index, which)
+        ms_good, ms_keep, ms_bad = self.run_models(self.user_inputs['states'].index, self.user_inputs['which'])
 
         # # ICU overflow
         # for ms, msg in [
@@ -123,6 +123,33 @@ class ProjectionsBR(SimpleApp):
             sdiff = fit.smoothed_diff(series)[-30:]
             data.append(fit.growth_factor(sdiff))
         return pd.DataFrame(data, index=refs).sort_index()
+
+    @st.cache(allow_output_mutation=False)
+    def run_models(self, refs, which):
+        growths = self.get_growths(refs, which)
+        R0s = []
+        ms = []
+        ms_bad = []
+        ms_good = []
+        for st_, (g, _) in growths.iterrows():
+            params = covid19.params(region=st_)
+            R0 = min(formulas.R0_from_K("SEAIR", params, K=np.log(g)), 2.5)
+            R0s.append(R0)
+            m = models.SEAIR(disease=covid19, region=st_, R0=R0)
+            m.set_data(info.get_seair_curves_for_region(st_))
+            base = m.copy()
+
+            m.run(120)
+            ms.append(m.clinical.overflow_model())
+
+            m = base.copy(R0=2.74)
+            m.run(120)
+            ms_bad.append(m.clinical.overflow_model())
+
+            m = base.copy(R0=1.0)
+            m.run(120)
+            ms_good.append(m.clinical.overflow_model())
+        return map(tuple, [ms_good, ms, ms_bad])
 
     def main(self):
         self.run()
