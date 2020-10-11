@@ -31,6 +31,7 @@ def APP_LIST():
         "model_info_class": ("Classe model info"),
         "scenarios1_class": ("Classe Epidemic Scenarios (I)"),
         "scenarios2_class": ("Classe Epidemic Scenarios (II)"),
+        "api_explorer_class": ("Classe Pydemic-UI API explorer"),
         "projections_br_class": _("Classe Brazil Epidemic projections and forecast"),
     }
 
