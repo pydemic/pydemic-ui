@@ -22,6 +22,7 @@ def APP_LIST():
         "calc": _("Main epidemic calculator"),
         "api_explorer": _("Pydemic-UI API explorer"),
         "projections": _("Epidemic projections and forecast"),
+        "projections_br": _("Brazil Epidemic projections and forecast"),
         "scenarios1": _("Epidemic scenarios (I)"),
         "scenarios2": _("Epidemic scenarios (II)"),
         "model_info": _("Model info"),
@@ -31,6 +32,7 @@ def APP_LIST():
         "scenarios1_class": ("Classe Epidemic Scenarios (I)"),
         "scenarios2_class": ("Classe Epidemic Scenarios (II)"),
         "api_explorer_class": ("Classe Pydemic-UI API explorer"),
+        "projections_br_class": _("Classe Brazil Epidemic projections and forecast"),
     }
 
 
