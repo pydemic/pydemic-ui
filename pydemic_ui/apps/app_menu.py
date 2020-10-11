@@ -22,6 +22,7 @@ def APP_LIST():
         "calc": _("Main epidemic calculator"),
         "api_explorer": _("Pydemic-UI API explorer"),
         "projections": _("Epidemic projections and forecast"),
+        "projections_br": _("Brazil Epidemic projections and forecast"),
         "scenarios1": _("Epidemic scenarios (I)"),
         "scenarios2": _("Epidemic scenarios (II)"),
         "model_info": _("Model info"),
@@ -29,7 +30,8 @@ def APP_LIST():
         "playground": _("Playground"),
         "model_info_class": ("Classe model info"),
         "scenarios1_class": ("Classe Epidemic Scenarios (I)"),
-        "scenarios2_class": ("Classe Epidemic Scenarios (II)")
+        "scenarios2_class": ("Classe Epidemic Scenarios (II)"),
+        "projections_br_class": _("Classe Brazil Epidemic projections and forecast"),
     }
 
 
