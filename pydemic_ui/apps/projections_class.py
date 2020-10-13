@@ -133,6 +133,7 @@ class Projections(SimpleApp):
 
         model = self.start_model(region=self.user_inputs['region'])
         group = self.start_group(model, **run_opts)
+        self.cmodels = group.clinical.overflow_model(**clinical_opts)
         self.show_outputs(model, group, clinical_opts=clinical_opts, **self.user_inputs, **show_opts)
 
     @st.cache(show_spinner=False)
@@ -163,7 +164,6 @@ class Projections(SimpleApp):
         name = _(region.name)
         return _("""...""").format(**locals())
 
-    
     @st.cache
     def forecast_intro(self, region):
         name = _(region.name)
@@ -173,12 +173,6 @@ class Projections(SimpleApp):
             Take it with a grain of salt.
             """
         ).format(**locals())
-    
-    @st.cache
-    def reopening_intro(self, region):
-        name = _(region.name)
-        return _("""...""").format(**locals())
-
 
     @st.cache
     def rt_intro(self, region):
@@ -199,8 +193,7 @@ class Projections(SimpleApp):
         """
         Show results from user input.
         """
-        # cmodels = group.clinical.overflow_model(**clinical_opts)
-        # cforecast = cmodels[0]
+        cforecast = self.cmodels[0]
         start = base.info["event.simulation_start"]
 
         #
@@ -237,10 +230,10 @@ class Projections(SimpleApp):
 
         rename = dict(zip(range(len(columns)), columns))
         columns = [c + ":dates" for c in columns]
-        # data = pd.concat(
-        #     [cm[columns].rename(rename, axis=1) for cm in cmodels], axis=1, keys=cmodels.names
-        # )
-        # st.data_anchor(data.astype(int), f"data-{region.id}.csv")
+        data = pd.concat(
+            [cm[columns].rename(rename, axis=1) for cm in self.cmodels], axis=1, keys=self.cmodels.names
+        )
+        st.data_anchor(data.astype(int), f"data-{region.id}.csv")
 
         #
         # Reopening
@@ -260,9 +253,9 @@ class Projections(SimpleApp):
         st.markdown(self.rt_intro(region))
 
         # Hospitalization
-        # cmodels["critical:dates"].plot(**plot_opts)
+        self.cmodels["critical:dates"].plot(**plot_opts)
         mark_x(start.date, "k--")
-        # mark_y(cforecast.icu_surge_capacity, "k:")
+        mark_y(cforecast.icu_surge_capacity, "k:")
         plt.legend()
         plt.title(_("Critical cases"))
         plt.tight_layout()
