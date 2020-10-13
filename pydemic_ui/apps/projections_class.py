@@ -21,6 +21,7 @@ CLINICAL_OPTS = (
 )
 RUN_OPTS = ("duration", "R0_list")
 
+
 class Projections(SimpleApp):
     title = False
 
@@ -260,7 +261,6 @@ class Projections(SimpleApp):
         plt.title(_("Critical cases"))
         plt.tight_layout()
         self.where.pyplot()
-
 
     def main(self):
         self.run()
