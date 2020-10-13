@@ -131,9 +131,9 @@ class Projections(SimpleApp):
         region.ui.epidemic_summary()
         region.ui.cases_and_deaths(title=None, download=f"cases-{region.id}.csv", **plot_opts)
 
-        # model = self.start_model()
-        # group = self.start_group(model, **run_opts)
-        # self.show_outputs(model, group, clinical_opts=clinical_opts, **opts, **show_opts)
+        model = self.start_model(region=self.user_inputs['region'])
+        group = self.start_group(model, **run_opts)
+        self.show_outputs(model, group, clinical_opts=clinical_opts, **self.user_inputs, **show_opts)
 
     @st.cache(show_spinner=False)
     def start_model(self, region: RegionT):
@@ -158,10 +158,118 @@ class Projections(SimpleApp):
         models.run(duration)
         return models
 
+    @st.cache
+    def reopening_intro(self, region):
+        name = _(region.name)
+        return _("""...""").format(**locals())
+
+    
+    @st.cache
+    def forecast_intro(self, region):
+        name = _(region.name)
+        return _(
+            """
+            Epidemic forecasting depends on good data, which is hard to find.
+            Take it with a grain of salt.
+            """
+        ).format(**locals())
+    
+    @st.cache
+    def reopening_intro(self, region):
+        name = _(region.name)
+        return _("""...""").format(**locals())
+
+
+    @st.cache
+    def rt_intro(self, region):
+        name = _(region.name)
+        return _("""...""").format(**locals())
+
+    @st.cache
+    def report_intro(self, region):
+        name = _(region.name)
+        return _(
+            """{name} is in a **(good|bad|ugly)** state, yadda, yadda, yadda.
+
+            The plot bellow shows the progression of cases and deaths.
+            """
+        ).format(**locals())
+
+    def show_outputs(self, base, group, region: RegionT, plot_opts, clinical_opts, **kwargs):
+        """
+        Show results from user input.
+        """
+        # cmodels = group.clinical.overflow_model(**clinical_opts)
+        # cforecast = cmodels[0]
+        start = base.info["event.simulation_start"]
+
+        #
+        # Introduction
+        #
+        st.header(_("Introduction"))
+        st.markdown(self.report_intro(region))
+        st.cards(
+            {
+                _("Basic reproduction number"): fmt(base.R0),
+                _("Ascertainment rate"): pc(base.info["observed.notification_rate"]),
+            },
+            color="st-gray-900",
+        )
+
+        #
+        # Forecast
+        #
+        st.header(_("Forecasts"))
+        st.markdown(self.forecast_intro(region))
+
+        # Infectious curve
+        group["infectious:dates"].plot(**plot_opts)
+        mark_x(start.date, "k--")
+        plt.legend()
+        plt.title(_("Active cases"))
+        plt.tight_layout()
+        st.pyplot()
+
+        st.markdown("#### " + _("Download data"))
+        opts = ["critical", "severe", "infectious", "cases", "deaths"]
+        default_columns = ["critical", "severe", "cases", "deaths"]
+        columns = st.multiselect(_("Select columns"), opts, default=default_columns)
+
+        rename = dict(zip(range(len(columns)), columns))
+        columns = [c + ":dates" for c in columns]
+        # data = pd.concat(
+        #     [cm[columns].rename(rename, axis=1) for cm in cmodels], axis=1, keys=cmodels.names
+        # )
+        # st.data_anchor(data.astype(int), f"data-{region.id}.csv")
+
+        #
+        # Reopening
+        #
+        st.header(_("When can we reopen?"))
+        st.markdown(self.reopening_intro(region))
+
+        st.subheader(_("Step 1: Controlling the curve"))
+        st.markdown(self.rt_intro(region))
+
+        st.subheader(_("Step 2: Testing"))
+        st.markdown(self.rt_intro(region))
+        if kwargs.get("show_weekday_rate"):
+            region.ui.weekday_rate()
+
+        st.subheader(_("Step 3: Hospital capacity"))
+        st.markdown(self.rt_intro(region))
+
+        # Hospitalization
+        # cmodels["critical:dates"].plot(**plot_opts)
+        mark_x(start.date, "k--")
+        # mark_y(cforecast.icu_surge_capacity, "k:")
+        plt.legend()
+        plt.title(_("Critical cases"))
+        plt.tight_layout()
+        st.pyplot()
+
 
     def main(self):
-        # opts = sidebar(title, where=st if embed else st.sidebar, embed=embed, disease=disease)
-        
         self.run()
 
 
