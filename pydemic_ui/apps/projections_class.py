@@ -38,6 +38,7 @@ class Projections(SimpleApp):
 
     def show(self):
         self.render_sidebar()
+        self.process_data()
 
     def checkbox_options(self, title, **kwargs):
         if self.embed:
@@ -115,8 +116,6 @@ class Projections(SimpleApp):
             **options,
         }
 
-        self.process_data()
-
     def process_data(self):
         show_opts = extract_keys(SHOW_OPTS, self.user_inputs)
         clinical_opts = extract_keys(CLINICAL_OPTS, self.user_inputs)
@@ -190,6 +189,7 @@ class Projections(SimpleApp):
         ).format(**locals())
 
     def show_outputs(self, base, group, region: RegionT, plot_opts, clinical_opts, **kwargs):
+        self.where = st
         """
         Show results from user input.
         """
@@ -199,9 +199,9 @@ class Projections(SimpleApp):
         #
         # Introduction
         #
-        st.header(_("Introduction"))
-        st.markdown(self.report_intro(region))
-        st.cards(
+        self.where.header(_("Introduction"))
+        self.where.markdown(self.report_intro(region))
+        self.where.cards(
             {
                 _("Basic reproduction number"): fmt(base.R0),
                 _("Ascertainment rate"): pc(base.info["observed.notification_rate"]),
@@ -212,8 +212,8 @@ class Projections(SimpleApp):
         #
         # Forecast
         #
-        st.header(_("Forecasts"))
-        st.markdown(self.forecast_intro(region))
+        self.where.header(_("Forecasts"))
+        self.where.markdown(self.forecast_intro(region))
 
         # Infectious curve
         group["infectious:dates"].plot(**plot_opts)
@@ -221,36 +221,36 @@ class Projections(SimpleApp):
         plt.legend()
         plt.title(_("Active cases"))
         plt.tight_layout()
-        st.pyplot()
+        self.where.pyplot()
 
-        st.markdown("#### " + _("Download data"))
+        self.where.markdown("#### " + _("Download data"))
         opts = ["critical", "severe", "infectious", "cases", "deaths"]
         default_columns = ["critical", "severe", "cases", "deaths"]
-        columns = st.multiselect(_("Select columns"), opts, default=default_columns)
+        columns = self.where.multiselect(_("Select columns"), opts, default=default_columns)
 
         rename = dict(zip(range(len(columns)), columns))
         columns = [c + ":dates" for c in columns]
         data = pd.concat(
             [cm[columns].rename(rename, axis=1) for cm in self.cmodels], axis=1, keys=self.cmodels.names
         )
-        st.data_anchor(data.astype(int), f"data-{region.id}.csv")
+        self.where.data_anchor(data.astype(int), f"data-{region.id}.csv")
 
         #
         # Reopening
         #
-        st.header(_("When can we reopen?"))
-        st.markdown(self.reopening_intro(region))
+        self.where.header(_("When can we reopen?"))
+        self.where.markdown(self.reopening_intro(region))
 
-        st.subheader(_("Step 1: Controlling the curve"))
-        st.markdown(self.rt_intro(region))
+        self.where.subheader(_("Step 1: Controlling the curve"))
+        self.where.markdown(self.rt_intro(region))
 
-        st.subheader(_("Step 2: Testing"))
-        st.markdown(self.rt_intro(region))
+        self.where.subheader(_("Step 2: Testing"))
+        self.where.markdown(self.rt_intro(region))
         if kwargs.get("show_weekday_rate"):
             region.ui.weekday_rate()
 
-        st.subheader(_("Step 3: Hospital capacity"))
-        st.markdown(self.rt_intro(region))
+        self.where.subheader(_("Step 3: Hospital capacity"))
+        self.where.markdown(self.rt_intro(region))
 
         # Hospitalization
         self.cmodels["critical:dates"].plot(**plot_opts)
@@ -259,7 +259,7 @@ class Projections(SimpleApp):
         plt.legend()
         plt.title(_("Critical cases"))
         plt.tight_layout()
-        st.pyplot()
+        self.where.pyplot()
 
 
     def main(self):
