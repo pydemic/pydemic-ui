@@ -1,17 +1,17 @@
-Este cenário prevê que **{mortality}** por 100.000 habitantes morreria no surto
-de COVID-19 nos **{days}** dias de simulação considerados. Este número corresponde a **{fatality}** de todos que ficaram doentes.
-O modelo também indica que **{infected}** da população será infectada pelo vírus, mas apenas
-**{symptomatic}** destes desenvolverão sintomas visíveis.
+This scenario predicts that **{mortality}** per 100k population will die from
+COVID-19 in the considered **{days}** of simulation. This number corresponds to **{fatality}** of those that became ill.
+The model also predicts that **{infected}** of the population will become
+infected, but only **{symptomatic}** of those will develop visible symptoms.
 
-**IMPORTANTE:** Modelos são simplificações da realidade e dependem fortemente de
-bons valores para os parâmetros baseados em dados. Ainda existem vários aspectos epidemiológicos
-da COVID-19 que permanecem em aberto no debate científico e cientistas ainda estão tentando determinar
-valores mais precisos para vários parâmetros importantes. As escolhas feitas aqui são baseadas no
-conhecimento científico atual sobre a epidemia, mas ainda são bastante incertas. No entanto, escolher valores
-absurdos para os parâmetros certamente criará previsões absurdas. Dito isso, use a calculadora com cuidado!
+**IMPORTANT:** Models are simplifications and are highly dependent on good
+parameters and good data. There are many aspects of COVID epidemiology that are
+not yet very well understood and scientists are still looking for more accurate
+values for many important parameters. The choices made here are best guesses
+based on the current scientific knowledge about the epidemic. Changing
+parameters to absurd values will create absurd predictions, so use with care...
 
-O desenrolar da epidemia também depende crucialmente de como as comunidades reagem. Isto é
-codificado de maneira muito simplista nos comandos de "Opções de Intervenção" do simulador. Nós
-não tentamos antecipar como estas comunidades irão responder à epidemia, mas apenas damos a opção
-de traçar diferentes cenários de resposta. Por isso, dizemos que esta caluladora produz apenas cenários
-e não previsões sobre o futuro.
+The course of the epidemic also depends crucially on how communities react. This is
+encoded in a very simplified way in the "intervention options" tab of the simulator.
+We do not try to anticipate communities respond to the epidemic, but rather it
+must be entered as an explicit input to the model. That is why we say therefore,
+this calculator computes scenarios rather than trying to predict the future.
