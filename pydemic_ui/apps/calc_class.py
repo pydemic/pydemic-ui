@@ -60,6 +60,7 @@ CLINICAL = [
 
 CAPACITY = ["hospital_full_capacity", "icu_full_capacity"]
 
+
 class Calc(SimpleApp):
     title = "Hospital pressure calculator"
 
@@ -128,7 +129,7 @@ class Calc(SimpleApp):
         st.pause()
         st.footnotes()
 
-    def main(self,region="BR", disease=covid19):
+    def main(self, region="BR", disease=covid19):
         st.css()
         params = self.ask(
             region=region,
@@ -194,11 +195,6 @@ class Calc(SimpleApp):
                     st.area_chart(df)
 
 
-
-
-
-
-
 # @tle_cache('ui.app.calc')
 def model(*, daily_cases, runner, period, disease, **kwargs):
     """
@@ -232,7 +228,6 @@ def easter_egg(disease=covid19):
     mod.main(embed=True, disease=disease)
 
 
-
 def main(disease=covid19):
     """
     Main function for application.
@@ -241,6 +236,7 @@ def main(disease=covid19):
     calc.main()
 
 # Start main script
+
 
 if __name__ == "__main__":
     main()
