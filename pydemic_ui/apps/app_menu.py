@@ -28,6 +28,7 @@ def APP_LIST():
         "model_info": _("Model info"),
         "forecast": _("Forecast"),
         "playground": _("Playground"),
+        "calc_class": _("Classe Main epidemic calculator"),
         "model_info_class": ("Classe model info"),
         "scenarios1_class": ("Classe Epidemic Scenarios (I)"),
         "scenarios2_class": ("Classe Epidemic Scenarios (II)"),
