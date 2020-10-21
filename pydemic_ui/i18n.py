@@ -34,6 +34,7 @@ def run():
     lang = os.environ.get("PYDEMIC_LANG") or os.environ.get("LANG")
     set_i18n("en_US.UTF-8" if lang == "C" else lang)  # en_US is the default language
 
+
 def gettext_lazy(st):
     return sk.deferred(gettext, st)
 
