@@ -51,7 +51,7 @@ Docker Compose
 
 You can run the project using Docker Compose by having it installed and running the following command::
 
-    $ docker-compose up pydemic_ui
+    $ docker-compose up pydemic-ui
 
 VSCode Remote - Containers
 --------------------------
