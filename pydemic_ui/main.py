@@ -19,7 +19,6 @@ class Scheduler:
         self._id = 0
         self._sleep = lambda: sleep(1.0)
         self._clock = clock
-        self._clock_args = None
         self._running = False
         self._stopped = False
 
@@ -56,21 +55,19 @@ class Scheduler:
 
             with self._lock:
                 (time, _, task) = self.tasks[0]
-
-                if self._clock.__name__ != 'time':
-                    if time > self._clock(self._clock_args) + clock_increment:
-                        task = sleep
-                    else:
-                        self.tasks.popleft()
-                    
-                    clock_increment += 1
-
+                
+                if self._clock.__name__ != "time":
+                    clock = self._clock(self._clock_args) + clock_increment
                 else:
-                    if time > self._clock():
-                        task = sleep
-                    else:
-                        self.tasks.popleft()
-            
+                    clock = self._clock()
+                
+                if time > clock:
+                    task = sleep
+                else:
+                    self.tasks.popleft()
+
+            clock_increment += 1
+
             try:
                 task()
             except Exception as ex:
