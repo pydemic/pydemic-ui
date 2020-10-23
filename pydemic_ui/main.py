@@ -45,21 +45,20 @@ class Scheduler:
         """
         Consume and wait for tasks.
         """
-        tasks = self.tasks
         clock = self._clock
         sleep = self._sleep
 
         while True:
-            if not tasks:
+            if not self.tasks:
                 sleep()
                 continue
 
             with self._lock:
-                (time, _, task) = tasks[0]
+                (time, _, task) = self.tasks[0]
                 if time > clock():
                     task = sleep
                 else:
-                    tasks.popleft()
+                    self.tasks.popleft()
             
             try:
                 task()
@@ -104,7 +103,7 @@ class Scheduler:
                 task()
 
         self.schedule(run_and_schedule, unix_time)
-        
+
     def schedule_weekly(self, task, time=datetime.time()):
         ...
     
@@ -123,7 +122,7 @@ def scheduler():
 
     if SCHEDULER is None:
         SCHEDULER = Scheduler()
-        SCHEDULER.start()
+        # SCHEDULER.start()
     return SCHEDULER
 
 
@@ -133,12 +132,3 @@ def datetime_to_time(dt):
     """
 
     return mktime(dt.timetuple())
-
-
-print(_time())
-
-now = datetime.datetime.now()
-print(datetime_to_time(now))
-
-some_date = datetime.datetime(2020, 12, 25, 8, 55, 15)
-print(datetime_to_time(some_date))
