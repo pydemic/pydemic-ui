@@ -1,6 +1,6 @@
 from threading import Thread, Lock
 from collections import deque
-from time import time as _time, sleep
+from time import time as _time, sleep, mktime
 import datetime
 from logging import getLogger
 
@@ -45,7 +45,7 @@ class Scheduler:
         """
         Consume and wait for tasks.
         """
-        tasks = self._tasks
+        tasks = self.tasks
         clock = self._clock
         sleep = self._sleep
 
@@ -73,14 +73,14 @@ class Scheduler:
         """
         Schedule task to run at some precise time.
         """
-        #TODO: function should accept dates and datetimes
+        # TODO: function should accept dates and datetimes
         if isinstance(time, (datetime.date, datetime.datetime)):
             time = datetime_to_time(time)
 
         with self._lock:
             self._id += 1
             self.tasks.append((time, self._id, task))
-            self.tasks.sort()
+            self.tasks = deque(sorted(self.tasks))
 
     def schedule_now(self, task):
         return self.schedule_after(task, 0.0)
@@ -104,7 +104,7 @@ class Scheduler:
                 task()
 
         self.schedule(run_and_schedule, unix_time)
-    
+        
     def schedule_weekly(self, task, time=datetime.time()):
         ...
     
@@ -131,4 +131,14 @@ def datetime_to_time(dt):
     """
     Convert date or datetime objects to unix time.
     """
-    raise NotImplementedError
+
+    return mktime(dt.timetuple())
+
+
+print(_time())
+
+now = datetime.datetime.now()
+print(datetime_to_time(now))
+
+some_date = datetime.datetime(2020, 12, 25, 8, 55, 15)
+print(datetime_to_time(some_date))
