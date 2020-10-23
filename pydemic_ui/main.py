@@ -19,6 +19,7 @@ class Scheduler:
         self._id = 0
         self._sleep = lambda: sleep(1.0)
         self._clock = clock
+        self._clock_args = None
         self._running = False
         self._stopped = False
 
@@ -45,8 +46,8 @@ class Scheduler:
         """
         Consume and wait for tasks.
         """
-        clock = self._clock
         sleep = self._sleep
+        clock_increment = 0
 
         while True:
             if not self.tasks:
@@ -55,10 +56,20 @@ class Scheduler:
 
             with self._lock:
                 (time, _, task) = self.tasks[0]
-                if time > clock():
-                    task = sleep
+
+                if self._clock.__name__ != 'time':
+                    if time > self._clock(self._clock_args) + clock_increment:
+                        task = sleep
+                    else:
+                        self.tasks.popleft()
+                    
+                    clock_increment += 1
+
                 else:
-                    self.tasks.popleft()
+                    if time > self._clock():
+                        task = sleep
+                    else:
+                        self.tasks.popleft()
             
             try:
                 task()
@@ -122,7 +133,6 @@ def scheduler():
 
     if SCHEDULER is None:
         SCHEDULER = Scheduler()
-        # SCHEDULER.start()
     return SCHEDULER
 
 
