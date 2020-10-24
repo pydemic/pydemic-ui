@@ -44,11 +44,11 @@ class Scheduler:
 
     def list_all_tasks(self):
         """
-        Returns a list of all scheduled tasks
+        Return a list of all scheduled tasks
         """
 
         tasks = [
-            (f"time = {t[0]}", f"id = {t[1]}", f"task = {t[2].__name__}") for t in self.tasks
+            (f"time = {t[0]}", f"id = {t[1]}", f"task = {t[2].__name__}", f"frequency = {t[3]}") for t in self.tasks
         ]
 
         return tasks
@@ -66,7 +66,7 @@ class Scheduler:
                 continue
 
             with self._lock:
-                (time, _, task) = self.tasks[0]
+                (time, _, task, frequency) = self.tasks[0]
                 
                 if self._clock.__name__ != "time":
                     clock = self._clock(self._clock_args) + clock_increment
@@ -78,6 +78,9 @@ class Scheduler:
                 else:
                     self.tasks.popleft()
 
+                    if frequency == "daily": 
+                        self.schedule(task, time+24*60*60, 'daily')
+
                 clock_increment += 1
 
             try:
@@ -88,18 +91,19 @@ class Scheduler:
                 msg += f'   {type(ex)}: {ex}'
                 log.error(msg)
             
-    def schedule(self, task, time):
+    def schedule(self, task, time, frequency=None):
         """
         Schedule task to run at some precise time.
         """
+
         # TODO: function should accept dates and datetimes
-        if isinstance(time, (datetime.date, datetime.datetime)):
+        if isinstance(time, datetime.datetime):
             time = datetime_to_time(time)
 
-        with self._lock:
-            self._id += 1
-            self.tasks.append((time, self._id, task))
-            self.tasks = deque(sorted(self.tasks))
+        # with self._lock:
+        self._id += 1
+        self.tasks.append((time, self._id, task, frequency))
+        self.tasks = deque(sorted(self.tasks))
 
     def schedule_now(self, task):
         return self.schedule_after(task, 0.0)
@@ -110,19 +114,10 @@ class Scheduler:
         """
         return self.schedule(task, _time() + duration)
 
-    def schedule_daily(self, task, time=datetime.time()):
-        unix_time = ...
-        interval = 24 * 60 * 60
+    def schedule_daily(self, task, time):
+        
+        self.schedule(task, time, 'daily')
 
-        def run_and_schedule():
-            nonlocal unix_time
-            try:
-                unix_time += interval
-                self.schedule(run_and_schedule, unix_time)
-            finally:
-                task()
-
-        self.schedule(run_and_schedule, unix_time)
 
     def schedule_weekly(self, task, time=datetime.time()):
         ...
