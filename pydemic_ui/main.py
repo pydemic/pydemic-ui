@@ -19,6 +19,7 @@ class Scheduler:
         self._id = 0
         self._sleep = lambda: sleep(1.0)
         self._clock = clock
+        self._clock_args = None
         self._running = False
         self._stopped = False
 
@@ -40,6 +41,17 @@ class Scheduler:
         """
         Temporarely stop tasks.
         """
+
+    def list_all_tasks(self):
+        """
+        Returns a list of all scheduled tasks
+        """
+
+        tasks = [
+            (f"time = {t[0]}", f"id = {t[1]}", f"task = {t[2].__name__}") for t in self.tasks
+        ]
+
+        return tasks
 
     def main_loop(self):
         """
@@ -66,7 +78,7 @@ class Scheduler:
                 else:
                     self.tasks.popleft()
 
-            clock_increment += 1
+                clock_increment += 1
 
             try:
                 task()
