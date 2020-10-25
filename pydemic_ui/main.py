@@ -78,8 +78,11 @@ class Scheduler:
                 else:
                     self.tasks.popleft()
 
-                    if frequency == "daily": 
+                    if frequency == "daily":
                         self.schedule(task, time+24*60*60, 'daily')
+                    
+                    elif frequency == 'weekly':
+                        self.schedule(task, time+7*24*60*60, 'weekly') 
 
                 clock_increment += 1
 
@@ -119,8 +122,9 @@ class Scheduler:
         self.schedule(task, time, 'daily')
 
 
-    def schedule_weekly(self, task, time=datetime.time()):
-        ...
+    def schedule_weekly(self, task, time):
+        
+        self.schedule(task, time, 'weekly')
     
     def schedule_montly(self, task, time=datetime.time()):
         ...
@@ -146,3 +150,10 @@ def datetime_to_time(dt):
     """
 
     return mktime(dt.timetuple())
+
+def unix_time_to_string(time):
+    """
+    Convert unix time to readable string
+    """
+
+    return datetime.datetime.utcfromtimestamp(int(time)).strftime('%Y-%m-%d %H:%M:%S')
