@@ -84,6 +84,19 @@ class Scheduler:
                     elif frequency == 'weekly':
                         self.schedule(task, time+7*24*60*60, 'weekly') 
 
+                    elif frequency == 'monthly':
+                        data = unix_time_to_string(time)
+                        month = date_string_to_datetime(data).month
+
+                        if month == 4 or month == 6 or month == 9 or month == 11:
+                            month_days = 30
+                        elif month == 2:
+                            month_days = 28
+                        else:
+                            month_days = 31
+
+                        self.schedule(task, time+month_days*24*60*60, 'monthly')
+
                 clock_increment += 1
 
             try:
@@ -121,13 +134,13 @@ class Scheduler:
         
         self.schedule(task, time, 'daily')
 
-
     def schedule_weekly(self, task, time):
         
         self.schedule(task, time, 'weekly')
     
-    def schedule_montly(self, task, time=datetime.time()):
-        ...
+    def schedule_montly(self, task, time):
+        
+        self.schedule(task, time, 'monthly')
 
     def _schedule_at_interval(self, interval, task, time):
         ...
@@ -151,9 +164,18 @@ def datetime_to_time(dt):
 
     return mktime(dt.timetuple())
 
+
 def unix_time_to_string(time):
     """
     Convert unix time to readable string
     """
 
     return datetime.datetime.utcfromtimestamp(int(time)).strftime('%Y-%m-%d %H:%M:%S')
+
+
+def date_string_to_datetime(string):
+    """
+    Convert a date string in the format %Y-%m-%d %H:%M:%S to a datetime object
+    """
+
+    return datetime.datetime.strptime(string, '%Y-%m-%d %H:%M:%S')
