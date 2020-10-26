@@ -20,6 +20,7 @@ class Scheduler:
         self._sleep = lambda: sleep(1.0)
         self._clock = clock
         self._clock_args = None
+        self._clock_tick = 0
         self._running = False
         self._stopped = False
 
@@ -58,7 +59,7 @@ class Scheduler:
         Consume and wait for tasks.
         """
         sleep = self._sleep
-        clock_increment = 0
+        self._clock_tick = 0
 
         while True:
             if not self.tasks:
@@ -69,7 +70,7 @@ class Scheduler:
                 (time, _, task, frequency) = self.tasks[0]
                 
                 if self._clock.__name__ != "time":
-                    clock = self._clock(self._clock_args) + clock_increment
+                    clock = self._clock(self._clock_args) + self._clock_tick
                 else:
                     clock = self._clock()
                 
@@ -97,7 +98,7 @@ class Scheduler:
 
                         self.schedule(task, time+month_days*24*60*60, 'monthly')
 
-                clock_increment += 1
+                self._clock_tick += 1
 
             try:
                 task()
@@ -167,7 +168,7 @@ def datetime_to_time(dt):
 
 def unix_time_to_string(time):
     """
-    Convert unix time to readable string
+    Convert unix time to readable string in the format %Y-%m-%d %H:%M:%S
     """
 
     return datetime.datetime.utcfromtimestamp(int(time)).strftime('%Y-%m-%d %H:%M:%S')
