@@ -4,7 +4,7 @@ from time import time as _time, sleep, mktime
 import datetime
 from logging import getLogger
 
-log = getLogger('pydemic')
+log = getLogger("pydemic")
 SCHEDULER = None
 
 
@@ -49,7 +49,13 @@ class Scheduler:
         """
 
         tasks = [
-            (f"time = {t[0]}", f"id = {t[1]}", f"task = {t[2].__name__}", f"frequency = {t[3]}") for t in self.tasks
+            (
+                f"time = {t[0]}",
+                f"id = {t[1]}",
+                f"task = {t[2].__name__}",
+                f"frequency = {t[3]}",
+            )
+            for t in self.tasks
         ]
 
         return tasks
@@ -68,24 +74,24 @@ class Scheduler:
 
             with self._lock:
                 (time, _, task, frequency) = self.tasks[0]
-                
+
                 if self._clock.__name__ != "time":
                     clock = self._clock(self._clock_args) + self._clock_tick
                 else:
                     clock = self._clock()
-                
+
                 if time > clock:
                     task = sleep
                 else:
                     self.tasks.popleft()
 
                     if frequency == "daily":
-                        self.schedule(task, time+24*60*60, 'daily')
-                    
-                    elif frequency == 'weekly':
-                        self.schedule(task, time+7*24*60*60, 'weekly') 
+                        self.schedule(task, time + 24 * 60 * 60, "daily")
 
-                    elif frequency == 'monthly':
+                    elif frequency == "weekly":
+                        self.schedule(task, time + 7 * 24 * 60 * 60, "weekly")
+
+                    elif frequency == "monthly":
                         data = unix_time_to_string(time)
                         month = date_string_to_datetime(data).month
 
@@ -96,7 +102,7 @@ class Scheduler:
                         else:
                             month_days = 31
 
-                        self.schedule(task, time+month_days*24*60*60, 'monthly')
+                        self.schedule(task, time + month_days * 24 * 60 * 60, "monthly")
 
                 self._clock_tick += 1
 
@@ -104,10 +110,10 @@ class Scheduler:
                 task()
             except Exception as ex:
                 name = task.__name__
-                msg = f'error running task {name}:\n'
-                msg += f'   {type(ex)}: {ex}'
+                msg = f"error running task {name}:\n"
+                msg += f"   {type(ex)}: {ex}"
                 log.error(msg)
-            
+
     def schedule(self, task, time, frequency=None):
         """
         Schedule task to run at some precise time.
@@ -132,16 +138,16 @@ class Scheduler:
         return self.schedule(task, _time() + duration)
 
     def schedule_daily(self, task, time):
-        
-        self.schedule(task, time, 'daily')
+
+        self.schedule(task, time, "daily")
 
     def schedule_weekly(self, task, time):
-        
-        self.schedule(task, time, 'weekly')
-    
+
+        self.schedule(task, time, "weekly")
+
     def schedule_montly(self, task, time):
-        
-        self.schedule(task, time, 'monthly')
+
+        self.schedule(task, time, "monthly")
 
     def _schedule_at_interval(self, interval, task, time):
         ...
@@ -171,7 +177,7 @@ def unix_time_to_string(time):
     Convert unix time to readable string in the format %Y-%m-%d %H:%M:%S
     """
 
-    return datetime.datetime.utcfromtimestamp(int(time)).strftime('%Y-%m-%d %H:%M:%S')
+    return datetime.datetime.utcfromtimestamp(int(time)).strftime("%Y-%m-%d %H:%M:%S")
 
 
 def date_string_to_datetime(string):
@@ -179,4 +185,4 @@ def date_string_to_datetime(string):
     Convert a date string in the format %Y-%m-%d %H:%M:%S to a datetime object
     """
 
-    return datetime.datetime.strptime(string, '%Y-%m-%d %H:%M:%S')
+    return datetime.datetime.strptime(string, "%Y-%m-%d %H:%M:%S")
