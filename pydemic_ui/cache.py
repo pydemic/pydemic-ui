@@ -33,7 +33,7 @@ def cache_ttl(ttl, fasttrack=False, force_expiration=None, clock=time.time):
 
                 def run():
                     ref.clear()
-                    return call_with_time(*args, **kwargs)[1]
+                    return call_with_time(clock, fn, *args, **kwargs)[1]
 
                 if fasttrack:
                     scheduler().schedule_now(run)
@@ -53,7 +53,8 @@ def cache_schedule(frequency, start=None):
 
     Args:
         frequency:
-            Frequency at which to update the cache. Can be a number of seconds or the strings "daily", "weekly" and "monthly"
+            Frequency at which to update the cache.
+            Can be a number of seconds or the strings "daily", "weekly" and "monthly"
         time:
             For daily, weekly and monthly updates, defines the time at which it schedule updates.
 
