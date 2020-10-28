@@ -9,6 +9,7 @@ report = HtmlReport()
 st.title("Hello World!")
 st.text("This is a text!")
 st.error('This is an error')
+st.header('This is a header')
 
 st(streamlit)
 

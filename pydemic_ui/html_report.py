@@ -43,3 +43,6 @@ class HtmlReport:
 
     def handle_error(self, body):
         return f'<p class="error">{escape(body)}</p>'
+
+    def handle_header(self, body):
+        return f'<h2>{escape(body)}</p>'
