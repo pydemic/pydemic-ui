@@ -38,10 +38,20 @@ class Scheduler:
         Stop all tasks and reset scheduler.
         """
 
+        self.tasks = []
+        self._running = False
+
     def pause(self):
         """
         Temporarely stop tasks.
         """
+
+        self._running = False
+
+    def resume(self):
+
+        self._running = True
+
 
     def list_all_tasks(self):
         """
@@ -68,6 +78,9 @@ class Scheduler:
         self._clock_tick = 0
 
         while True:
+            if not self._running:
+                break
+
             if not self.tasks:
                 sleep()
                 continue
