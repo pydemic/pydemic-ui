@@ -45,4 +45,11 @@ class HtmlReport:
         return f'<p class="error">{escape(body)}</p>'
 
     def handle_header(self, body):
-        return f'<h2>{escape(body)}</p>'
+        return f'<h2>{escape(body)}</h2>'
+
+    def handle_info(self , body):
+        return f'<p class="alert">{escape(body)}</p>'
+
+    def handle_subheader(self, body):
+        return f'<h3>{escape(body)}</h3>'
+
