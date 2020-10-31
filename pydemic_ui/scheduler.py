@@ -29,9 +29,9 @@ class Scheduler:
         Start scheduler in the background.
         """
         if not self._running:
-            thread = Thread(target=self.main_loop)
-            thread.start()
+            self.thread = Thread(target=self.main_loop)
             self._running = True
+            self.thread.start()
 
     def stop(self):
         """
@@ -40,6 +40,7 @@ class Scheduler:
 
         self.tasks = []
         self._running = False
+        self.thread.join()
 
     def pause(self):
         """
