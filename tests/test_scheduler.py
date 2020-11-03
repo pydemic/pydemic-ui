@@ -88,3 +88,41 @@ class TestScheduler:
         agendador.stop()
 
         assert scheduled_dates == expected_dates
+
+    def test_weekly_schedule(self):        
+        def say_hello():
+            print('hello')
+
+        scheduled_dates = []
+        expected_dates = []
+
+        agendador = Scheduler()
+        agendador._clock = datetime_to_time
+        agendador._clock_args = datetime.datetime(2020, 10, 1, 13, 30)
+        agendador._sleep = lambda: sleep(0)
+
+        agendador.start()
+        data = datetime.datetime(2020, 10, 1, 13, 30, 3)
+
+        expected_dates.append('2020-10-01 13:30:03')
+        agendador.schedule_weekly(say_hello, data)
+
+        scheduled_dates.append(unix_time_to_string(agendador.tasks[0][0]))
+
+        day_counter = 1
+        while day_counter < 15:
+            if unix_time_to_string(agendador.tasks[0][0]) != f'2020-10-0{day_counter} 13:30:03':
+                day_counter += 7
+                
+                agendador._clock_args = datetime.datetime(2020, 10, day_counter, 13, 30)
+                agendador._clock_tick = 0
+                
+                if day_counter >= 10:
+                    expected_dates.append(f'2020-10-{day_counter} 13:30:03')
+                else:
+                    expected_dates.append(f'2020-10-0{day_counter} 13:30:03')
+                scheduled_dates.append(unix_time_to_string(agendador.tasks[0][0]))
+
+        agendador.stop()
+
+        assert scheduled_dates == expected_dates
