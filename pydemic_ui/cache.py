@@ -6,7 +6,7 @@ path = ".tmp/"
 memory = joblib.Memory(path)
 
 
-def cache_ttl(ttl, fasttrack=False, force_expiration=None, clock=time.time):
+def cache_ttl(ttl, fasttrack=False, max_ttl=float("inf"), clock=time.time):
     """
     Create a cached function with a time to live expiration.
 
@@ -16,29 +16,31 @@ def cache_ttl(ttl, fasttrack=False, force_expiration=None, clock=time.time):
         fasttrack (bool):
             If true, return result in cache and schedule update in the
             background.
-        force_expiration:
+        max_ttl:
             If given, force cache update after the given expiration period.
             It has no effect if fasttrack is False.
     """
 
     def decorator(fn):
         def decorated(*args, **kwargs):
-            ref = call_with_time.call_and_shelve(clock, fn, *args, **kwargs)
+            def run():
+                return call_with_time.call_and_shelve(clock, fn, *args, **kwargs)
+
+            ref = run()
             (time_, result) = ref.get()
 
-            if force_expiration:
-                ...  # Tempo máximo de duração do cache. Força recálculo
-
+            # checks if ttl has been reached
             if time_ + ttl < clock():
 
-                def run():
+                def update():
                     ref.clear()
-                    return call_with_time(clock, fn, *args, **kwargs)[1]
+                    return run().get()[1]
 
-                if fasttrack:
-                    scheduler().schedule_now(run)
+                # checks if max_ttl has been reached
+                if fasttrack and (time_ + max_ttl > clock()):
+                    scheduler().schedule_now(update)
                 else:
-                    return run()
+                    return update()
 
             return result
 
@@ -67,7 +69,24 @@ def cache_schedule(frequency, start=None):
 
     def decorator(fn):
         def decorated(*args, **kwargs):
-            ...
+
+            frequency, time, *args = args
+
+            ref = call_with_time.call_and_shelve(clock, fn, *args, **kwargs)
+            (time_, result) = ref.get()
+
+            def update():
+                ref.clear()
+                return call_with_time.call_and_shelve(clock, fn, *args, **kwargs)
+
+            if frequency == "daily":
+                scheduler().schedule_daily(update, time)
+            elif frequency == "weekly":
+                scheduler().schedule_weekly(update, time)
+            elif frequency == "monthly":
+                scheduler().schedule_monthly(update, time)
+
+            return result
 
         return decorated
 

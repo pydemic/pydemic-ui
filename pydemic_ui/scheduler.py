@@ -53,7 +53,6 @@ class Scheduler:
 
         self._running = True
 
-
     def list_all_tasks(self):
         """
         Return a list of all scheduled tasks
@@ -159,7 +158,7 @@ class Scheduler:
 
         self.schedule(task, time, "weekly")
 
-    def schedule_montly(self, task, time):
+    def schedule_monthly(self, task, time):
 
         self.schedule(task, time, "monthly")
 
