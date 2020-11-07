@@ -132,7 +132,7 @@ class TestScheduler:
 
         assert scheduled_dates == expected_dates
 
-    def test_montly_schedule(self):
+    def test_monthly_schedule(self):
         def say_hello():
             return "hello"
 
@@ -148,7 +148,7 @@ class TestScheduler:
         data = datetime.datetime(2020, 3, 15, 13, 30, 3)
 
         expected_dates.append("2020-03-15 13:30:03")
-        agendador.schedule_montly(say_hello, data)
+        agendador.schedule_monthly(say_hello, data)
 
         scheduled_dates.append(unix_time_to_string(agendador.tasks[0][0]))
 
