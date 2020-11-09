@@ -57,7 +57,7 @@ class HtmlReport:
     def handle_table(self, data):
         return data.to_html()
 
-    def handle_dataframe(self, data, width = None, height = None):
+    def handle_dataframe(self, data, width=None, height=None):
         html = data.to_html()
         if width:
             html = html.replace('<table', f'<table style="max-width: {width}px"')
@@ -66,4 +66,3 @@ class HtmlReport:
             html = html.replace('<table', f'<table style="max-height: {height}px"')
 
         return html
-
