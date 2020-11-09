@@ -19,7 +19,7 @@ df = pd.DataFrame(
     columns=('col %d' % i for i in range(5)))
 
 st.table(df)
-st.dataframe(df, 100)
+st.dataframe(df, 100, 250)
 
 st(streamlit)
 
