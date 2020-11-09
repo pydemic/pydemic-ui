@@ -37,6 +37,7 @@ def APP_LIST():
         "projections_class": ("Classe Epidemic projections and forecast"),
     }
 
+
 def select_app(where=st, exclude=(), force_reload=False, show_force_reload_warning=False, **kwargs):
     """
     A simple menu that selects the desired app and run it.
