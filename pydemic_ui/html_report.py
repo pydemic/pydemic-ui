@@ -1,6 +1,7 @@
 from typing import Iterable
 from html import escape
 from .st_logger import StLogger
+import pandas as pd
 
 
 class HtmlReport:
@@ -52,4 +53,9 @@ class HtmlReport:
 
     def handle_subheader(self, body):
         return f'<h3>{escape(body)}</h3>'
+
+    def handle_table(self, data):
+        return data.to_html()
+
+    
 
