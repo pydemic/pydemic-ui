@@ -20,6 +20,6 @@ jobs:
           docker-compose run pydemic-ui pytest
       - name: Code Coverage
         run: |
-          pip install codecov
+          pip install --user codecov
           docker-compose run pydemic-ui coverage run -m pytest
           codecov
