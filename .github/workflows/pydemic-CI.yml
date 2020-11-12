@@ -17,9 +17,7 @@ jobs:
           docker-compose run pydemic-ui pycodestyle
       - name: Test with pytest
         run: |
-          pip install pytest-cov
-          docker-compose run pydemic-ui pytest --cov=./
+          docker-compose run pydemic-ui pytest --cov=./ --cov-report=xml
       - name: Code Coverage
         run: |
-          sudo pip install codecov
-          codecov
+          bash <(curl https://codecov.io/bash)
