@@ -1,10 +1,14 @@
 ==========
 Pydemic UI
 ==========
-|Build Badge|
+|Build Badge| |Coverage Badge|
 
 .. |Build Badge|  image:: https://img.shields.io/github/workflow/status/GCES-Pydemic/pydemic-ui/Pydemic%20CI?logo=github&style=flat-square   
         :alt: GitHub Workflow Status
+
+.. |Coverage Badge|  image:: https://codecov.io/gh/GCES-Pydemic/pydemic-ui/branch/master/graph/badge.svg
+        :alt: Code Coverage
+        :target: https://codecov.io/gh/GCES-Pydemic/pydemic-ui
         
         
 A set of streamlit apps and utilities used in creating the UI for Pydemic apps.
