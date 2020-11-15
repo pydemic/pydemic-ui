@@ -70,14 +70,14 @@ class HtmlReport:
     def handle_line_chart(self, data):
         fig = px.line(data)
         html = fig.to_html(full_html=False, include_plotlyjs='cdn')
-        return html
+        return html+'\n'
 
     def handle_area_chart(self, data):
         fig = px.area(data)
         html = fig.to_html(full_html=False, include_plotlyjs='cdn')
-        return html
+        return html+'\n'
     
     def handle_bar_chart(self, data):
         fig = px.bar(data)
         html = fig.to_html(full_html=False, include_plotlyjs='cdn')
-        return html
+        return html+'\n'

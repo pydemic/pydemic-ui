@@ -3,7 +3,7 @@ import streamlit
 from pydemic_ui.html_report import HtmlReport
 import pandas as pd
 import numpy as np
-
+import pdfkit
 
 st = StLogger()
 report = HtmlReport()
@@ -43,5 +43,8 @@ st(streamlit)
 
 streamlit.header('Producing report...')
 html = report.render(st)
+
+pdfkit.from_string('<html><body>'+html+'</body></html>', 'out.pdf')
+
 streamlit.text(html)
 streamlit.subheader('This is a subheader')
