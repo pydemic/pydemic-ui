@@ -4,6 +4,7 @@ from .st_logger import StLogger
 import pandas as pd
 import plotly.express as px
 
+
 class HtmlReport:
     """
     Render HTML reports from logged sequences of Streamlit commands.
@@ -72,17 +73,17 @@ class HtmlReport:
     def handle_line_chart(self, data):
         fig = px.line(data)
         html = fig.to_html(full_html=False, include_plotlyjs='cdn')
-        return html+'\n'
+        return html + '\n'
 
     def handle_area_chart(self, data):
         fig = px.area(data)
         html = fig.to_html(full_html=False, include_plotlyjs='cdn')
-        return html+'\n'
-    
+        return html + '\n'
+
     def handle_bar_chart(self, data):
         fig = px.bar(data)
         html = fig.to_html(full_html=False, include_plotlyjs='cdn')
-        return html+'\n'
-        
+        return html + '\n'
+
     def handle_button(self, text):
         return f'<button data-baseweb="button" class="st-en st-eo st-c9 st-ep st-eq st-er st-es st-et st-cn st-co st-cp st-cq st-cr st-eu st-ax st-ev st-ew st-ex st-b0 st-ey st-de st-ez st-f0 st-f1 st-f2 st-d0 st-aq st-cs st-ar st-ae st-af st-ag st-ah st-au st-av st-at st-aw st-f3 st-f4 st-f5 st-f6 st-c1 st-ec st-f7 st-f8 st-f9 st-fa st-fb st-fc st-fd st-fe st-ff st-fg st-eg st-fh st-fi st-fj">{escape(text)}</button>'
