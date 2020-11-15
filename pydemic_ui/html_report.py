@@ -76,3 +76,8 @@ class HtmlReport:
         fig = px.area(data)
         html = fig.to_html(full_html=False, include_plotlyjs='cdn')
         return html
+    
+    def handle_bar_chart(self, data):
+        fig = px.bar(data)
+        html = fig.to_html(full_html=False, include_plotlyjs='cdn')
+        return html

@@ -23,15 +23,21 @@ st.dataframe(df, 100, 250)
 
 ## line chart
 chart_data = pd.DataFrame(
-np.random.randn(20, 3),
+np.random.randn(30, 3),
 columns=['a', 'b', 'c'])
 st.line_chart(chart_data)
 
 ## area chart
 chart_data = pd.DataFrame(
-np.random.randn(20, 3),
+np.random.randn(40, 3),
 columns=['a', 'b', 'c'])
 st.area_chart(chart_data)
+
+## bar chart
+chart_data = pd.DataFrame(
+np.random.randn(50, 3),
+columns=['a', 'b', 'c'])
+st.bar_chart(chart_data)
 
 st(streamlit)
 
