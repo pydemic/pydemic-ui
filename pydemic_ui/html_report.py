@@ -2,7 +2,7 @@ from typing import Iterable
 from html import escape
 from .st_logger import StLogger
 import pandas as pd
-
+import plotly.express as px
 
 class HtmlReport:
     """
@@ -65,4 +65,9 @@ class HtmlReport:
         if height:
             html = html.replace('<table', f'<table style="max-height: {height}px"')
 
+        return html
+
+    def handle_line_chart(self, data):
+        fig = px.line(data)
+        html = fig.to_html(full_html=False, include_plotlyjs='cdn')
         return html

@@ -20,7 +20,11 @@ df = pd.DataFrame(
 
 st.table(df)
 st.dataframe(df, 100, 250)
+chart_data = pd.DataFrame(
+np.random.randn(20, 3),
+columns=['a', 'b', 'c'])
 
+st.line_chart(chart_data)
 st(streamlit)
 
 streamlit.header('Producing report...')
