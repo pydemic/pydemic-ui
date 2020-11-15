@@ -20,11 +20,19 @@ df = pd.DataFrame(
 
 st.table(df)
 st.dataframe(df, 100, 250)
+
+## line chart
 chart_data = pd.DataFrame(
 np.random.randn(20, 3),
 columns=['a', 'b', 'c'])
-
 st.line_chart(chart_data)
+
+## area chart
+chart_data = pd.DataFrame(
+np.random.randn(20, 3),
+columns=['a', 'b', 'c'])
+st.area_chart(chart_data)
+
 st(streamlit)
 
 streamlit.header('Producing report...')
