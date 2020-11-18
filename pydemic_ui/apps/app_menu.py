@@ -38,7 +38,7 @@ def APP_LIST():
     }
 
 
-def select_app(where=st, exclude=(), force_reload=False, **kwargs):
+def select_app(where=st, exclude=(), force_reload=False, show_force_reload_warning=False, **kwargs):
     """
     A simple menu that selects the desired app and run it.
     """
@@ -61,6 +61,11 @@ def select_app(where=st, exclude=(), force_reload=False, **kwargs):
         if force_reload:
             sys.modules.pop(mod_path, None)
             if st.button(_("Force reload")):
+                if show_force_reload_warning:
+                    where.write('''
+                        WARNING: force reload is experimental and might not work sometimes.
+                        Proceed with caution.
+                    ''')
                 for mod in PYDEMIC_MODULES:
                     clear_module(mod, True)
 
@@ -147,4 +152,4 @@ def patch_builtins():
 if __name__ == "__main__":
     configure_i18n()
     patch_builtins()
-    select_app(force_reload=True)
+    select_app(force_reload=True, show_force_reload_warning=True)

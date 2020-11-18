@@ -12,13 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build Service
-        run: |
-          docker-compose up -d pydemic-ui
-
       - name: Lint with pycodestyle
         run: |
-          docker-compose exec -T pydemic-ui pycodestyle
+          docker-compose run pydemic-ui pycodestyle
       - name: Test with pytest
         run: |
-          docker-compose exec -T pydemic-ui pytest
+          docker-compose run pydemic-ui pytest --cov=./ --cov-report=xml
+      - name: Code Coverage
+        run: |
+          bash <(curl https://codecov.io/bash)
