@@ -20,22 +20,22 @@ df = pd.DataFrame(np.random.randn(10, 5), columns=("col %d" % i for i in range(5
 st.table(df)
 st.dataframe(df, 100, 250)
 
-## line chart
+# line chart
 chart_data = pd.DataFrame(
-np.random.randn(30, 3),
-columns=['a', 'b', 'c'])
+    np.random.randn(30, 3),
+    columns=['a', 'b', 'c'])
 st.line_chart(chart_data)
 
-## area chart
+# area chart
 chart_data = pd.DataFrame(
-np.random.randn(40, 3),
-columns=['a', 'b', 'c'])
+    np.random.randn(40, 3),
+    columns=['a', 'b', 'c'])
 st.area_chart(chart_data)
 
-## bar chart
+# bar chart
 chart_data = pd.DataFrame(
-np.random.randn(50, 3),
-columns=['a', 'b', 'c'])
+    np.random.randn(50, 3),
+    columns=['a', 'b', 'c'])
 st.bar_chart(chart_data)
 
 st(streamlit)
@@ -43,7 +43,7 @@ st(streamlit)
 streamlit.header("Producing report...")
 html = report.render(st)
 
-pdfkit.from_string('<html><body>'+html+'</body></html>', 'out.pdf')
+pdfkit.from_string('<html><body>' + html + '</body></html>', 'out.pdf')
 
 streamlit.text(html)
 streamlit.subheader("This is a subheader")
