@@ -139,74 +139,30 @@ class Scheduler:
         """
         return self.schedule(task, _time() + duration)
 
-    def schedule_daily(self, task, time):
-        """
-        Schedule task to run daily, starting from 'time'.
-        
-        Each time the task is executed on main loop,
-        it gets re-scheduled to 24 hours later.
-        
-        This method is called from outside the class.
-        """
+    def schedule_daily(self, task_to_schedule, time_to_start):
 
-        self.schedule(task, time, "daily")
+        self.schedule(task_to_schedule, time_to_start, "daily")
 
-    def __schedule_daily(self, task, time):
-        """
-        Schedule the current task to 24 hours later.
+    def __schedule_daily(self, task_to_schedule, time_to_start):
 
-        This method is called from inside the class 
-        and should not be called externally.
-        """
+        self.schedule(task_to_schedule, time_to_start + 24 * 60 * 60, "daily")
 
-        self.schedule(task, time + 24 * 60 * 60, "daily")
+    def schedule_weekly(self, task_to_schedule, time_to_start):
 
-    def schedule_weekly(self, task, time):
-        """
-        Schedule task to run weekly, starting from 'time'.
-        
-        Each time the task is executed on main loop,
-        it gets re-scheduled to 7 days later.
-        
-        This method is called from outside the class.
-        """
+        self.schedule(task_to_schedule, time_to_start, "weekly")
 
-        self.schedule(task, time, "weekly")
-    
-    def __schedule_weekly(self, task, time):
-        """
-        Schedule the current task to 7 days later.
+    def __schedule_weekly(self, task_to_schedule, time_to_start):
 
-        This method is called from inside the class 
-        and should not be called externally.
-        """
+        self.schedule(task_to_schedule, time_to_start + 7 * 24 * 60 * 60, "weekly")
 
-        self.schedule(task, time + 7 * 24 * 60 * 60, "weekly")
+    def schedule_monthly(self, task_to_schedule, time_to_start):
 
-    def schedule_monthly(self, task, time):
-        """
-        Schedule task to run monthly, starting from 'time'.
-        
-        Each time the task is executed on main loop,
-        it gets re-scheduled to a month later, where the
-        number of days depends on the month itself.
-        
-        This method is called from outside the class.
-        """
+        self.schedule(task_to_schedule, time_to_start, "monthly")
 
-        self.schedule(task, time, "monthly")
-    
-    def __schedule_monthly(self, task, time):
-        """
-        Schedule the current task to a month later
-        depending on the month.
+    def __schedule_monthly(self, task_to_schedule, time_to_start):
 
-        This method is called from inside the class 
-        and should not be called externally.
-        """
-
-        data = unix_time_to_string(time)
-        month = date_string_to_datetime(data).month
+        unix_time = unix_time_to_string(time_to_start)
+        month = date_string_to_datetime(unix_time).month
 
         if month == 4 or month == 6 or month == 9 or month == 11:
             month_days = 30
@@ -215,7 +171,7 @@ class Scheduler:
         else:
             month_days = 31
 
-        self.schedule(task, time + month_days * 24 * 60 * 60, "monthly")
+        self.schedule(task_to_schedule, time_to_start + month_days * 24 * 60 * 60, "monthly")
 
     def _schedule_at_interval(self, interval, task, time):
         ...
