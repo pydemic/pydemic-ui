@@ -76,20 +76,20 @@ class ApiExplorer(SimpleApp):
         return object
 
     def explore_object_attribute(
-        self, name, obj, attrs=("ui", "plot", "pydemic", "input")
+        self, name, object, attributes=("ui", "plot", "pydemic", "input")
     ):
         """
         Instead of inspecting methods of object, query for the selected attribute
-        from attrs and explore it.
+        from attributes and explore it.
         """
 
-        msg = _("Which aspect of the API do you want to explore?")
-        attrs = filter(lambda x: hasattr(obj, x), attrs)
-        refs = [f"{name}.{child}" for child in attrs]
-        ref = self.where.selectbox(msg, refs)
-        child = getattr(obj, ref.partition(".")[-1])
+        message = _("Which aspect of the API do you want to explore?")
+        attributes = filter(lambda x: hasattr(object, x), attributes)
+        references = [f"{name}.{child}" for child in attributes]
+        reference = self.where.selectbox(message, references)
+        child = getattr(object, reference.partition(".")[-1])
 
-        return self.explore_object(ref, child)
+        return self.explore_object(reference, child)
 
     def explore_object(self, name, obj):
         """
