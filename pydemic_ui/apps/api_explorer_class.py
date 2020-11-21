@@ -109,6 +109,9 @@ class ApiExplorer(SimpleApp):
         self.where.subheader(_("Method help and signature"))
         self.where.help(method)
 
+        self.explore_function_output(result)
+
+    def explore_function_output(self, result):
         if result is not None:
             self.where = st
             self.where.line()
