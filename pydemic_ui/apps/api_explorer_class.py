@@ -144,19 +144,19 @@ class ApiExplorer(SimpleApp):
         method = self.where.selectbox(_("Select method"), list(methods), format_func=format)
         return methods[method]
 
-    def select_arguments(self, fn):
+    def select_arguments(self, method):
         """
         Select arguments from a callable object.
 
         This method only works if we are able to introspect the object signature.
         """
 
-        sig = inspect.Signature.from_callable(fn)
+        signature = inspect.Signature.from_callable(method)
         args = []
         kwargs = {}
         show_title = True
 
-        for k, v in sig.parameters.items():
+        for k, v in signature.parameters.items():
             if k == "where":
                 continue
             if show_title:
