@@ -96,27 +96,29 @@ class ApiExplorer(SimpleApp):
         Explore methods of object.
         """
 
-        fn = self.select_method(name, obj)
-        args, kwargs = self.select_arguments(fn)
+        self.where = st.sidebar
+        method = self.select_method(name, obj)
+        args, kwargs = self.select_arguments(method)
 
-        t0 = time.time()
-        msg = st.empty()
-        result = fn(*args, **kwargs)
-        msg.info(_("Method executed in {} seconds.").format(fmt(time.time() - t0)))
+        start = time.time()
+        message = st.empty()
+        result = method(*args, **kwargs)
+        message.info(_("Method executed in {} seconds.").format(fmt(time.time() - start)))
 
-        st.line()
-        st.subheader(_("Method help and signature"))
-        st.help(fn)
+        self.where.line()
+        self.where.subheader(_("Method help and signature"))
+        self.where.help(method)
 
         if result is not None:
-            st.line()
-            st.subheader(_("Function output"))
+            self.where = st
+            self.where.line()
+            self.where.subheader(_("Function output"))
 
             if isinstance(result, plt.Axes):
-                st.markdown(_("Function returned a matplotlib **ax** object. Showing it..."))
-                st.pyplot(result.get_figure())
+                self.where.markdown(_("Function returned a matplotlib **ax** object. Showing it..."))
+                self.where.pyplot(result.get_figure())
             else:
-                st.write(result)
+                self.where.write(result)
 
     def select_method(self, namespace: str, obj: Any, blacklist=()):
         """
