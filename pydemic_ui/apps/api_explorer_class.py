@@ -123,25 +123,25 @@ class ApiExplorer(SimpleApp):
             else:
                 self.where.write(result)
 
-    def select_method(self, namespace: str, obj: Any, blacklist=()):
+    def select_method(self, namespace: str, object: Any, blacklist=()):
         """
         Select a method from object.
         """
 
         methods = {}
-        for k in dir(obj):
-            if k.startswith("_") or k in blacklist:
+        for method in dir(object):
+            if method.startswith("_") or method in blacklist:
                 continue
             try:
-                value = getattr(obj, k)
+                value = getattr(object, method)
             except Exception:
                 continue
 
             if callable(value):
-                methods[k] = value
+                methods[method] = value
 
-        fmt = lambda x: f"{namespace}.{x}( )"
-        method = self.where.selectbox(_("Select method"), list(methods), format_func=fmt)
+        format = lambda x: f"{namespace}.{x}( )"
+        method = self.where.selectbox(_("Select method"), list(methods), format_func=format)
         return methods[method]
 
     def select_arguments(self, fn):
