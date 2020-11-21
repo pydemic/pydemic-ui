@@ -39,38 +39,41 @@ class ApiExplorer(SimpleApp):
         """
         self.where.header(("Options"))
 
-        region = self.where.text_input(_("Mundi region code"), value="BR")
+        self.region = self.where.text_input(_("Mundi region code"), value="BR")
         try:
-            region = mundi.region(region)
+            self.region = mundi.region(self.region)
         except LookupError:
             self.where.error("Invalid mundi region code.")
             return
 
-        opts = {
+        options = {
             "model": _("A Pydemic Model"),
             "region": _("A Mundi Region"),
             "components": _("Input components"),
         }
-        msg = _("What do you want to explore?")
-        opt = self.where.radio(msg, list(opts), format_func=opts.get)
+        message = _("What do you want to explore?")
+        option = self.where.radio(message, list(options), format_func=options.get)
 
-        if opt == "model":
-            model = SEAIR(region=region, disease="covid-19")
-            model.run(180)
-            obj = model.clinical.overflow_model()
-        elif opt == "region":
-            obj = region
-        else:
-            import pydemic_ui.components as obj
-
-        self.option = opt
-        self.object = obj
+        self.option = option
+        self.object = self.handle_explore_option(option)
 
     def show(self):
         """
         Runs simulations and display outputs.
         """
         self.explore_object_attribute(self.option, self.object)
+
+    def handle_explore_option(self, option):
+        if option == "model":
+            model = SEAIR(region=self.region, disease="covid-19")
+            model.run(180)
+            object = model.clinical.overflow_model()
+        elif option == "region":
+            object = self.region
+        else:
+            import pydemic_ui.components as object
+
+        return object
 
     def explore_object_attribute(
         self, name, obj, attrs=("ui", "plot", "pydemic", "input")
