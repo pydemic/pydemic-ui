@@ -69,22 +69,13 @@ class Scenarios1(SimpleApp):
         super().__init__()
         self.__datahandler = Scenarios1_DataHandler()
 
-    @st.cache
-    def get_regions(self, **query):
-        """
-        Get all children in region that have the same values of the parameters passed
-        as keyword arguments.
-        """
-
-        return [mundi.region(id_) for id_ in mundi.regions(**query).index]
-
     def ask(self, parent_region="BR", where=st.sidebar):
 
         st = where
         scenario_kind = st.selectbox(_("Select scenario"), list(REGIONS_TYPES[parent_region]))
         query = REGIONS_TYPES[parent_region][scenario_kind]
 
-        regions = self.get_regions(**query)
+        regions = self.__datahandler.get_regions(**query)
 
         message = _("Columns")
         columns = st.multiselect(message, COLUMNS, default=COLUMNS_DEFAULT)
@@ -127,6 +118,15 @@ class Scenarios1(SimpleApp):
 
 
 class Scenarios1_DataHandler:
+    @st.cache
+    def get_regions(self, **query):
+        """
+        Get all children in region that have the same values of the parameters passed
+        as keyword arguments.
+        """
+
+        return [mundi.region(id_) for id_ in mundi.regions(**query).index]
+
     @info.ttl_cache(key="app.projections_br", force_streamlit=True)
     def get_dataframe(self, days, targets, columns):
         regions = self.user_inputs["regions"]
