@@ -56,13 +56,10 @@ REGIONS_TYPES = {
             "subtype": "macro-region",
             "country_code": "BR",
         },
-        # _("SUS macro-region"): {
-        #     "type": "region",
-        #     "subtype": "healthcare region",
-        #     "country_code": "BR",
-        # },
     }
 }
+
+DURATION = 61
 
 
 class Scenarios1(SimpleApp):
@@ -81,29 +78,22 @@ class Scenarios1(SimpleApp):
         return [mundi.region(id_) for id_ in mundi.regions(**query).index]
 
     def ask(self, parent_region="BR", where=st.sidebar):
-        """
-        Collect input parameters for the app to run.
-
-        Returns:
-            Dictionary with the following keys:
-                parent_region, regions, columns, targets, days
-        """
 
         st = where
-        kind = st.selectbox(_("Select scenario"), list(REGIONS_TYPES[parent_region]))
-        query = REGIONS_TYPES[parent_region][kind]
+        scenario_kind = st.selectbox(_("Select scenario"), list(REGIONS_TYPES[parent_region]))
+        query = REGIONS_TYPES[parent_region][scenario_kind]
 
         regions = self.get_regions(**query)
 
-        msg = _("Columns")
-        columns = st.multiselect(msg, COLUMNS, default=COLUMNS_DEFAULT)
+        message = _("Columns")
+        columns = st.multiselect(message, COLUMNS, default=COLUMNS_DEFAULT)
 
-        msg = _("Isolation scores")
+        message = _("Isolation scores")
         kwargs = {"default": TARGETS_DEFAULT, "format_func": lambda x: f"{x}%"}
-        targets = st.multiselect(msg, TARGETS, **kwargs)
+        targets = st.multiselect(message, TARGETS, **kwargs)
 
-        msg = _("Show values for the given days")
-        days = st.multiselect(msg, DAYS, default=DAYS_DEFAULT)
+        message = _("Show values for the given days")
+        days = st.multiselect(message, DAYS, default=DAYS_DEFAULT)
 
         self.user_inputs = {
             "parent_region": parent_region,
@@ -115,29 +105,25 @@ class Scenarios1(SimpleApp):
         }
 
     def show(self):
-        """
-        Show results from user input.
-        """
 
         parent_region = self.user_inputs["parent_region"]
-        regions = self.user_inputs["regions"]
         columns = self.user_inputs["columns"]
         targets = self.user_inputs["targets"]
         days = self.user_inputs["days"]
         disease = self.user_inputs["disease"]
 
         parent_region = mundi.region(parent_region)
-        ax = parent_region.plot.cases_and_deaths(disease=disease, logy=True, grid=True)
-        st.pyplot(ax.get_figure())
+        axes = parent_region.plot.cases_and_deaths(disease=disease, logy=True, grid=True)
+        st.pyplot(axes.get_figure())
         if days and targets and columns:
-            df = self.get_dataframe(regions, tuple(days), tuple(targets), tuple(columns), 61)
+            df = self.get_dataframe(tuple(days), tuple(targets), tuple(columns))
 
             st.subheader(_("Download results"))
             st.dataframe_download(df, name="report-brazil.{ext}")
 
     @info.ttl_cache(key="app.projections_br", force_streamlit=True)
-    def get_dataframe(self, regions, days, targets, columns, duration):
-        models = self.get_models(regions, targets, duration)
+    def get_dataframe(self, days, targets, columns):
+        regions = self.user_inputs["regions"]
         frames = []
 
         prev_day = 0
@@ -146,79 +132,82 @@ class Scenarios1(SimpleApp):
             for target in targets:
                 frame = pd.DataFrame(
                     {
-                        col: self.get_column(models, regions, target, col, delta, duration)
-                        for col in columns
+                        column: self.get_column(regions, target, column, delta)
+                        for column in columns
                     }
                 ).astype(int)
 
-                names = ("days", "isolation", "data")
+                columns_names = ("days", "isolation", "data")
                 prepend = (
                     _("{n} days").format(n=day),
                     _("isolation {pc}").format(pc=pc(target / 100)),
                 )
-                cols = ((*prepend, c) for c in frame.columns)
+                cols = ((*prepend, col) for col in frame.columns)
 
-                frame.columns = pd.MultiIndex.from_tuples(cols, names=names)
+                frame.columns = pd.MultiIndex.from_tuples(cols, names=columns_names)
                 frames.append(frame)
             prev_day = day
 
         df = pd.concat(frames, axis=1)
-        extra = df.mundi["numeric_code", "short_code", "name"]
-        extra = extra.astype(str)  # streamlit bug?
-        extra.columns = pd.MultiIndex.from_tuples(("info", x, "") for x in extra.columns)
-        df = pd.concat([extra, df], axis=1)
+        extra_info = df.mundi["numeric_code", "short_code", "name"]
+        extra_info = extra_info.astype(str)  # streamlit bug?
+        extra_info.columns = pd.MultiIndex.from_tuples(("info", extra_col, "") for extra_col in extra.columns)
+        df = pd.concat([extra_info, df], axis=1)
         return df.sort_values(df.columns[0])
 
     @info.ttl_cache(key="app.projections_br", force_streamlit=True)
-    def get_models(self, regions, targets, duration) -> dict:
+    def get_models(self) -> dict:
         models = {}
+        regions = self.user_inputs["regions"]
         for region in regions:
             with st.spinner(_("Processing {name}").format(name=region.name)):
-                result = self.process_region(region, targets, duration)
+                result = self.process_region(region)
                 models.update({(region, k): v for k, v in result.items()})
         return models
 
     @info.ttl_cache(key="app.projections_br", force_streamlit=True)
-    def process_region(self, region, targets, duration):
+    def process_region(self, region):
+        targets = self.user_inputs["targets"]
+
         data = info.get_seair_curves_for_region(region, use_deaths=True)
-        m = models.SEAIR(region=region, disease=covid19)
-        m.set_data(data)
-        m.initial_cases = info.get_cases_for_region(region)["cases"].iloc[0]
+        model = models.SEAIR(region=region, disease=covid19)
+        model.set_data(data)
+        model.initial_cases = info.get_cases_for_region(region)["cases"].iloc[0]
 
         out = {}
         for level in targets:
-            new = m.copy(name=_("Isolation {}").format(pc(level / 100)))
-            new.R0 *= 1 - level / 100
-            new.run(duration)
-            out[level] = new.clinical.overflow_model()
+            new_model = model.copy(name=_("Isolation {}").format(pc(level / 100)))
+            new_model.R0 *= 1 - level / 100
+            new_model.run(DURATION)
+            out[level] = new_model.clinical.overflow_model()
 
         return MappingProxyType(out)
 
     def get_column(
         self,
-        models: dict,
         regions: List[Region],
         isolation: float,
-        col: str,
+        column: str,
         days: Tuple[int, int],
-        duration: int,
     ):
+        models = self.get_models()
         data = {}
         day, prev_day = days
-        for r in regions:
-            model = models[r, isolation]
+
+        for region in regions:
+            model = models[region, isolation]
             try:
-                values = model[col]
+                values = model[column]
             except KeyError:
-                value = getattr(model, col)
+                value = getattr(model, column)
             else:
-                initial = -(duration - prev_day)
-                final = -(duration - day)
+                initial = -(DURATION - prev_day)
+                final = -(DURATION - day)
                 value = values.iloc[initial:final].max()
-            data[r.id] = value
+            data[region.id] = value
 
         data = pd.Series(data)
-        data.name = col
+        data.name = column
         data.index.name = "region"
         return data
 
