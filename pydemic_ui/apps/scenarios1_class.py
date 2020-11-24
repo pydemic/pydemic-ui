@@ -116,13 +116,13 @@ class Scenarios1(SimpleApp):
         axes = parent_region.plot.cases_and_deaths(disease=disease, logy=True, grid=True)
         st.pyplot(axes.get_figure())
         if days and targets and columns:
-            df = self.get_dataframe(tuple(days), tuple(targets), tuple(columns))
+            df = self.__get_dataframe(tuple(days), tuple(targets), tuple(columns))
 
             st.subheader(_("Download results"))
             st.dataframe_download(df, name="report-brazil.{ext}")
 
     @info.ttl_cache(key="app.projections_br", force_streamlit=True)
-    def get_dataframe(self, days, targets, columns):
+    def __get_dataframe(self, days, targets, columns):
         regions = self.user_inputs["regions"]
         frames = []
 
@@ -132,7 +132,7 @@ class Scenarios1(SimpleApp):
             for target in targets:
                 frame = pd.DataFrame(
                     {
-                        column: self.get_column(regions, target, column, delta)
+                        column: self.__get_column(regions, target, column, delta)
                         for column in columns
                     }
                 ).astype(int)
@@ -156,17 +156,17 @@ class Scenarios1(SimpleApp):
         return df.sort_values(df.columns[0])
 
     @info.ttl_cache(key="app.projections_br", force_streamlit=True)
-    def get_models(self) -> dict:
+    def __get_models(self) -> dict:
         models = {}
         regions = self.user_inputs["regions"]
         for region in regions:
             with st.spinner(_("Processing {name}").format(name=region.name)):
-                result = self.process_region(region)
+                result = self.__process_region(region)
                 models.update({(region, k): v for k, v in result.items()})
         return models
 
     @info.ttl_cache(key="app.projections_br", force_streamlit=True)
-    def process_region(self, region):
+    def __process_region(self, region):
         targets = self.user_inputs["targets"]
 
         data = info.get_seair_curves_for_region(region, use_deaths=True)
@@ -183,14 +183,14 @@ class Scenarios1(SimpleApp):
 
         return MappingProxyType(out)
 
-    def get_column(
+    def __get_column(
         self,
         regions: List[Region],
         isolation: float,
         column: str,
         days: Tuple[int, int],
     ):
-        models = self.get_models()
+        models = self.__get_models()
         data = {}
         day, prev_day = days
 
@@ -213,7 +213,6 @@ class Scenarios1(SimpleApp):
 
     def main(self):
         self.run()
-
 
 def main(disease=covid19):
     scenarios_1 = Scenarios1()
