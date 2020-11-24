@@ -41,6 +41,7 @@ requires = [
   "markdown",
   "jinja2",
   "weasyprint",
+  "pdfkit"
 ]
 
 [tool.flit.metadata.requires-extra]
