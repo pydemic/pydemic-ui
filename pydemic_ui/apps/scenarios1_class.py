@@ -67,6 +67,7 @@ class Scenarios1(SimpleApp):
 
     def __init__(self):
         super().__init__()
+        self.__datahandler = Scenarios1_DataHandler()
 
     @st.cache
     def get_regions(self, **query):
@@ -95,7 +96,7 @@ class Scenarios1(SimpleApp):
         message = _("Show values for the given days")
         days = st.multiselect(message, DAYS, default=DAYS_DEFAULT)
 
-        self.user_inputs = {
+        self.__datahandler.user_inputs = {
             "parent_region": parent_region,
             "regions": regions,
             "columns": columns,
@@ -106,23 +107,28 @@ class Scenarios1(SimpleApp):
 
     def show(self):
 
-        parent_region = self.user_inputs["parent_region"]
-        columns = self.user_inputs["columns"]
-        targets = self.user_inputs["targets"]
-        days = self.user_inputs["days"]
-        disease = self.user_inputs["disease"]
+        parent_region = self.__datahandler.user_inputs["parent_region"]
+        columns = self.__datahandler.user_inputs["columns"]
+        targets = self.__datahandler.user_inputs["targets"]
+        days = self.__datahandler.user_inputs["days"]
+        disease = self.__datahandler.user_inputs["disease"]
 
         parent_region = mundi.region(parent_region)
         axes = parent_region.plot.cases_and_deaths(disease=disease, logy=True, grid=True)
         st.pyplot(axes.get_figure())
         if days and targets and columns:
-            df = self.__get_dataframe(tuple(days), tuple(targets), tuple(columns))
+            df = self.__datahandler.get_dataframe(tuple(days), tuple(targets), tuple(columns))
 
             st.subheader(_("Download results"))
             st.dataframe_download(df, name="report-brazil.{ext}")
 
+    def main(self):
+        self.run()
+
+
+class Scenarios1_DataHandler:
     @info.ttl_cache(key="app.projections_br", force_streamlit=True)
-    def __get_dataframe(self, days, targets, columns):
+    def get_dataframe(self, days, targets, columns):
         regions = self.user_inputs["regions"]
         frames = []
 
@@ -156,16 +162,6 @@ class Scenarios1(SimpleApp):
         return df.sort_values(df.columns[0])
 
     @info.ttl_cache(key="app.projections_br", force_streamlit=True)
-    def __get_models(self) -> dict:
-        models = {}
-        regions = self.user_inputs["regions"]
-        for region in regions:
-            with st.spinner(_("Processing {name}").format(name=region.name)):
-                result = self.__process_region(region)
-                models.update({(region, k): v for k, v in result.items()})
-        return models
-
-    @info.ttl_cache(key="app.projections_br", force_streamlit=True)
     def __process_region(self, region):
         targets = self.user_inputs["targets"]
 
@@ -182,6 +178,17 @@ class Scenarios1(SimpleApp):
             out[level] = new_model.clinical.overflow_model()
 
         return MappingProxyType(out)
+
+    @info.ttl_cache(key="app.projections_br", force_streamlit=True)
+    def __get_models(self) -> dict:
+        models = {}
+        regions = self.user_inputs["regions"]
+
+        for region in regions:
+            with st.spinner(_("Processing {name}").format(name=region.name)):
+                result = self.__process_region(region)
+                models.update({(region, k): v for k, v in result.items()})
+        return models
 
     def __get_column(
         self,
@@ -211,8 +218,6 @@ class Scenarios1(SimpleApp):
         data.index.name = "region"
         return data
 
-    def main(self):
-        self.run()
 
 def main(disease=covid19):
     scenarios_1 = Scenarios1()
