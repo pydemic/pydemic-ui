@@ -1,9 +1,10 @@
 import joblib
 import time
-from scheduler import scheduler
+from pydemic_ui.scheduler import scheduler
 
 path = ".tmp/"
 memory = joblib.Memory(path)
+
 
 class Cache:
     @memory.cache
@@ -12,26 +13,6 @@ class Cache:
         return (clock(), fn(*args, **kwargs))
 
     class TTL:
-        """
-        Create a cached function with a time to live expiration.
-
-        Args:
-            ttl:
-                Time that results live in cache.
-            fasttrack (bool):
-                If true, return result in cache and schedule update in the
-                background.
-            max_ttl:
-                If given, force cache update after the given expiration period.
-                It has no effect if fasttrack is False.
-        Usage:
-            >>> @Cache.TTL(10, True, 30)
-            ... def fn(x):
-            ...    time.sleep(2.4)
-            ...    return x * 2
-
-        """
-
         def __init__(self, ttl, fasttrack=False, max_ttl=float("inf"), clock=time.time):
             self.ttl = ttl
             self.fasttrack = fasttrack
@@ -62,22 +43,6 @@ class Cache:
             return decorated
 
     class Schedule:
-        """
-        Create a function that updates cache at the given frequency.
-
-        Args:
-            frequency:
-                Frequency at which to update the cache.
-                Can be a number of seconds or the strings "daily", "weekly" and "monthly"
-            time:
-                For daily, weekly and monthly updates, defines the time at which it schedule updates.
-
-        Usage:
-            >>> @Cache.Schedule('daily', time=...)
-            ... def fn(x):
-            ...    return x + 1
-
-        """
         def __init__(self, frequency, time=None, clock=time.time):
             self.frequency = frequency
             self.clock = clock
@@ -103,12 +68,17 @@ class Cache:
 
             return decorated
 
+
 @Cache.TTL(10, True, 30)
+@joblib.wrap_non_picklable_objects
 def fn(x):
     time.sleep(2.4)
     return x * 2
 
 @Cache.Schedule('daily', time=...)
+@joblib.wrap_non_picklable_objects
 def fn1(x):
     time.sleep(2.4)
     return x * 2
+
+fn1(5)
