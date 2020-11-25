@@ -1,6 +1,6 @@
 import joblib
 import time
-from scheduler import scheduler
+from pydemic_ui.scheduler import scheduler
 
 path = ".tmp/"
 memory = joblib.Memory(path)
