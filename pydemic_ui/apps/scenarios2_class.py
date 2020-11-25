@@ -198,11 +198,12 @@ class Scenarios2(SimpleApp):
             st.subheader(_("Download results"))
             st.dataframe_download(df, name="report-brazil.{ext}")
 
-
     def main(self):
         self.run()
 
+
 class Scenarios2_DataHandler():
+
     @st.cache(show_spinner=False)
     def get_regions(self, **query):
         """
