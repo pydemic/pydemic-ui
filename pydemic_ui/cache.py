@@ -5,6 +5,7 @@ from scheduler import scheduler
 path = ".tmp/"
 memory = joblib.Memory(path)
 
+
 class Cache:
     @memory.cache
     def call_with_time(*args, **kwargs):
@@ -42,7 +43,7 @@ class Cache:
             def decorated(*args, **kwargs):
                 def run():
                     return Cache.call_with_time.call_and_shelve(self.clock, fn, *args, **kwargs)
-                    
+
                 ref = run()
                 (time_, result) = ref.get()
 
@@ -70,7 +71,8 @@ class Cache:
                 Frequency at which to update the cache.
                 Can be a number of seconds or the strings "daily", "weekly" and "monthly"
             time:
-                For daily, weekly and monthly updates, defines the time at which it schedule updates.
+                For daily, weekly and monthly updates, defines the time at
+                which it schedule updates.
 
         Usage:
             >>> @Cache.Schedule('daily', time=...)
@@ -103,10 +105,12 @@ class Cache:
 
             return decorated
 
+
 @Cache.TTL(10, True, 30)
 def fn(x):
     time.sleep(2.4)
     return x * 2
+
 
 @Cache.Schedule('daily', time=...)
 def fn1(x):
