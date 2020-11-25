@@ -6,7 +6,7 @@ import pandas as pd
 import streamlit as st
 
 import mundi
-from pydemic import Cache
+from pydemic import cache
 from pydemic import fitting as fit
 from pydemic.diseases import covid19
 from pydemic.utils import safe_int
@@ -31,7 +31,7 @@ def ttl_cache(
     if force_streamlit:
         return st.cache(ttl=ttl, **kwargs)(fn)
     elif force_joblib:
-        return Cache.TTL(key, timeout=ttl, **kwargs)(fn)
+        return cache.ttl_cache(key, timeout=ttl, **kwargs)(fn)
 
     backend = os.environ.get("PYDEMIC_UI_CACHE_BACKEND", "joblib").lower()
     if backend == "joblib":
