@@ -22,18 +22,23 @@ def APP_LIST():
         "calc": _("Main epidemic calculator"),
         "api_explorer": _("Pydemic-UI API explorer"),
         "projections": _("Epidemic projections and forecast"),
+        "projections_br": _("Brazil Epidemic projections and forecast"),
         "scenarios1": _("Epidemic scenarios (I)"),
         "scenarios2": _("Epidemic scenarios (II)"),
         "model_info": _("Model info"),
         "forecast": _("Forecast"),
         "playground": _("Playground"),
+        "calc_class": _("Classe Main epidemic calculator"),
         "model_info_class": ("Classe model info"),
         "scenarios1_class": ("Classe Epidemic Scenarios (I)"),
-        "scenarios2_class": ("Classe Epidemic Scenarios (II)")
+        "scenarios2_class": ("Classe Epidemic Scenarios (II)"),
+        "api_explorer_class": ("Classe Pydemic-UI API explorer"),
+        "projections_br_class": _("Classe Brazil Epidemic projections and forecast"),
+        "projections_class": ("Classe Epidemic projections and forecast"),
     }
 
 
-def select_app(where=st, exclude=(), force_reload=False, **kwargs):
+def select_app(where=st, exclude=(), force_reload=False, show_force_reload_warning=False, **kwargs):
     """
     A simple menu that selects the desired app and run it.
     """
@@ -56,6 +61,11 @@ def select_app(where=st, exclude=(), force_reload=False, **kwargs):
         if force_reload:
             sys.modules.pop(mod_path, None)
             if st.button(_("Force reload")):
+                if show_force_reload_warning:
+                    where.write('''
+                        WARNING: force reload is experimental and might not work sometimes.
+                        Proceed with caution.
+                    ''')
                 for mod in PYDEMIC_MODULES:
                     clear_module(mod, True)
 
@@ -142,4 +152,4 @@ def patch_builtins():
 if __name__ == "__main__":
     configure_i18n()
     patch_builtins()
-    select_app(force_reload=True)
+    select_app(force_reload=True, show_force_reload_warning=True)

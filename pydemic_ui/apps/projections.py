@@ -62,7 +62,7 @@ def sidebar(title, where=st.sidebar, embed=False, disease="covid-19"):
 
     # Scenarios
     model = start_model(region, disease)
-    R0 = model.R0
+    R0 = model.R0.item()
 
     st.header(_("Forecast scenarios"))
     subs = {"R0": fmt(R0), "place": _(region.name)}
