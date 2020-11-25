@@ -112,47 +112,41 @@ class Scenarios2(SimpleApp):
 
     def __init__(self):
         super().__init__()
+        self.__datahandler = Scenarios2_DataHandler()
 
     def ask(self, parent_region="BR", where=st.sidebar):
-        """
-        Collect input parameters for the app to run.
-
-        Returns:
-            Dictionary with the following keys:
-                parent_region, regions, columns, targets, days
-        """
         st = where
-        kind = st.selectbox(_("Select scenario"), list(REGIONS_TYPES[parent_region]))
-        scenario = REGIONS_TYPES[parent_region][kind]
-        regions = self.get_regions(**scenario["query"])
+        scenario_kind = st.selectbox(_("Select scenario"), list(REGIONS_TYPES[parent_region]))
+        scenario = REGIONS_TYPES[parent_region][scenario_kind]
+        regions = self.__datahandler.get_regions(**scenario["query"])
 
         if "filter" in scenario:
             filtering = scenario["filter"]
             format_func = filtering.pop("format_func", None)
             if format_func is not None:
-                fn = format_func
+                function = format_func
 
                 def format_func(x):
                     if x == "all":
                         return _("All")
-                    return fn(x)
+                    return function(x)
 
-            field, msg = filtering.popitem()
+            field, message = filtering.popitem()
             groups = sk.group_by(lambda x: getattr(x, field), regions)
 
-            key = st.selectbox(msg, ["all", *groups], format_func=format_func)
+            key = st.selectbox(message, ["all", *groups], format_func=format_func)
             if key != "all":
                 regions = groups[key]
 
-        msg = _("Columns")
-        columns = st.multiselect(msg, COLUMNS, default=COLUMNS_DEFAULT)
+        message = _("Columns")
+        columns = st.multiselect(message, COLUMNS, default=COLUMNS_DEFAULT)
 
-        msg = _("Isolation scores")
+        message = _("Isolation scores")
         kwargs = {"default": TARGETS_DEFAULT, "format_func": lambda x: f"{x}%"}
-        targets = st.multiselect(msg, TARGETS, **kwargs)
+        targets = st.multiselect(message, TARGETS, **kwargs)
 
-        msg = _("Show values for the given days")
-        days = st.multiselect(msg, DAYS, default=DAYS_DEFAULT)
+        message = _("Show values for the given days")
+        days = st.multiselect(message, DAYS, default=DAYS_DEFAULT)
         if any(not isinstance(d, int) for d in days):
             day_max = sk.pipe(
                 days,
@@ -162,10 +156,10 @@ class Scenarios2(SimpleApp):
             )
             days = list(range(1, day_max + 1))
 
-        msg = _("Transpose data")
-        transpose = st.checkbox(msg, value=False)
+        message = _("Transpose data")
+        transpose = st.checkbox(message, value=False)
 
-        self.user_inputs = {
+        self.__datahandler.user_inputs = {
             "parent_region": parent_region,
             "regions": regions,
             "columns": columns,
@@ -177,17 +171,13 @@ class Scenarios2(SimpleApp):
         }
 
     def show(self):
-        """
-        Show results from user input.
-        """
-        parent_region = self.user_inputs["parent_region"]
-        regions = self.user_inputs["regions"]
-        columns = self.user_inputs["columns"]
-        targets = self.user_inputs["targets"]
-        days = self.user_inputs["days"]
-        scenario = self.user_inputs["scenario"]
-        transpose = self.user_inputs["transpose"]
-        disease = self.user_inputs["disease"]
+        parent_region = self.__datahandler.user_inputs["parent_region"]
+        columns = self.__datahandler.user_inputs["columns"]
+        targets = self.__datahandler.user_inputs["targets"]
+        days = self.__datahandler.user_inputs["days"]
+        scenario = self.__datahandler.user_inputs["scenario"]
+        transpose = self.__datahandler.user_inputs["transpose"]
+        disease = self.__datahandler.user_inputs["disease"]
 
         parent_region = mundi.region(parent_region)
         parent_region.ui.cases_and_deaths(disease=disease, grid=True, logy=True)
@@ -195,12 +185,12 @@ class Scenarios2(SimpleApp):
         if days and targets and columns:
             info = scenario["info"]
             info_cols = tuple(info)
-            df = self.get_dataframe(
-                regions, tuple(days), tuple(targets), tuple(columns), info_cols=info_cols
+            df = self.__datahandler.get_dataframe(
+                tuple(days), tuple(columns), info_cols=info_cols
             )
-            get = {**COL_NAMES, **info}.get
+            column_info = {**COL_NAMES, **info}.get
             df.columns = pd.MultiIndex.from_tuples(
-                [tuple(_(get(x, x) for x in t)) for t in df.columns.to_list()]
+                [tuple(_(column_info(x, x) for x in t)) for t in df.columns.to_list()]
             )
             if transpose:
                 df = df.T
@@ -208,6 +198,11 @@ class Scenarios2(SimpleApp):
             st.subheader(_("Download results"))
             st.dataframe_download(df, name="report-brazil.{ext}")
 
+
+    def main(self):
+        self.run()
+
+class Scenarios2_DataHandler():
     @st.cache(show_spinner=False)
     def get_regions(self, **query):
         """
@@ -217,43 +212,21 @@ class Scenarios2(SimpleApp):
 
         return tuple(mundi.region(id_) for id_ in mundi.regions(**query).index)
 
-    @st.cache(ttl=2 * 3600, show_spinner=False)
-    def cases(self, region, disease):
-        return disease.epidemic_curve(region, real=True, keep_observed=True)
-
-    # @ttl_cache("app-scenarios", timeout=2 * 3600)
-    @st.cache(ttl=2 * 3600, show_spinner=False)
-    def simulations(
-        self, region, targets: Sequence[int], duration, disease
-    ) -> Tuple[Model, ModelGroup]:
-        disease = get_disease(disease)
-        base = models.SEAIR(region=region, disease=disease, name=region.id)
-        base.set_cases(self.cases(region, disease), save_observed=True)
-
-        names = []
-        R0s = []
-        for target in targets:
-            names.append(_("Isolation {}").format(pc(target / 100)))
-            R0s.append(base.R0 * (1 - target / 100))
-
-        group = base.split(name=names, R0=R0s)
-        group.run(duration)
-        return base, group.clinical.overflow_model()
-
-    @st.cache(suppress_st_warning=True, ttl=2 * 3600, show_spinner=False)
-    def get_dataframe(self, regions, days, targets, columns, disease="covid-19", info_cols=()):
+    @st.cache(suppress_st_warning=True, ttl=2 * 60 * 60, show_spinner=False)
+    def get_dataframe(self, days, columns, info_cols=()):
+        regions = self.user_inputs["regions"]
         steps = len(self.user_inputs["regions"])
         duration = max(days)
         days_ranges = np.array([0, *days])
         columns = list(columns)
 
-        bar = st.progress(0)
+        progress_bar = st.progress(0)
         with st.spinner(_("Running simulations")):
 
             rows = {}
             for i, region in enumerate(regions):
-                base, group = self.simulations(region, targets, duration, disease=disease)
-                bar.progress(int(100 * i / steps))
+                base, group = self.__run_simulations(region, duration)
+                progress_bar.progress(int(100 * i / steps))
 
                 cols = {}
                 for a, b in sk.window(2, days_ranges):
@@ -271,30 +244,46 @@ class Scenarios2(SimpleApp):
                     )
 
                 keys = [*cols]
-                data = [*cols.values()]
-                rows[region.id] = pd.concat(data, axis=1, names=[_("days")], keys=keys)
+                cols_data = [*cols.values()]
+                rows[region.id] = pd.concat(cols_data, axis=1, names=[_("days")], keys=keys)
 
-        bar.empty()
-        data = pd.concat(list(rows.values()))
-        data.index = rows.keys()
+        progress_bar.empty()
+        cols_data = pd.concat(list(rows.values()))
+        cols_data.index = rows.keys()
 
         if info_cols:
-            extra = data.mundi[info_cols]
-            extra = extra.astype(object)  # streamlit bug?
-            extra.columns = pd.MultiIndex.from_tuples(("", "info", x) for x in extra.columns)
-            data = pd.concat([extra, data], axis=1)
-            return data.sort_values(data.columns[0])
+            extra_info = cols_data.mundi[info_cols]
+            extra_info = extra_info.astype(object)  # streamlit bug?
+            extra_info.columns = pd.MultiIndex.from_tuples(("", "info", x) for x in extra_info.columns)
+            data = pd.concat([extra_info, cols_data], axis=1)
+            return cols_data.sort_values(cols_data.columns[0])
         else:
-            return data.sort_index()
+            return cols_data.sort_index()
 
-    def main(self):
-        self.run()
+    @st.cache(ttl=2 * 60 * 60, show_spinner=False)
+    def __get_cases_information(self, region, disease):
+        return disease.epidemic_curve(region, real=True, keep_observed=True)
+
+    # @ttl_cache("app-scenarios", timeout=2 * 3600)
+    @st.cache(ttl=2 * 60 * 60, show_spinner=False)
+    def __run_simulations(self, region, duration) -> Tuple[Model, ModelGroup]:
+        targets = self.user_inputs["targets"]
+        disease = get_disease("covid-19")
+        base = models.SEAIR(region=region, disease=disease, name=region.id)
+        base.set_cases(self.__get_cases_information(region, disease), save_observed=True)
+
+        column_names = []
+        R0s = []
+        for target in targets:
+            column_names.append(_("Isolation {}").format(pc(target / 100)))
+            R0s.append(base.R0 * (1 - target / 100))
+
+        info_group = base.split(name=column_names, R0=R0s)
+        info_group.run(duration)
+        return base, info_group.clinical.overflow_model()
 
 
 def main(disease=covid19):
-    """
-    Main function for application.
-    """
     scenarios_2 = Scenarios2()
     scenarios_2.main()
 
