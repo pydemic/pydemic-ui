@@ -19,3 +19,5 @@ htmlcov/
 deploy/inventory.yml
 deploy-pydemic-ui/inventory.yml
 .python-version
+
+.tmp/
