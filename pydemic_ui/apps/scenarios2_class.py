@@ -106,6 +106,8 @@ REGIONS_TYPES = {
     }
 }
 
+TWO_HOURS: 2 * 60 * 60
+
 
 class Scenarios2(SimpleApp):
     title = "Scenarios for COVID-19 evolution in Brazil"
@@ -213,7 +215,7 @@ class Scenarios2_DataHandler():
 
         return tuple(mundi.region(id_) for id_ in mundi.regions(**query).index)
 
-    @st.cache(suppress_st_warning=True, ttl=2 * 60 * 60, show_spinner=False)
+    @st.cache(suppress_st_warning=True, ttl=TWO_HOURS, show_spinner=False)
     def get_dataframe(self, days, columns, info_cols=()):
         regions = self.user_inputs["regions"]
         steps = len(self.user_inputs["regions"])
@@ -261,12 +263,12 @@ class Scenarios2_DataHandler():
         else:
             return cols_data.sort_index()
 
-    @st.cache(ttl=2 * 60 * 60, show_spinner=False)
+    @st.cache(ttl=TWO_HOURS, show_spinner=False)
     def __get_cases_information(self, region, disease):
         return disease.epidemic_curve(region, real=True, keep_observed=True)
 
     # @ttl_cache("app-scenarios", timeout=2 * 3600)
-    @st.cache(ttl=2 * 60 * 60, show_spinner=False)
+    @st.cache(ttl=TWO_HOURS, show_spinner=False)
     def __run_simulations(self, region, duration) -> Tuple[Model, ModelGroup]:
         targets = self.user_inputs["targets"]
         disease = get_disease("covid-19")
