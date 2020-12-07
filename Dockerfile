@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED=1 \
 COPY assets/locale.gen /etc/locale.gen
 
 RUN apt update && \
-    apt install -y git locales && \
+    apt install -y git locales wkhtmltopdf && \
     locale-gen
 
 WORKDIR /app
