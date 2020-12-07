@@ -9,7 +9,6 @@ in the near future.
 
 This app uses components from the Pydemic UI package.
 """
-import datetime
 import importlib
 import os
 
@@ -20,6 +19,9 @@ from pydemic_ui import st
 from pydemic_ui import ui
 from pydemic_ui.i18n import _
 from pydemic_ui.app import SimpleApp, Timer
+from pydemic_ui.apps.secret_class import Secret
+from pydemic_ui.apps.construct_model_class import ConstructModel
+from pydemic_ui.apps.debug_calc_class import DebugCalc
 
 DEBUG = os.environ.get("DEBUG", "false").lower() in ("true", "on", "1")
 
@@ -68,9 +70,7 @@ class Calc(SimpleApp):
         super().__init__()
         self.where = st
 
-    def ask(
-        self, region="BR", disease=covid19, secret_date=None, secret_function=None
-    ):
+    def ask(self, region="BR", disease=covid19, secret_date=None):
         """
         Calculator sidebar element.
 
@@ -81,11 +81,11 @@ class Calc(SimpleApp):
         region = self.where.region_input(region, sus_regions=True, arbitrary=True)
 
         try:
-            params = self.where.simulation_params(region, disease, secret_date=secret_date)
+            params = self.where.simulation_params(
+                region, disease, secret_date=secret_date
+            )
         except RuntimeError:
-            self.where = globals()["st"]
-            self.where.title(_("Secret area for beta testers"))
-            secret_function()
+            Secret.area()
             return
 
         return {
@@ -129,103 +129,34 @@ class Calc(SimpleApp):
         st.pause()
         st.footnotes()
 
-    def main(self, region="BR", disease=covid19):
-        st.css()
-        params = self.ask(
-            region=region,
-            disease=disease,
-            secret_date=datetime.date(1904, 11, 10),
-            secret_function=lambda: easter_egg(disease),
-        )
-        if params is None:  # Secret function was activated
-            return
-
-        debug = False
-
-        if DEBUG and st.checkbox(_("Enable debug")):
-            st.info(_("Running in debug mode!"))
-            st.html(
-                """
-            <ul>
-                <li><a href="#debug">{}</a></li>
-            </ul>""".format(
-                    _("Debug section!")
-                )
-            )
-            debug = True
-
+    def run_infectious_model(Debug):
         epidemiology = extract_keys(PARAMS, params)
         clinical = extract_keys(CLINICAL, params)
 
-        # Run infections model
-        m = cm = results = None
+        model = clinical_model = results = None
         try:
-            m = model(disease=disease, **epidemiology)
-            cm = m.clinical.overflow_model(icu_occupancy=0, hospital_occupancy=0, **clinical)
-            cm.extra_info = params
-            self.show(cm)
+            model = ConstructModel(disease=disease, **epidemiology).new_model()
+            clinical_model = model.clinical.overflow_model(
+                icu_occupancy=0, hospital_occupancy=0, **clinical
+            )
+            clinical_model.extra_info = params
+            self.show(clinical_model)
 
         finally:
-            if debug:
-                if results:
-                    st.html('<div style="height: 15rem"></div>')
-                st.html('<h2 id="debug">{}</h2>'.format(_("Debug information")))
+            if Debug:
+                Debug.information_message(
+                    results, params, epidemiology, clinical, model, clinical_model
+                )
 
-                st.subheader(_("Generic parameters"))
-                st.write(params)
+    def main(self, region="BR", disease=covid19):
+        st.css()
+        params = self.ask(region=region, disease=disease, secret_date=Secret.date)
 
-                st.subheader(_("Epidemiological parameters"))
-                st.write(epidemiology)
+        if Secret.is_easter_egg_activated(params):
+            return
 
-                st.subheader(_("Clinical parameters"))
-                st.write(clinical)
-
-                st.subheader(_("Output"))
-                st.write(results)
-
-                if m:
-                    st.line_chart(m.data)
-
-                if cm:
-                    st.line_chart(cm[["infectious", "severe", "critical"]])
-
-                    st.subheader(_("Distribution of deaths"))
-                    df = cm[DEATH_DISTRIBUTION_COLUMNS]
-                    df.columns = [DEATH_DISTRIBUTION_COL_NAMES[k] for k in df.columns]
-                    st.area_chart(df)
-
-
-# @tle_cache('ui.app.calc')
-def model(*, daily_cases, runner, period, disease, **kwargs):
-    """
-    Return model from parameters
-    """
-    m = SEAIR(disease=disease, **kwargs)
-
-    recovered = 0.0
-    exposed = daily_cases * m.incubation_period
-    infectious = daily_cases * m.infectious_period * m.Qs
-    asymptomatic = daily_cases * m.infectious_period * (1 - m.Qs)
-    susceptible = m.population - exposed - asymptomatic - infectious - recovered
-
-    m.set_ic(state=(susceptible, exposed, asymptomatic, infectious, recovered))
-    m = runner(m, period)
-    return m
-
-
-def easter_egg(disease=covid19):
-    apps = {
-        "api_explorer": _("Showcase Pydemic-UI components"),
-        "scenarios1": _("Forecast for BR states in different scenarios (model 1)"),
-        "scenarios2": _("Forecast for BR states in different scenarios (model 2)"),
-        "projections": _("Epidemic forecasts"),
-        "dashboard_br": _("Dashboard with epidemic information (Brazil)"),
-    }
-    msg = _("Select the secret application")
-    app = st.selectbox(msg, list(apps.keys()), format_func=apps.get)
-
-    mod = importlib.import_module(f"pydemic_ui.apps.{app}")
-    mod.main(embed=True, disease=disease)
+        Debug = DebugCalc(st, DEBUG)
+        run_infectious_model(Debug)
 
 
 def main(disease=covid19):
@@ -235,8 +166,7 @@ def main(disease=covid19):
     calc = Calc()
     calc.main()
 
+
 # Start main script
-
-
 if __name__ == "__main__":
     main()
