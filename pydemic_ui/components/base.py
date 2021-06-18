@@ -3,7 +3,7 @@ from functools import wraps, lru_cache
 from pathlib import Path
 from types import SimpleNamespace
 
-import sidekick as sk
+import sidekick.api as sk
 import streamlit as st
 
 
@@ -29,6 +29,7 @@ def twin_component():
             @wraps(fn)
             def bound(*args, **kwargs):
                 kwargs.setdefault("where", where)
+                return fn(*args, **kwargs)
                 return fn(*args, **kwargs)
 
             return bound

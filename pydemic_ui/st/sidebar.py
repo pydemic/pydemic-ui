@@ -47,7 +47,6 @@ checkbox = _st.sidebar.checkbox
 code = _st.sidebar.code
 dataframe = _st.sidebar.dataframe
 date_input = _st.sidebar.date_input
-deck_gl_chart = _st.sidebar.deck_gl_chart
 empty = _st.sidebar.is_empty
 error = _st.sidebar.error
 exception = _st.sidebar.exception

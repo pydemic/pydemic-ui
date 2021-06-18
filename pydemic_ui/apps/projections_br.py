@@ -65,7 +65,7 @@ def run_models(refs, which):
 
 
 def collect_inputs(region="BR", where=st.sidebar):
-    states = mundi.regions(region, type="state")
+    states = mundi.regions_dataframe(region, type="state")
     highlight = where.selectbox(_("Select a state to highlight"), states.index)
 
     msg = _("Which kind of curve to you want to analyze?")

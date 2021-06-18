@@ -112,7 +112,7 @@ def get_notification_estimate_for_region(region, disease=covid19) -> float:
     # It is very unlikely that any region has a notification rate higher than
     # 0.75, hence we also put a cap on the value.
     ratio = min((cases / expected_cases) ** 0.8, 0.75)
-    return ratio if np.isfinite(ratio) else 0.1
+    return float(ratio if np.isfinite(ratio) else 0.1)
 
 
 @ttl_cache()

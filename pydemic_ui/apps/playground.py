@@ -8,7 +8,7 @@ import pandas as pd
 import requests
 
 import mundi
-import sidekick as sk
+import sidekick.api as sk
 from mundi import Region
 from pydemic.cache import ttl_cache
 from pydemic.logging import log
@@ -275,7 +275,7 @@ def sari_br_dataframe():
     """
     Aggregate SARI vigilance for all states.
     """
-    states = mundi.regions("BR", type="state").index
+    states = mundi.regions_dataframe("BR", type="state").index
     data = [sari_br_state_dataframe(state) for state in states]
     return pd.concat(data)
 

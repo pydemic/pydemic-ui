@@ -6,7 +6,7 @@ from contextlib import contextmanager
 from logging import getLogger
 from typing import ContextManager
 
-import sidekick as sk
+import sidekick.api as sk
 from . import st
 from .i18n import _
 

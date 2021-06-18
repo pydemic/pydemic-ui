@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 import mundi
-import sidekick as sk
+import sidekick.api as sk
 from pydemic import models, ModelGroup
 from pydemic.cache import ttl_cache
 from pydemic.diseases import covid19
@@ -298,7 +298,7 @@ def get_regions(**query):
     Get all children in region that have the same values of the parameters passed
     as keyword arguments.
     """
-    return tuple(mundi.region(id_) for id_ in mundi.regions(**query).index)
+    return tuple(mundi.region(id_) for id_ in mundi.regions_dataframe(**query).index)
 
 
 if __name__ == "__main__":

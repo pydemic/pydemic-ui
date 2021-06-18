@@ -162,7 +162,7 @@ def get_regions(**query):
     Get all children in region that have the same values of the parameters passed
     as keyword arguments.
     """
-    return [mundi.region(id_) for id_ in mundi.regions(**query).index]
+    return [mundi.region(id_) for id_ in mundi.regions_dataframe(**query).index]
 
 
 def collect_inputs(parent_region="BR", where=st.sidebar):

@@ -4,7 +4,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 
 import mundi
-import sidekick as sk
+import sidekick.api as sk
 from mundi import Region
 from pydemic.utils import fmt, pc
 from pydemic_ui import st
@@ -153,7 +153,7 @@ def info(region):
 
 
 def regions(*args, **kwargs):
-    refs = mundi.regions(*args, **kwargs).index
+    refs = mundi.regions_dataframe(*args, **kwargs).index
     return [mundi.region(ref) for ref in refs]
 
 

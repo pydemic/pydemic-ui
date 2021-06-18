@@ -169,7 +169,7 @@ def sub_regions(code, **kwargs):
     else:
         kwargs["parent_id"] = code
 
-    sub_df = mundi.regions(**kwargs)
+    sub_df = mundi.regions_dataframe(**kwargs)
     return tuple(sub_df.index)
 
 

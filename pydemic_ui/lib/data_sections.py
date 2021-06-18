@@ -1,7 +1,7 @@
 from typing import Tuple, Optional, Dict
 
 import pandas as pd
-import sidekick as sk
+import sidekick.api as sk
 from pandas.io.formats.style import Styler
 
 from pydemic.utils import timed

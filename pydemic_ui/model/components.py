@@ -41,7 +41,7 @@ during the period of simulation.
 )
 
 
-def summary_cards(model, where=st):
+def summary_cards(model: Model, where=st):
     """
     Show list of summary cards for the results of simulation.
     """
@@ -53,13 +53,12 @@ def summary_cards(model, where=st):
 
     region = model.region
     disease = model.disease
-    results = model.results
 
-    deaths = results["data.deaths"]
-    hospitalizations = results["data.hospitalized_cases"]
+    deaths = model["deaths:final"]
+    hospitalizations = model["hospitalized_cases:final"]
     extra_icu = model["icu_overflow:max"]
     extra_hospitals = model["hospital_overflow:max"]
-    recovered = results["data.recovered"]
+    recovered = model["recovered:final"]
     population = model.population
 
     # Print friendlier messages if region has no ICU or hospital beds
@@ -186,7 +185,7 @@ def summary_table(
         roles = [roles]
 
     for role in roles:
-        df = model.summary_table(role, humanize=humanize, translate=_)
+        df = model.results.summary_table(role, humanize=humanize, translate=_)
         if df.index.name:
             df = df.reset_index().set_axis([""] * len(df))
         display_role = _(role.replace("_", " "))

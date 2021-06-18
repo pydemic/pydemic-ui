@@ -1,7 +1,7 @@
 import io
 from typing import Union, Callable, Optional, Dict
 
-import sidekick as sk
+import sidekick.api as sk
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 

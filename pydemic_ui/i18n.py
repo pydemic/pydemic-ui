@@ -1,7 +1,7 @@
 from gettext import gettext
 from pathlib import Path
 
-import sidekick as sk
+import sidekick.api as sk
 
 LOCALEDIR = Path(__file__).parent / "locale"
 

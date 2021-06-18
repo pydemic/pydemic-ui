@@ -22,7 +22,7 @@ def brazil_map() -> geopandas.GeoDataFrame:
 @disk_cache("shapefiles")
 def _brazil_map():
     num_codes = (
-        mundi.regions("BR", type="state")
+        mundi.regions_dataframe("BR", type="state")
         .mundi["numeric_code"]
         .astype(object)["numeric_code"]
         .to_dict()

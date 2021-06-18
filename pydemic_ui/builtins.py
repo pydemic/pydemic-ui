@@ -8,7 +8,7 @@ from pprint import pformat, pprint as _pprint, pp as _pp
 
 import numpy as np
 import pandas as pd
-import sidekick as sk
+import sidekick.api as sk
 import streamlit as st
 
 _print = print

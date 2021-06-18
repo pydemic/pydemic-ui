@@ -5,7 +5,7 @@ from datetime import timedelta
 from types import MappingProxyType
 
 import pandas as pd
-import sidekick as sk
+import sidekick.api as sk
 
 import mundi
 from pydemic.region import RegionT
@@ -221,9 +221,9 @@ def select_regions(where=st.sidebar):
     }
     opt = st.radio(_("What do you want to show?"), list(opts), format_func=opts.get)
     if opt == "BR":
-        df = mundi.regions("BR", type="state")
+        df = mundi.regions_dataframe("BR", type="state")
     else:
-        df = mundi.regions(type="state", parent_id=opt)
+        df = mundi.regions_dataframe(type="state", parent_id=opt)
     return df.index
 
 
@@ -245,7 +245,7 @@ def _get_data():
 @timed
 @st.cache
 def fetch_states():
-    return tuple(map(mundi.region, mundi.regions("BR", type="state").index))
+    return tuple(map(mundi.region, mundi.regions_dataframe("BR", type="state").index))
 
 
 @timed

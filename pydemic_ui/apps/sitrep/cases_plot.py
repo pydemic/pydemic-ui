@@ -8,7 +8,7 @@ DISPLAY_NAME = _("Accumulated cases")
 
 
 def regions(*args, **kwargs):
-    refs = mundi.regions(*args, **kwargs).index
+    refs = mundi.regions_dataframe(*args, **kwargs).index
     return [mundi.region(ref) for ref in refs]
 
 
